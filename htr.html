@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WormWorld HD - Realista & Pro 3D</title>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; font-family: 'Segoe UI', sans-serif; color: white; touch-action: none; }
+    
+    #gameCanvas { display: none; }
+
+    /* =========================================
+       TELAS E MENUS DE INÍCIO
+       ========================================= */
+    .overlay-screen {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(circle at center, rgba(20,25,30,0.95) 0%, rgba(5,10,15,0.98) 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; overflow: hidden;
+    }
+    
+    .snake-art-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; pointer-events: none; }
+    .snake-path { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: slither 8s linear infinite alternate; }
+    @keyframes slither { to { stroke-dashoffset: 0; } }
+
+    .top-right-controls { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 10; }
+    .btn-icon {
+      background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 50%;
+      width: 55px; height: 55px; font-size: 26px; color: white; cursor: pointer; transition: 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-icon:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+
+    /* PAINEL VIP */
+    .vip-panel {
+      position: absolute; bottom: 20px; left: 20px;
+      background: rgba(15, 15, 20, 0.95); border: 2px solid #ffeb3b;
+      border-radius: 12px; padding: 20px; text-align: center;
+      box-shadow: 0 0 30px rgba(255, 235, 59, 0.2); z-index: 10; width: 280px;
+      backdrop-filter: blur(5px);
+    }
+    .vip-title { color: #ffeb3b; font-family: 'Teko', sans-serif; font-size: 28px; margin-bottom: 10px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,235,59,0.5); }
+    .vip-perks { text-align: left; font-size: 13px; color: #ccc; margin-bottom: 10px; list-style: none; line-height: 1.5; }
+    .vip-perks li { margin-bottom: 3px; }
+    .btn-vip-buy {
+      background: linear-gradient(45deg, #fbc02d, #f57f17); border: none;
+      padding: 8px 5px; border-radius: 8px; color: #000; font-weight: bold;
+      cursor: pointer; transition: 0.3s; font-size: 14px; width: 100%; margin-bottom: 6px;
+    }
+    .btn-vip-buy:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,235,59,0.6); }
+
+    /* Estilos para o campo de cupom */
+    .coupon-section { border-top: 1px solid rgba(255,235,59,0.3); margin-top: 10px; padding-top: 10px; }
+    #coupon-input { width: 70%; padding: 6px; border-radius: 4px; border: 1px solid #555; background: #000; color: #ffeb3b; text-align: center; font-size: 12px; }
+    .btn-coupon { width: 25%; padding: 6px; background: #333; border: 1px solid #555; color: white; border-radius: 4px; cursor: pointer; font-size: 12px; vertical-align: top; }
+    .btn-coupon:hover { background: #444; }
+
+    .logo { font-family: 'Teko', sans-serif; font-size: 90px; color: #fff; text-shadow: 0 0 20px #ff5252, 0 0 40px #ff5252; margin-bottom: 20px; z-index: 2; }
+    
+    .modal-box {
+      background: rgba(15, 15, 20, 0.85); border: 2px solid rgba(255, 255, 255, 0.1);
+      padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+      text-align: center; width: 440px; position: relative; z-index: 2; backdrop-filter: blur(5px);
+    }
+    .hidden-menu { display: none !important; }
+
+    input[type="text"], select {
+      width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #555;
+      background: #111; color: white; font-size: 15px; text-align: center; outline: none; transition: 0.3s;
+    }
+    input[type="color"] { width: 100%; height: 50px; border: none; border-radius: 8px; background: #111; cursor: pointer; margin-bottom: 10px; }
+    
+    .btn-team, .btn-action {
+      width: 100%; padding: 15px; margin: 8px 0; border: none; border-radius: 8px;
+      font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; text-transform: uppercase;
+    }
+    
+    .btn-google { background: #fff; color: #444; border: 1px solid #ddd; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: default; }
+    .google-icon { width: 22px; height: 22px; }
+
+    .btn-red { background: linear-gradient(45deg, #b71c1c, #ff5252); } .btn-red:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 82, 82, 0.6); }
+    .btn-blue { background: linear-gradient(45deg, #0d47a1, #448aff); } .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(68, 138, 255, 0.6); }
+    .btn-action:not(.btn-google) { background: #4caf50; } .btn-action:not(.btn-google):hover { background: #43a047; }
+    .btn-back { background: #555 !important; } .btn-back:hover { background: #777 !important; }
+    .btn-edit { background: #ff9800 !important; } .btn-edit:hover { background: #e68a00 !important; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); }
+
+    .keybind-row { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 14px; }
+    .btn-keybind { background: #333; border: 1px solid #555; padding: 8px 15px; color: #ffeb3b; border-radius: 5px; cursor: pointer; min-width: 120px; font-weight: bold; }
+    .btn-keybind:hover { background: #444; border-color: #ffeb3b; }
+
+    /* Estilos para o Modal de Pagamento PIX */
+    .pix-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); display: none; align-items: center;
+      justify-content: center; z-index: 100000; backdrop-filter: blur(5px);
+    }
+    .pix-modal-box {
+      background: #fff; color: #000; width: 90%; max-width: 400px;
+      padding: 25px; border-radius: 15px; text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+    }
+    .pix-header { font-weight: bold; font-size: 18px; margin-bottom: 15px; color: #00bfa5; display: flex; align-items: center; justify-content: center; gap: 8px;}
+    .pix-header svg { width: 25px; height: 25px; fill: #00bfa5; }
+    .pix-code-area { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; max-height: 100px; overflow-y: auto; margin-bottom: 15px; user-select: text; text-align: left;}
+    .btn-copy-pix { background: #00bfa5; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px;}
+    .btn-copy-pix:hover { background: #009688; }
+    .pix-instruction { font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.4;}
+    .btn-close-pix { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; }
+
+    /* =========================================
+       HUD E RADAR
+       ========================================= */
+    .hud-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none; z-index: 10; font-family: 'Times New Roman', Times, serif; }
+    .left-panel { position: absolute; top: 15px; left: 15px; width: 220px; }
+    .right-panel { position: absolute; top: 15px; right: 15px; width: 250px; text-align: right; }
+
+    .radar-wrapper { position: relative; width: 140px; height: 140px; margin-left: 20px; }
+    .radar-container { position: absolute; top: 10px; left: 10px; width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ccc; background: rgba(0,0,0,0.8); overflow: hidden; }
+    .radar-container::after { content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: rgba(255,255,255,0.15); transform: translateX(-50%); }
+    .radar-container::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.15); transform: translateY(-50%); }
+    
+    .clock-num { position: absolute; font-family: 'Arial', sans-serif; font-size: 11px; font-weight: bold; color: rgba(255,255,255,0.6); transform: translate(-50%, -50%); z-index: 3; }
+    .clock-center { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: #fff; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5; }
+    .radar-entities { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 6; }
+
+    .my-hs-box { margin-top: 15px; margin-left: 20px; font-family: 'Teko', sans-serif; font-size: 24px; color: #fff; text-shadow: 1px 1px 4px #000; font-weight: bold; min-height: 35px; }
+    .hs-record-box { margin-top: 5px; margin-left: 20px; font-family: 'Segoe UI', sans-serif; font-size: 14px; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border-left: 3px solid #ffeb3b; }
+    .hs-record-title { color: #ffeb3b; font-weight: bold; margin-bottom: 5px; font-family: 'Teko', sans-serif; font-size: 20px; letter-spacing: 1px; }
+
+    .stats-row { display: flex; justify-content: flex-start; margin-top: 10px; margin-left: 20px; text-align: center; font-size: 15px; }
+    .stat-col { display: flex; flex-direction: column; margin-right: 20px; }
+    .stat-col .val { font-size: 18px; margin-top: 2px; font-weight: bold; }
+    
+    .leaderboard-title { font-family: 'Teko', sans-serif; font-size: 24px; color: #8bc34a; margin-bottom: 10px; text-shadow: 1px 1px 3px #000; letter-spacing: 1px; }
+    .lb-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 5px; text-shadow: 1px 1px 2px #000; font-family: 'Segoe UI', sans-serif; }
+    .lb-row span:nth-child(2) { color: #ccc; font-weight: bold; }
+
+    #btn-speed-mobile { position: absolute; bottom: 40px; left: 40px; width: 100px; height: 100px; background: rgba(255, 82, 82, 0.2); border: 2px solid rgba(255,82,82,0.8); border-radius: 50%; font-size: 40px; display: none; justify-content: center; align-items: center; z-index: 50; pointer-events: auto; text-shadow: 0 0 10px #fff; box-shadow: 0 0 15px rgba(255,82,82,0.3); }
+    #btn-speed-mobile:active { background: rgba(255, 82, 82, 0.7); transform: scale(0.95); }
+    #joystick-zone { position: absolute; bottom: 40px; right: 40px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; display: none; pointer-events: auto; z-index: 50; }
+    #joystick-knob { position: absolute; top: 50px; left: 50px; width: 50px; height: 50px; background: rgba(68, 138, 255, 0.6); border-radius: 50%; box-shadow: 0 0 15px rgba(68,138,255,0.5); }
+    
+    #death-screen { display: none; z-index: 99999; }
+  </style>
+</head>
+<body>
+
+  <!-- MODAL DE PAGAMENTO PIX (Oculto por padrão) -->
+  <div id="pix-modal" class="pix-modal-overlay">
+    <div class="pix-modal-box">
+      <button class="btn-close-pix" onclick="closePixModal()">×</button>
+      <div class="pix-header">
+        <!-- Ícone SVG simplificado do PIX -->
+        <svg viewBox="0 0 512 512"><path d="M242.4 20.4c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7L481.6 142.1c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L254.1 292.3c-1.8 1.1-3.8 1.7-5.8 1.7s-4.1-.6-5.8-1.7L12.4 162.2c-1.8-1.1-3.3-2.6-4.3-4.3S6.4 154.1 6.4 152.1s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L242.4 20.4zM161.7 201l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm116 116l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm-207.7 22.1c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l227.6 130c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L12.4 481.6c-1.8 1.1-3.3 2.6-4.3 4.3S6.4 489.7 6.4 491.7s.6 4.1 1.7 5.8s2.6 3.3 4.3 4.3L4.1 361.9c-1.8-1.1-3.3-2.6-4.3-4.3S-1.6 353.8-1.6 351.8s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L270 201.2 161.7 201l-111.7 63.8zm218.1 124.6l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7L314 316.5c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zM499.6 361.9c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L272 512l-108.3-61.9L272 386.3l227.6-130c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l111.7-63.8 108.3 61.9z"/></svg>
+        Pagamento via PIX
+      </div>
+      <p class="pix-instruction">Clique abaixo para copiar o código "Copia e Cola" e pague no app do seu banco.</p>
+      <div id="pix-code-display" class="pix-code-area"></div>
+      <button class="btn-copy-pix" onclick="copyPixCode()">Copiar Código PIX</button>
+      <p style="font-size: 11px; color: #888;">Após o pagamento, aguarde a validação manual.</p>
+    </div>
+  </div>
+
+  <!-- TELAS INICIAIS -->
+  <div id="start-screen" class="overlay-screen">
+    
+    <!-- PAINEL VIP (LOJA) -->
+    <div class="vip-panel" id="vip-panel-ui">
+      <div class="vip-title">👑 LOJA VIP</div>
+      <ul class="vip-perks">
+        <li>✔️ <b>Gráficos 3D Realistas</b> (Sem Travar)</li>
+        <li>✔️ Acesso ao <b>Editor de Skins</b></li>
+        <li>✔️ Nome Dourado VIP</li>
+        <li>✔️ Coroa de HS Exclusiva</li>
+      </ul>
+      <button class="btn-vip-buy" onclick="buyVIP('Mensal')">R$ 19,90 <span style="font-weight:normal; font-size:11px;">/ Mês</span></button>
+      <button class="btn-vip-buy" onclick="buyVIP('Vitalício')">R$ 99,90 <span style="font-weight:normal; font-size:11px;">/ Vitalício</span></button>
+      
+      <!-- Seção de Cupom -->
+      <div class="coupon-section">
+        <input type="text" id="coupon-input" placeholder="Possui cupom?">
+        <button class="btn-coupon" onclick="activateCoupon()">Ativar</button>
+      </div>
+    </div>
+
+    <div class="top-right-controls">
+      <button class="btn-icon" id="btn-sound" onclick="toggleSound()" title="Som">🔊</button>
+      <button class="btn-icon" onclick="openMenu('menu-controls')" title="Controles">🎮</button>
+      <button class="btn-icon" onclick="tryOpenSkins()" title="Textura da Skin (VIP)">🎨</button>
+    </div>
+
+    <svg class="snake-art-bg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <path class="snake-path" d="M-100,200 Q150,50 300,300 T800,150 T1200,400" fill="none" stroke="#ff5252" stroke-width="30" stroke-linecap="round"/>
+      <path class="snake-path" d="M-50,800 Q250,600 400,800 T900,600 T1300,900" fill="none" stroke="#448aff" stroke-width="30" stroke-linecap="round" style="animation-delay: -4s;"/>
+    </svg>
+
+    <div class="logo">WORMZILLA.IO</div>
+    
+    <!-- MENU PRINCIPAL -->
+    <div class="modal-box" id="menu-main">
+      <button class="btn-action btn-google">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        <span id="user-id-display">Conectando...</span>
+      </button>
+
+      <div style="display: flex; flex-direction: column; text-align: left; margin-bottom: 5px;">
+        <input type="text" id="username-input" value="Erikssandro" maxlength="15">
+        <div id="nick-status" style="font-size: 13px; color: #aaa; margin-top: -3px; margin-bottom: 10px; text-align: center;">Aguardando...</div>
+      </div>
+      
+      <button class="btn-action btn-edit" onclick="tryOpenEditor()">👑 EDITAR COBRA (VIP)</button>
+      <p style="margin-top: 15px; font-size: 13px; color:#ccc;">(A Cobra só corre se você segurar o botão de Acelerar!)</p>
+      
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-team btn-red" onclick="startGame('red')">ENTRAR - VERMELHO</button>
+        <button class="btn-team btn-blue" onclick="startGame('blue')">ENTRAR - AZUL</button>
+      </div>
+    </div>
+
+    <!-- MENU DE EDIÇÃO DA COBRA -->
+    <div class="modal-box hidden-menu" id="menu-editor">
+      <h2 style="color: #ff9800; margin-bottom: 15px;">👑 Editor VIP</h2>
+      
+      <div style="display: flex; gap: 15px; text-align: left;">
+        <div style="flex: 1;">
+          <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Cor Base:</div>
+          <input type="color" id="snake-color" value="#00e5ff" style="height:35px; margin-bottom:5px;">
+          <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Cor Secundária (Texturas):</div>
+          <input type="color" id="snake-color2" value="#ff00ff" style="height:35px;">
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Rosto / Olhos:</div>
+          <select id="snake-face">
+            <optgroup label="Expressões">
+              <option value="normal">Padrão</option>
+              <option value="angry">Bravo 😠</option>
+              <option value="cute">Fofo 🥺</option>
+              <option value="large">Olhos Grandes 😳</option>
+              <option value="small">Olhos Pequenos 😶</option>
+              <option value="crying">Chorando 😭</option>
+              <option value="closed">Olhos Fechados 😌</option>
+              <option value="cool">Estiloso 😎</option>
+              <option value="nerd">Nerd 🤓</option>
+            </optgroup>
+            <optgroup label="Criaturas & Emojis">
+              <option value="alien">Alien 👽</option>
+              <option value="robot">Robô 🤖</option>
+              <option value="demon">Demônio 👹</option>
+              <option value="skull">Caveira 💀</option>
+              <option value="cat">Gato 🐱</option>
+              <option value="dog">Cachorro 🐶</option>
+              <option value="pig">Porco 🐷</option>
+              <option value="rabbit">Coelho 🐰</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 5px; margin-top: 10px;">Acessórios Especiais:</div>
+      <select id="snake-acc">
+        <option value="none">Nenhum</option>
+        <option value="crown">Coroa Rei/Rainha 👑</option>
+        <option value="mustache">Bigode de Respeito 🧔</option>
+        <option value="halo">Auréola de Anjo 👼</option>
+        <option value="ears_rabbit">Orelhas de Coelho 🐰</option>
+        <option value="glasses">Óculos Escuros 🕶️</option>
+        <option value="fangs">Presas de Vampiro 🧛</option>
+      </select>
+      <button class="btn-action btn-back" style="margin-top:20px;" onclick="openMenu('menu-main')">Salvar Estilo</button>
+    </div>
+
+    <!-- MENU DE CONTROLES -->
+    <div class="modal-box hidden-menu" id="menu-controls">
+      <h2 style="color: #4caf50; margin-bottom: 5px;">🎮 Controles</h2>
+      <select id="control-select">
+        <optgroup label="PC / Desktop">
+          <option value="mouse">Mouse (Seguir Cursor)</option>
+          <option value="custom">Teclas (A, D ou Setas)</option>
+        </optgroup>
+        <optgroup label="Mobile">
+          <option value="joystick">Joystick (Direita) + Speed (Esquerda)</option>
+          <option value="touch">Tocar na Tela</option>
+        </optgroup>
+      </select>
+      <p style="text-align: left; font-size: 13px; color:#aaa; margin-top: 15px;">Mapeamento de Teclas:</p>
+      <div class="keybind-row"><span>Acelerar / Speed Turbo:</span><button id="bind-speed" class="btn-keybind" onclick="startRebind('speed', this)">[ Mouse0 ]</button></div>
+      <div class="keybind-row"><span>Virar Esquerda:</span><button id="bind-left" class="btn-keybind" onclick="startRebind('left', this)">[ ArrowLeft ]</button></div>
+      <div class="keybind-row"><span>Virar Direita:</span><button id="bind-right" class="btn-keybind" onclick="startRebind('right', this)">[ ArrowRight ]</button></div>
+      <button class="btn-action btn-back" style="margin-top:20px;" onclick="openMenu('menu-main')">Confirmar e Voltar</button>
+    </div>
+
+    <!-- MENU LOJA DE SKINS VIP -->
+    <div class="modal-box hidden-menu" id="menu-skins">
+      <h2 style="color: #ff9800; margin-bottom: 15px;">🎨 Texturas VIP</h2>
+      <select id="skin-select">
+        <option value="solid">Realista (Anéis Escamados)</option>
+        <option value="gradient">Degradê (Usa Cor Secundária)</option>
+        <option value="neon">Neon Brilhante (Laser)</option>
+        <option value="zebra">Zebra (Listrada Preta)</option>
+        <option value="checkered">Xadrez (Usa Cor Secundária)</option>
+        <option value="dots">Pontilhada</option>
+        <option value="ghost">Fantasma (Transparente)</option>
+      </select>
+      <button class="btn-action btn-back" onclick="openMenu('menu-main')">Confirmar e Voltar</button>
+    </div>
+  </div>
+
+  <!-- TELA DE MORTE -->
+  <div id="death-screen" class="overlay-screen">
+    <div class="modal-box">
+      <h1 style="color: #ff5252; margin-bottom: 5px; text-transform: uppercase;">Você Morreu!</h1>
+      <p id="death-reason" style="margin-bottom: 20px; color: #ccc;"></p>
+      
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-action" onclick="respawn()">Voltar para a Arena</button>
+      
+    <!-- SELETOR DE RENASCIMENTO (EXCLUSIVO VIP) -->
+    <div id="vip-spawn-modal" style="display:none; margin-top: 15px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 10px; border: 2px solid #ffeb3b;">
+      <div style="color: #ffeb3b; font-weight: bold; margin-bottom: 8px; font-family:'Teko'; font-size:22px;">📍 ESCOLHA A REGIÃO DE RENASCIMENTO (VIP)</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button class="btn-action" style="padding:8px; font-size:14px; background:#e65100;" onclick="respawnQuadrant(1)">Norte</button>
+        <button class="btn-action" style="padding:8px; font-size:14px; background:#0d47a1;" onclick="respawnQuadrant(2)">Nordeste</button>
+        <button class="btn-action" style="padding:8px; font-size:14px; background:#1b5e20;" onclick="respawnQuadrant(3)">Centro-Oeste</button>
+        <button class="btn-action" style="padding:8px; font-size:14px; background:#4a148c;" onclick="respawnQuadrant(4)">Sul</button>
+      </div>
+    </div>
+        <button class="btn-action btn-back" onclick="goToMenu()">Início</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD IN-GAME -->
+  <div class="hud-layer" id="hud">
+    <div id="vip-broadcast-banner" style="position: absolute; top: 65px; left: 50%; transform: translateX(-50%); font-family: 'Teko', sans-serif; font-size: 26px; color: #ffeb3b; text-shadow: 2px 2px 4px #000; text-align: center; pointer-events: none; z-index: 100;"></div>
+    <div id="player-buff-timer-banner" style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); font-family: 'Teko', sans-serif; font-size: 28px; color: #00e5ff; text-shadow: 2px 2px 6px #000; text-align: center; pointer-events: none; z-index: 100;"></div>
+
+    <div id="top-center-hud" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 50; pointer-events: auto;">
+      <button onclick="toggleAFK()" id="btn-afk" style="background: rgba(0,0,0,0.8); border: 2px solid #ff9800; color: #ff9800; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">🌀</button>
+      <button class="mobile-only-control" onclick="adjustZoom(0.3)" style="background: rgba(0,0,0,0.8); border: 2px solid #4caf50; color: #4caf50; padding: 8px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🔍+</button>
+      <button class="mobile-only-control" onclick="adjustZoom(-0.3)" style="background: rgba(0,0,0,0.8); border: 2px solid #f44336; color: #f44336; padding: 8px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🔍-</button>
+      <button class="mobile-only-control" onclick="cycleMobileControl()" id="btn-cycle-ctrl" style="background: rgba(0,0,0,0.8); border: 2px solid #448aff; color: #448aff; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🎮</button>
+    </div>
+    
+    <div class="left-panel">
+      <div class="radar-wrapper">
+        <div class="radar-container" id="radar-container">
+          <div class="clock-num" style="top: 10%; left: 50%;">12</div>
+          <div class="clock-num" style="top: 15%; left: 70%;">1</div>
+          <div class="clock-num" style="top: 30%; left: 85%;">2</div>
+          <div class="clock-num" style="top: 50%; left: 90%;">3</div>
+          <div class="clock-num" style="top: 70%; left: 85%;">4</div>
+          <div class="clock-num" style="top: 85%; left: 70%;">5</div>
+          <div class="clock-num" style="top: 90%; left: 50%;">6</div>
+          <div class="clock-num" style="top: 85%; left: 30%;">7</div>
+          <div class="clock-num" style="top: 70%; left: 15%;">8</div>
+          <div class="clock-num" style="top: 50%; left: 10%;">9</div>
+          <div class="clock-num" style="top: 30%; left: 15%;">10</div>
+          <div class="clock-num" style="top: 15%; left: 30%;">11</div>
+          <div class="clock-center"></div>
+          <div class="radar-entities" id="radar-entities"></div>
+        </div>
+      </div>
+      
+      <div class="my-hs-box" id="my-hs-display"></div>
+      <div id="active-buffs-display" style="margin-top: 10px; margin-left: 20px; font-family: 'Teko', sans-serif; font-size: 20px; color: #00e5ff; text-shadow: 1px 1px 3px #000; font-weight: bold; min-height: 25px;"></div>
+
+      <div class="hs-record-box">
+        <div class="hs-record-title">👑 RECORDES DE HS</div>
+        <div id="hs-record-list">Nenhum recorde ainda.</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-col"><span>HS</span><span class="val" id="hud-hs">0</span></div>
+        <div class="stat-col"><span>KILL</span><span class="val" id="hud-kills">0</span></div>
+        <div class="stat-col"><span>ZOOM</span><span class="val" id="hud-zoom" style="color:#8bc34a;">100%</span></div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="leaderboard-title">🏆 TOP PLAYERS</div>
+      <div id="global-leaderboard"></div>
+    </div>
+
+    <div id="joystick-zone"><div id="joystick-knob"></div></div>
+    <div id="btn-speed-mobile">⚡</div>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <script>
+    // --- VARIÁVEIS GLOBAIS ---
+    const PIX_CODE_MENSAL = "00020126580014BR.GOV.BCB.PIX01364bab479c-481b-462b-8b1b-79e9d1eed36b520400005303986540519.905802BR592566.092.276 NAIRA DA SILVA6009SAO PAULO61080540900062250521es7ntTFmrET2xfnc95y8y63040C47";
+    const PIX_CODE_VITALICIO = "00020126580014BR.GOV.BCB.PIX01364bab479c-481b-462b-8b1b-79e9d1eed36b520400005303986540599.905802BR592566.092.276 NAIRA DA SILVA6009SAO PAULO61080540900062250521teXHzwaic6voRRJc95y8y6304AAF9";
+    const ADMIN_EMAIL = "eriik.eb4@gmail.com";
+    const VIP_CUPON = "14.02";
+
+    let currentUserEmail = ""; 
+    let isLogged = false; let isVIP = false; let isADM = false;
+    let controlCycleIndex = 0; const mobileControlModes = [{ name: '🎮', type: 'joystick' }, { name: '🎮', type: 'touch' }];
+    let isAFK = false; let playerName = ""; let playerTeam = "red"; let playerSkin = "solid";
+    let activeControl = "mouse"; let soundEnabled = true;
+    let customCosmetics = { color: "#00e5ff", color2: "#ff00ff", face: "normal", acc: "none" };
+    const WORLD_SIZE = 5000; const BOT_COUNT = 30;
+    let globalZoom = 1.0; let gameReqId; let hsRecords = []; 
+    let keyBinds = { speed: 'Mouse0', left: 'ArrowLeft', right: 'ArrowRight' };
+    let isRebinding = false;
+    const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
+    const keys = {}; let touchData = { x: window.innerWidth/2, y: window.innerHeight/2 };
+    let joystickAngle = 0; let joystickActive = false; let isBoosting = false;
+    
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d', { alpha: false }); 
+    let width, height; let dpr = 1;
+
+    // --- SISTEMA VIP E LOGIN ---
+    function generateUniqueId() { return 'user_' + Math.random().toString(36).substr(2, 9); }
+
+    function checkLoginStatus() {
+      // Simulação: Se quiser testar o VIP/ADM descomente a debaixo. Para testar Free, gere um ID.
+      currentUserEmail = ADMIN_EMAIL; 
+      isLogged = true; updateUserInterface();
+    }
+
+    function updateUserInterface() {
+      const idDisplay = document.getElementById('user-id-display');
+      if (currentUserEmail.length > 25) { idDisplay.innerText = currentUserEmail.substr(0, 22) + '...'; } 
+      else { idDisplay.innerText = currentUserEmail; }
+      idDisplay.title = currentUserEmail; 
+
+      if (currentUserEmail === ADMIN_EMAIL) { isVIP = true; isADM = true; }
+      updateNickStatusDisplay();
+    }
+
+    function updateNickStatusDisplay() {
+      const statusEl = document.getElementById('nick-status');
+      if (isADM) { statusEl.innerText = "👑 Dono / ADM: Acesso Total"; statusEl.style.color = "#ff5252"; } 
+      else if (isVIP) { statusEl.innerText = "〽️ VIP Vitalício Ativado!"; statusEl.style.color = "#ffeb3b"; } 
+      else { statusEl.innerText = "Status: Jogador Gratuito"; statusEl.style.color = "#aaa"; }
+    }
+
+    let currentPixCodeShowing = "";
+    function buyVIP(plan) {
+      const modal = document.getElementById('pix-modal');
+      const codeDisplay = document.getElementById('pix-code-display');
+      if (plan === 'Mensal') { currentPixCodeShowing = PIX_CODE_MENSAL; } 
+      else if (plan === 'Vitalício') { currentPixCodeShowing = PIX_CODE_VITALICIO; }
+      codeDisplay.innerText = currentPixCodeShowing; modal.style.display = 'flex';
+    }
+    function closePixModal() { document.getElementById('pix-modal').style.display = 'none'; }
+    function copyPixCode() {
+      navigator.clipboard.writeText(currentPixCodeShowing).then(() => {
+          const btn = document.querySelector('.btn-copy-pix'); const originalText = btn.innerText;
+          btn.innerText = "✅ Código Copiado!"; btn.style.background = "#4caf50";
+          setTimeout(() => { btn.innerText = originalText; btn.style.background = "#00bfa5"; }, 2000);
+      });
+    }
+
+    function activateCoupon() {
+      if (isVIP) { alert("Você já possui acesso VIP!"); return; }
+      const input = document.getElementById('coupon-input'); const code = input.value.trim();
+      if (code === VIP_CUPON) {
+          isVIP = true; alert("🎉 PARABÉNS!\nCupom aceito. VIP Vitalício liberado com sucesso!");
+          updateNickStatusDisplay(); input.value = "";
+      } else if (code === "") { alert("Por favor, digite um cupom."); } 
+      else { alert("Cupom inválido ou expirado."); input.value = ""; }
+    }
+
+    window.addEventListener('load', checkLoginStatus);
+
+    function cycleMobileControl() {
+      controlCycleIndex = (controlCycleIndex + 1) % mobileControlModes.length; let mode = mobileControlModes[controlCycleIndex];
+      activeControl = mode.type; let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
+      let mobileControlsElems = document.querySelectorAll('.mobile-only-control');
+      mobileControlsElems.forEach(el => { el.style.display = isMobileDevice ? 'block' : 'none'; });
+      let joyZone = document.getElementById('joystick-zone'); let btnSpeed = document.getElementById('btn-speed-mobile');
+      if(joyZone) joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; 
+      if(btnSpeed) btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
+    }
+
+    function toggleAFK() { isAFK = !isAFK; let btn = document.getElementById('btn-afk'); btn.style.background = isAFK ? "#ff9800" : "rgba(0,0,0,0.8)"; btn.style.color = isAFK ? "#000" : "#ff9800"; }
+    function adjustZoom(amount) { let zoomMin = isVIP ? 0.02 : 0.4; let zoomMax = isVIP ? 20.0 : 2.5; globalZoom += amount; globalZoom = Math.max(zoomMin, Math.min(globalZoom, zoomMax)); document.getElementById('hud-zoom').innerText = Math.round(globalZoom * 100) + '%'; }
+    function tryOpenEditor() { if (!isVIP) { alert("🔒 RECURSO BLOQUEADO!\nA Edição de Skins é exclusiva para VIPs."); return; } openMenu('menu-editor'); }
+    function tryOpenSkins() { if (!isVIP) { alert("🔒 RECURSO BLOQUEADO!\nTexturas Especiais são exclusivas VIP."); return; } openMenu('menu-skins'); }
+    function openMenu(menuId) { if(isRebinding) return; document.querySelectorAll('.modal-box').forEach(b => b.classList.add('hidden-menu')); document.getElementById(menuId).classList.remove('hidden-menu'); }
+    function toggleSound() { soundEnabled = !soundEnabled; document.getElementById('btn-sound').innerText = soundEnabled ? '🔊' : '🔇'; }
+
+    function startRebind(actionId, btnElement) {
+      isRebinding = true; btnElement.innerText = "Aguardando..."; btnElement.style.background = "#ff9800"; btnElement.style.color = "#000";
+      const handler = (e) => {
+        e.preventDefault(); e.stopPropagation(); let keyName = e.type === 'mousedown' ? `Mouse${e.button}` : e.code;
+        keyBinds[actionId] = keyName; btnElement.innerText = `[ ${keyName} ]`; btnElement.style.background = "#333"; btnElement.style.color = "#ffeb3b";
+        isRebinding = false; window.removeEventListener('keydown', handler); window.removeEventListener('mousedown', handler);
+      };
+      window.addEventListener('keydown', handler); window.addEventListener('mousedown', handler);
+    }
+
+    function resizeCanvas() { dpr = window.devicePixelRatio || 1; width = window.innerWidth; height = window.innerHeight; canvas.width = width * dpr; canvas.height = height * dpr; canvas.style.width = width + 'px'; canvas.style.height = height + 'px'; }
+    resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+
+    function playSound(type) { if (!soundEnabled) return; if (type === 'hs') { try { let utterance = new SpeechSynthesisUtterance("Headshot"); utterance.lang = "en-US"; utterance.pitch = 0.1; utterance.rate = 0.7; utterance.volume = 1.0; window.speechSynthesis.speak(utterance); } catch(e) {} } }
+
+    window.addEventListener('contextmenu', e => e.preventDefault());
+    window.addEventListener('mousedown', e => { if(isRebinding || e.target.closest('.modal-box') || e.target.closest('.vip-panel') || e.target.closest('.pix-modal-box')) return; let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = true; keys[key] = true; });
+    window.addEventListener('mouseup', e => { let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = false; keys[key] = false; });
+    window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('keydown', e => { if(isRebinding || document.activeElement.tagName === 'INPUT') return; keys[e.code] = true; if (e.code === keyBinds.speed) isBoosting = true; });
+    window.addEventListener('keyup', e => { if (document.activeElement.tagName === 'INPUT') return; keys[e.code] = false; if (e.code === keyBinds.speed) isBoosting = false; });
+    canvas.addEventListener('touchmove', e => { if (activeControl === 'touch') { touchData.x = e.touches[0].clientX; touchData.y = e.touches[0].clientY; } }, { passive: false });
+
+    const btnSpeed = document.getElementById('btn-speed-mobile');
+    btnSpeed.addEventListener('touchstart', e => { e.preventDefault(); isBoosting = true; }, { passive: false });
+    btnSpeed.addEventListener('touchend', e => { e.preventDefault(); isBoosting = false; });
+    const joyZone = document.getElementById('joystick-zone'); const joyKnob = document.getElementById('joystick-knob'); let joyCenter = { x: 0, y: 0 };
+    joyZone.addEventListener('touchstart', e => { e.preventDefault(); joystickActive = true; let rect = joyZone.getBoundingClientRect(); joyCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 }; updateJoystick(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    joyZone.addEventListener('touchmove', e => { e.preventDefault(); if(joystickActive) updateJoystick(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    joyZone.addEventListener('touchend', () => { joystickActive = false; joyKnob.style.transform = `translate(0px, 0px)`; });
+    function updateJoystick(tx, ty) { let dx = tx - joyCenter.x; let dy = ty - joyCenter.y; joystickAngle = Math.atan2(dy, dx); let dist = Math.min(Math.hypot(dx, dy), 50); joyKnob.style.transform = `translate(${Math.cos(joystickAngle)*dist}px, ${Math.sin(joystickAngle)*dist}px)`; }
+    window.addEventListener('wheel', e => { if(canvas.style.display === 'block') { adjustZoom(e.deltaY * -0.001); } }, { passive: true });
+
+    function startGame(team) {
+      playerName = document.getElementById('username-input').value.trim() || "Jogador";
+      activeControl = document.getElementById('control-select').value; playerSkin = document.getElementById('skin-select').value; playerTeam = team;
+      customCosmetics = { color: document.getElementById('snake-color').value, color2: document.getElementById('snake-color2') ? document.getElementById('snake-color2').value : '#ff00ff', face: document.getElementById('snake-face').value, acc: document.getElementById('snake-acc').value };
+      document.getElementById('start-screen').style.display = 'none'; canvas.style.display = 'block'; document.getElementById('hud').style.display = 'block';
+      let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
+      let mobileControlsElems = document.querySelectorAll('.mobile-only-control');
+      mobileControlsElems.forEach(el => { el.style.display = isMobileDevice ? 'block' : 'none'; });
+      joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
+      hsRecords = []; initGame();
+    }
+    
+    function respawnQuadrant(q) {
+      snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; 
+      player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics);
+      if (q === 1) { player.x = 2500; player.y = 1000; } else if (q === 2) { player.x = 4000; player.y = 1500; } else if (q === 3) { player.x = 1500; player.y = 2500; } else if (q === 4) { player.x = 2500; player.y = 4000; }
+      snakes.push(player);
+    }
+    function respawn() { snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); }
+    function goToMenu() { snakes = snakes.filter(s => s !== player); if(gameReqId) cancelAnimationFrame(gameReqId); gameReqId = null; document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'none'; canvas.style.display = 'none'; document.getElementById('start-screen').style.display = 'flex'; openMenu('menu-main'); }
+
+    // --- OBJETOS 3D DO JOGO (COMIDAS/ORBS) ---
+    // Gráficos super otimizados desenhando orbs de energia brilhantes e projetando sombra, sem utilizar shadowBlur.
+    class Food {
+      constructor(x, y, isDrop = false, glowColor = null) {
+        const colors = ['#f44336', '#4caf50', '#ffeb3b', '#2196f3', '#e91e63', '#ff9800', '#9c27b0', '#00e5ff'];
+        this.x = x || Math.random() * (WORLD_SIZE - 100) + 50; this.y = y || Math.random() * (WORLD_SIZE - 100) + 50;
+        this.size = isDrop ? Math.random() * 8 + 14 : Math.random() * 8 + 8;
+        this.expiresAt = isDrop ? Date.now() + 20000 : Infinity;
+        this.isDrop = isDrop; 
+        this.color = isDrop ? '#ffeb3b' : (glowColor || colors[Math.floor(Math.random() * colors.length)]); 
+      }
+      draw() { 
+        let r = this.size;
+        // 1. Sombra de chão (efeito 3D de flutuação SEM lag)
+        ctx.beginPath(); ctx.arc(this.x + 4, this.y + 4, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fill();
+
+        // 2. Cor Base da Esfera de Energia
+        ctx.beginPath(); ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = this.color; ctx.fill();
+
+        // 3. Brilho Superior/Lateral (Dá volume esférico perfeito 3D)
+        ctx.beginPath(); ctx.arc(this.x - r*0.3, this.y - r*0.3, r*0.4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
+        
+        // 4. Ponto de luz agudo
+        ctx.beginPath(); ctx.arc(this.x - r*0.45, this.y - r*0.45, r*0.15, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
+      }
+    }
+
+    class MultiplierItem {
+      constructor() {
+        this.x = Math.random() * (WORLD_SIZE - 200) + 100; this.y = Math.random() * (WORLD_SIZE - 200) + 100;
+        const rand = Math.random();
+        if (rand > 0.8) { this.mult = 10; this.duration = 10000; this.color = '#ffeb3b'; } 
+        else if (rand > 0.4) { this.mult = 5; this.duration = 15000; this.color = '#ffffff'; } 
+        else { this.mult = 2; this.duration = 20000; this.color = '#ff9800'; } 
+        this.size = 25; this.createdAt = Date.now();
+      }
+      draw() {
+        let timeLeft = Math.max(0, Math.ceil((this.createdAt + this.duration - Date.now()) / 1000));
+        // Sombra Projetada
+        ctx.beginPath(); ctx.arc(this.x + 6, this.y + 6, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fill();
+        // Base Botão Vidro
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(10,10,15,0.9)'; ctx.fill();
+        ctx.strokeStyle = this.color; ctx.lineWidth = 3; ctx.stroke();
+        // Reflexo Vidro Curvado 3D
+        ctx.beginPath(); ctx.arc(this.x, this.y - this.size*0.4, this.size*0.5, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fill();
+        // Texto Central
+        ctx.fillStyle = this.color; ctx.font = "bold 18px 'Teko'"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(`${this.mult}X (${timeLeft}s)`, this.x, this.y);
+      }
+    }
+
+    class PowerUp {
+      constructor(type) {
+        this.type = type; this.x = Math.random() * (WORLD_SIZE - 400) + 200; this.y = Math.random() * (WORLD_SIZE - 400) + 200;
+        this.size = 22; this.createdAt = Date.now();
+        if (type === 'speed') { this.color = '#00e5ff'; this.symbol = '⚡'; this.duration = 20000; } 
+        else if (type === 'magnet') { this.color = '#ff1744'; this.symbol = '🧲'; this.duration = 20000; } 
+        else { this.color = '#d500f9'; this.symbol = '♾️'; this.duration = 15000; }
+      }
+      draw() {
+        let timeLeft = Math.max(0, Math.ceil((this.createdAt + this.duration - Date.now()) / 1000));
+        // Sombra Projetada
+        ctx.beginPath(); ctx.arc(this.x + 5, this.y + 5, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fill();
+        // Base
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(10,10,15,0.9)'; ctx.fill();
+        ctx.strokeStyle = this.color; ctx.lineWidth = 3; ctx.stroke();
+        // Reflexo 3D Cúpula
+        ctx.beginPath(); ctx.arc(this.x, this.y - this.size*0.4, this.size*0.5, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fill();
+        ctx.fillStyle = this.color; ctx.font = "bold 16px 'Segoe UI'"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(`${this.symbol} ${timeLeft}s`, this.x, this.y);
+      }
+    }
+
+    class FloatingText {
+      constructor(x, y, text, color = '#ffeb3b') { this.x = x; this.y = y; this.text = text; this.life = 1.0; this.color = color; }
+      update() { this.y -= 1.0; this.life -= 0.02; }
+      draw() { ctx.globalAlpha = Math.max(0, this.life); ctx.font = "bold 28px 'Teko', Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 5; ctx.strokeStyle = "#000"; ctx.strokeText(this.text, this.x, this.y); ctx.fillStyle = this.color; ctx.fillText(this.text, this.x, this.y); ctx.globalAlpha = 1.0; }
+    }
+
+    class Snake {
+      constructor(name, team, isBot = false, skin = 'solid', cosmetics = null) {
+        this.id = Math.random().toString(36).substr(2, 9);
+        this.x = Math.random() * (WORLD_SIZE - 1000) + 500; this.y = Math.random() * (WORLD_SIZE - 1000) + 500;
+        this.angle = Math.random() * Math.PI * 2; this.speed = 3.0; this.body = []; this.mass = 40; this.name = name; this.team = team; this.isBot = isBot; this.skin = skin; this.kills = 0; this.hs = 0; this.dead = false; this.boosting = false;
+        this.speedBuffTime = 0; this.curveBuffTime = 0; this.magnetBuffTime = 0; this.multBuffTime = 0; this.activeMult = 1;
+        if (!isBot && cosmetics) { this.cosmetics = cosmetics; this.baseColor = cosmetics.color; this.color2 = cosmetics.color2 || '#ffffff'; } 
+        else { this.baseColor = team === 'red' ? '#f44336' : '#2196f3'; this.color2 = team === 'red' ? '#ffeb3b' : '#00e5ff'; let randomFace = ['normal','angry','cute','cat','dog','alien','skull','robot'][Math.floor(Math.random()*8)]; this.cosmetics = { color: this.baseColor, color2: this.color2, face: randomFace, acc: 'none' }; }
+        for(let i=0; i<this.mass; i++) this.body.push({x: this.x, y: this.y});
+      }
+      update() {
+        if (this.dead) return;
+        let currentSpeed = this.speed; let turnSpeed = 0.28;
+        let hasSpeedBuff = Date.now() < this.speedBuffTime; let hasCurveBuff = Date.now() < this.curveBuffTime; let hasMagnetBuff = Date.now() < this.magnetBuffTime;
+        if (hasCurveBuff) turnSpeed = 0.85;
+        this.boosting = (!this.isBot && isBoosting && this.mass > 20);
+        if (this.boosting) { currentSpeed = hasSpeedBuff ? 9.0 : 6.0; if (!hasCurveBuff) turnSpeed = 0.20; this.mass -= 0.25; }
+        if (hasMagnetBuff) { for (let j = 0; j < foods.length; j++) { let f = foods[j]; let dx = this.x - f.x; let dy = this.y - f.y; let distSq = dx*dx + dy*dy; if (distSq < 60000) { f.x += dx * 0.08; f.y += dy * 0.08; } } }
+        if (this.isBot) { if (Math.random() < 0.05) this.angle += (Math.random() - 0.5) * 1.5; } 
+        else {
+          if (isAFK) { this.angle += 0.04; } 
+          else {
+            let targetAngle = this.angle; let diff = 0;
+            if (activeControl === 'mouse') { targetAngle = Math.atan2(mouse.y - height/2, mouse.x - width/2); diff = targetAngle - this.angle; }
+            else if (activeControl === 'touch') { targetAngle = Math.atan2(touchData.y - height/2, touchData.x - width/2); diff = targetAngle - this.angle; }
+            else if (activeControl === 'joystick' && joystickActive) { targetAngle = joystickAngle; diff = targetAngle - this.angle; }
+            else if (activeControl === 'custom') { if (keys[keyBinds.left]) this.angle -= turnSpeed; if (keys[keyBinds.right]) this.angle += turnSpeed; }
+            if (activeControl === 'mouse' || activeControl === 'touch' || (activeControl === 'joystick' && joystickActive)) { while (diff < -Math.PI) diff += Math.PI * 2; while (diff > Math.PI) diff -= Math.PI * 2; this.angle += diff * turnSpeed; }
+          }
+        }
+        this.x += Math.cos(this.angle) * currentSpeed; this.y += Math.sin(this.angle) * currentSpeed;
+        this.body.unshift({x: this.x, y: this.y}); if(this.body.length > Math.min(this.mass * 2, 800)) this.body.pop();
+      }
+      draw() {
+        if (this.dead || this.body.length === 0) return;
+        const radius = 16; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalAlpha = this.skin === 'ghost' ? 0.4 : 1.0;
+        
+        // 0. SOMBRA PROJETADA (Ambient Occlusion ultra rápida)
+        ctx.beginPath(); ctx.moveTo(this.body[0].x + 8, this.body[0].y + 8); 
+        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x + 8, this.body[i].y + 8);
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = radius * 2.6; ctx.stroke();
+
+        // 1. AURA DE EQUIPE (Massa base)
+        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y); 
+        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
+        ctx.strokeStyle = (this.team === 'red') ? 'rgba(255, 82, 82, 0.8)' : 'rgba(68, 138, 255, 0.8)'; ctx.lineWidth = radius * 3.0; ctx.stroke();
+        
+        // 2. CORPO PRINCIPAL E TEXTURA
+        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y); 
+        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
+        if (this.skin === 'gradient' && this.body.length > 5) { let lastIdx = this.body.length - 1; let grad = ctx.createLinearGradient(this.body[0].x, this.body[0].y, this.body[lastIdx].x, this.body[lastIdx].y); grad.addColorStop(0, this.baseColor); grad.addColorStop(1, this.color2); ctx.strokeStyle = grad; } 
+        else { ctx.strokeStyle = this.baseColor; }
+        ctx.lineWidth = radius * 2.2; ctx.stroke();
+        
+        // 3. EFEITOS SKIN
+        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y); 
+        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
+        if (this.skin === 'solid') { ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([4, 12]); ctx.stroke(); ctx.setLineDash([]); } 
+        else if (this.skin === 'zebra') { ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([12, 18]); ctx.stroke(); ctx.setLineDash([]); } 
+        else if (this.skin === 'dots') { ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = radius * 1.5; ctx.setLineDash([0, 25]); ctx.stroke(); ctx.setLineDash([]); }
+        else if (this.skin === 'checkered') { ctx.strokeStyle = this.color2; ctx.lineWidth = radius * 2.2; ctx.setLineDash([15, 15]); ctx.stroke(); ctx.setLineDash([]); }
+        else if (this.skin === 'neon') { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = radius * 0.8; ctx.stroke(); }
+        
+        // 4. REFLEXO 3D DE VOLUME (Luz superior esférica imitando cobra de verdade)
+        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y); 
+        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x - radius*0.35, this.body[i].y - radius*0.35); 
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = radius * 0.8; ctx.stroke();
+        
+        // --- ROSTO ---
+        ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+        let face = this.cosmetics ? this.cosmetics.face : 'normal';
+        let emojiMap = { 'cat': '🐱', 'dog': '🐶', 'pig': '🐷', 'rabbit': '🐰', 'alien': '👽', 'robot': '🤖', 'demon': '👹', 'skull': '💀', 'cool': '😎', 'nerd': '🤓' };
+        if (emojiMap[face]) { ctx.save(); ctx.rotate(Math.PI / 2); ctx.font = "32px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(emojiMap[face], 0, -5); ctx.restore(); } 
+        else {
+          ctx.beginPath(); ctx.arc(0, 0, radius + 2, 0, Math.PI * 2); ctx.fillStyle = this.baseColor; ctx.fill();
+          if (face === 'normal') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(6, -8, 5, 0, Math.PI*2); ctx.arc(6, 8, 5, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(8, -8, 2.5, 0, Math.PI*2); ctx.arc(8, 8, 2.5, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(9, -9, 1, 0, Math.PI*2); ctx.arc(9, 7, 1, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); if (this.boosting) ctx.arc(14, 0, 5, 0, Math.PI*2); else ctx.ellipse(12, 0, 3, 6, 0, 0, Math.PI*2); ctx.fill(); if (Math.random() < 0.05) { ctx.strokeStyle = '#ff1744'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(20, 0); ctx.stroke(); } } 
+          else if (face === 'angry') { ctx.fillStyle = '#000'; ctx.beginPath(); ctx.ellipse(2, -10, 8, 4, Math.PI/6, 0, Math.PI*2); ctx.ellipse(2, 10, 8, 4, -Math.PI/6, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(4, -10, 2, 0, Math.PI*2); ctx.arc(4, 10, 2, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(4, -16); ctx.lineTo(10, -6); ctx.moveTo(4, 16); ctx.lineTo(10, 6); ctx.stroke(); ctx.fillStyle = '#000'; ctx.beginPath(); if(this.boosting) ctx.arc(14, 0, 5, 0, Math.PI*2); else ctx.ellipse(12, 0, 4, 2, 0, 0, Math.PI*2); ctx.fill(); }
+          else if (face === 'cute') { ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(4, -8, 6, 0, Math.PI*2); ctx.arc(4, 8, 6, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(6, -9, 2.5, 0, Math.PI*2); ctx.arc(6, 7, 2.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(8, -6, 1, 0, Math.PI*2); ctx.arc(8, 10, 1, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(12, -2); ctx.quadraticCurveTo(15, 0, 12, 2); ctx.stroke(); }
+          else if (face === 'large') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(4, -9, 8, 0, Math.PI*2); ctx.arc(4, 9, 8, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(7, -9, 4, 0, Math.PI*2); ctx.arc(7, 9, 4, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(8, -10, 1.5, 0, Math.PI*2); ctx.arc(8, 8, 1.5, 0, Math.PI*2); ctx.fill(); }
+          else if (face === 'small') { ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(8, -8, 2, 0, Math.PI*2); ctx.arc(8, 8, 2, 0, Math.PI*2); ctx.fill(); }
+          else if (face === 'closed') { ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(6, -14); ctx.quadraticCurveTo(10, -10, 6, -6); ctx.moveTo(6, 6); ctx.quadraticCurveTo(10, 10, 6, 14); ctx.stroke(); }
+          else if (face === 'crying') { ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(8, -14); ctx.quadraticCurveTo(4, -10, 8, -6); ctx.moveTo(8, 6); ctx.quadraticCurveTo(4, 10, 8, 14); ctx.stroke(); ctx.fillStyle = '#2196f3'; ctx.beginPath(); ctx.ellipse(2, -10, 5, 2.5, Math.PI/4, 0, Math.PI*2); ctx.ellipse(2, 10, 5, 2.5, -Math.PI/4, 0, Math.PI*2); ctx.fill(); }
+        }
+        let acc = this.cosmetics ? this.cosmetics.acc : 'none';
+        if (acc === 'glasses') { ctx.fillStyle = '#111'; ctx.fillRect(0, -14, 10, 28); ctx.fillStyle = '#333'; ctx.fillRect(2, -12, 6, 10); ctx.fillRect(2, 2, 6, 10); }
+        else if (acc === 'fangs') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(12, -6); ctx.lineTo(18, -4); ctx.lineTo(12, -2); ctx.moveTo(12, 2); ctx.lineTo(18, 4); ctx.lineTo(12, 6); ctx.fill(); }
+        else if (acc === 'crown') { ctx.font = '22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👑', -6, 0); }
+        else if (acc === 'mustache') { ctx.fillStyle = '#111'; ctx.beginPath(); ctx.ellipse(10, -6, 6, 2, -Math.PI/6, 0, Math.PI*2); ctx.ellipse(10, 6, 6, 2, Math.PI/6, 0, Math.PI*2); ctx.fill(); }
+        else if (acc === 'halo') { ctx.strokeStyle = 'rgba(255, 215, 0, 0.9)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(-10, 0, 4, 14, 0, 0, Math.PI*2); ctx.stroke(); }
+        else if (acc === 'ears_rabbit') { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#ff8a80'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(-8, -12, 4, 16, -Math.PI/4, 0, Math.PI*2); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.ellipse(-8, 12, 4, 16, Math.PI/4, 0, Math.PI*2); ctx.fill(); ctx.stroke(); }
+        ctx.restore(); ctx.globalAlpha = 1.0;
+        
+        let buffY = this.y - radius - 25;
+        if (Date.now() < this.speedBuffTime) { ctx.fillStyle = '#00e5ff'; ctx.fillText('⚡', this.x - 15, buffY); }
+        if (Date.now() < this.curveBuffTime) { ctx.fillStyle = '#d500f9'; ctx.fillText('♾️', this.x, buffY); }
+        if (Date.now() < this.magnetBuffTime) { ctx.fillStyle = '#ff1744'; ctx.fillText('🧲', this.x + 15, buffY); }
+        
+        // --- NOME DOS JOGADORES (Nomes Dourados para VIPs e Fake Shadow p/ Profundidade) ---
+        let displayName = this.name;
+        if (!this.isBot && isVIP) { displayName += (isADM ? " 👑" : " 〽️"); }
+
+        ctx.font = "bold 15px 'Segoe UI'"; ctx.textAlign = "center";
+        
+        // Sombra de Texto para efeito de flutuação (muito leve comparado a shadowBlur)
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.fillText(displayName, this.x + 2, this.y - radius - 14);
+
+        // Preenchimento de Cor Real
+        if (!this.isBot && isVIP) {
+            ctx.fillStyle = "#ffeb3b"; // DOURADO PARA TODOS OS VIPS E ADMs!
+        } else {
+            ctx.fillStyle = "white"; // Jogadores normais
+        }
+        ctx.fillText(displayName, this.x, this.y - radius - 15);
+      }
+      die(cause) { this.dead = true; if (cause !== 'redline') { let dropCount = Math.min(this.body.length, 50); for (let k = 0; k < dropCount; k += 2) { let f = new Food(this.body[k].x + (Math.random()-0.5)*25, this.body[k].y + (Math.random()-0.5)*25, true, '#ffeb3b'); f.size = 22; foods.push(f); } } if (!this.isBot) { document.getElementById('hud').style.display = 'none'; document.getElementById('death-screen').style.display = 'flex'; document.getElementById('death-reason').innerText = cause === 'redline' ? "BATEU NA REDLINE!" : "VOCÊ FOI ELIMINADO!"; let vipModal = document.getElementById('vip-spawn-modal'); if (vipModal) vipModal.style.display = isVIP ? 'block' : 'none'; } }
+    }
+
+    let player, snakes = [], foods = [], multipliers = [], powerups = [], texts = [];
+    let lastSpeedSpawn = Date.now(); let lastCurveSpawn = Date.now(); let lastMagnetSpawn = Date.now();
+
+    function drawGridAndRedline(camX, camY) { 
+      // Fundo super otimizado que parece mais profundo adicionando multi-strokestyle sútil
+      ctx.fillStyle = '#1e2124'; ctx.fillRect(camX - (width/2)/globalZoom, camY - (height/2)/globalZoom, width/globalZoom, height/globalZoom); 
+      
+      const hexSize = 100; const hexHeight = hexSize * Math.sqrt(3); 
+      const startX = Math.floor((camX - (width/2)/globalZoom) / (hexSize * 1.5)) - 1; const startY = Math.floor((camY - (height/2)/globalZoom) / hexHeight) - 1; 
+      const endX = startX + (width/globalZoom) / hexSize + 2; const endY = startY + (height/globalZoom) / hexHeight + 2; 
+      
+      ctx.beginPath(); 
+      for (let i = startX; i < endX; i++) { 
+        for (let j = startY; j < endY; j++) { 
+          let x = i * hexSize * 1.5; let y = j * hexHeight; if (i % 2 !== 0) y += hexHeight / 2; 
+          ctx.moveTo(x + hexSize, y); for (let k = 1; k <= 6; k++) ctx.lineTo(x + hexSize * Math.cos(k * Math.PI / 3), y + hexSize * Math.sin(k * Math.PI / 3)); 
+        } 
+      } 
+      // Efeito de neon sci-fi 3D no chão
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.02)"; ctx.lineWidth = 4; ctx.stroke();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)"; ctx.lineWidth = 1; ctx.stroke(); 
+
+      ctx.strokeStyle = "rgba(255, 0, 0, 0.8)"; ctx.lineWidth = 20; ctx.strokeRect(0, 0, WORLD_SIZE, WORLD_SIZE); 
+      ctx.strokeStyle = "rgba(255, 0, 0, 0.1)"; ctx.lineWidth = 80; ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80); 
+    }
+    
+    function initGame() { snakes = []; foods = []; multipliers = []; powerups = []; texts = []; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); const skinOpts = ['solid', 'neon', 'zebra', 'dots', 'ghost']; for(let i=0; i<BOT_COUNT; i++) snakes.push(new Snake(`BOT ${i+1}`, i % 2 === 0 ? 'red' : 'blue', true, skinOpts[Math.floor(Math.random()*skinOpts.length)])); for(let i=0; i<450; i++) foods.push(new Food()); if(gameReqId) cancelAnimationFrame(gameReqId); gameLoop(); }
+    function isVisible(x, y, padding, camX, camY) { return x > camX - (width/2)/globalZoom - padding && x < camX + (width/2)/globalZoom + padding && y > camY - (height/2)/globalZoom - padding && y < camY + (height/2)/globalZoom + padding; }
+    
+    function registerKill(killer, victimX, victimY) { 
+      let cx = WORLD_SIZE / 2; let cy = WORLD_SIZE / 2; let angleToCenter = Math.atan2(cy - killer.y, cx - killer.x); let diff = Math.abs(killer.angle - angleToCenter); while (diff > Math.PI) diff -= Math.PI * 2; diff = Math.abs(diff); 
+      if (diff <= Math.PI / 4) { 
+        killer.hs++; killer.kills++; texts.push(new FloatingText(victimX, victimY, `${killer.name} - HEADSHOT!`, "#ffeb3b")); if (killer === player) playSound('hs'); 
+        if (isVIP || !killer.isBot) { let banner = document.getElementById('vip-broadcast-banner'); if (banner) { banner.innerHTML = `🌟 <b>${killer.name}</b> ELIMINOU O ALVO COM UM HEADSHOT! 🌟`; setTimeout(() => { if(banner) banner.innerHTML = ""; }, 4000); } } 
+        let rec = hsRecords.find(r => r.id === killer.id); if (rec) rec.hs = killer.hs; else hsRecords.push({ id: killer.id, name: killer.name, team: killer.team, hs: killer.hs }); hsRecords.sort((a,b) => b.hs - a.hs); hsRecords = hsRecords.slice(0, 5); 
+      } else { 
+        killer.kills++; if (!killer.isBot) texts.push(new FloatingText(victimX, victimY, "KILL!", "#ffffff")); 
+      } 
+    }
+
+    function gameLoop() {
+      let camX = player.dead ? WORLD_SIZE/2 : player.x; let camY = player.dead ? WORLD_SIZE/2 : player.y;
+      ctx.save(); ctx.scale(dpr, dpr); ctx.translate(width/2, height/2); ctx.scale(globalZoom, globalZoom); ctx.translate(-camX, -camY);
+      
+      drawGridAndRedline(camX, camY);
+      
+      if (Math.random() < 0.015 && multipliers.length < 20) multipliers.push(new MultiplierItem());
+      if (Date.now() - lastSpeedSpawn > 10000) { powerups.push(new PowerUp('speed')); lastSpeedSpawn = Date.now(); }
+      if (Date.now() - lastCurveSpawn > 18000) { powerups.push(new PowerUp('curve')); lastCurveSpawn = Date.now(); }
+      if (Date.now() - lastMagnetSpawn > 25000) { powerups.push(new PowerUp('magnet')); lastMagnetSpawn = Date.now(); }
+      
+      for (let i = foods.length - 1; i >= 0; i--) { if (Date.now() > foods[i].expiresAt) { foods.splice(i, 1); continue; } if (isVisible(foods[i].x, foods[i].y, 30, camX, camY)) foods[i].draw(); }
+      for (let i = multipliers.length - 1; i >= 0; i--) { if (Date.now() > multipliers[i].createdAt + multipliers[i].duration) { multipliers.splice(i, 1); continue; } if (isVisible(multipliers[i].x, multipliers[i].y, 30, camX, camY)) multipliers[i].draw(); }
+      for (let i = powerups.length - 1; i >= 0; i--) { if (Date.now() > powerups[i].createdAt + powerups[i].duration) { powerups.splice(i, 1); continue; } if (isVisible(powerups[i].x, powerups[i].y, 30, camX, camY)) powerups[i].draw(); }
+      
+      let totalBots = snakes.filter(s => s.isBot).length; if (totalBots < BOT_COUNT) { let skinOpts = ['solid', 'neon', 'zebra', 'dots', 'ghost']; snakes.push(new Snake(`Bot_${Math.floor(Math.random()*900)+100}`, Math.random() > 0.5 ? 'red' : 'blue', true, skinOpts[Math.floor(Math.random()*skinOpts.length)])); }
+      
+      for(let i = snakes.length - 1; i >= 0; i--) {
+        let s = snakes[i]; if (s.dead) { if(s.isBot) { snakes.splice(i, 1); snakes.push(new Snake(`Bot Reborn`, Math.random()>0.5?'red':'blue', true)); } continue; }
+        s.update(); if (s.x < 0 || s.x > WORLD_SIZE || s.y < 0 || s.y > WORLD_SIZE) { s.die('redline'); continue; }
+        for (let j = foods.length - 1; j >= 0; j--) { let dx = foods[j].x - s.x; let dy = foods[j].y - s.y; if (dx*dx + dy*dy < 784) { s.mass += 1.5; foods.splice(j, 1); foods.push(new Food()); } }
+        for (let j = multipliers.length - 1; j >= 0; j--) { let m = multipliers[j]; let dx = m.x - s.x; let dy = m.y - s.y; if (dx*dx + dy*dy < 1225) { s.mass *= m.mult; s.multBuffTime = Date.now() + m.duration; s.activeMult = m.mult; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `${m.mult}X (${m.duration/1000}s)!`, m.color)); multipliers.splice(j, 1); } }
+        for (let j = powerups.length - 1; j >= 0; j--) { let p = powerups[j]; let dx = p.x - s.x; let dy = p.y - s.y; if (dx*dx + dy*dy < 1225) { if(p.type === 'speed') { s.speedBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `SPEED (${p.duration/1000}s)!`, "#00e5ff")); } else if(p.type === 'curve') { s.curveBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `8 INFINITO (${p.duration/1000}s)!`, "#d500f9")); } else if(p.type === 'magnet') { s.magnetBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `ÍMÃ (${p.duration/1000}s)!`, "#ff1744")); } powerups.splice(j, 1); } }
+        
+        snakes.forEach(enemy => { if (s === enemy || enemy.dead || s.dead || s.team === enemy.team) return; let step = Math.max(4, Math.floor(enemy.body.length / 50)); for (let k = 0; k < enemy.body.length; k += step) { let dx = s.x - enemy.body[k].x; let dy = s.y - enemy.body[k].y; if (dx*dx + dy*dy < 484) { if (k === 0) { if (s.mass < enemy.mass) { s.die('player'); registerKill(enemy, s.x, s.y); } else { enemy.die('player'); registerKill(s, enemy.x, enemy.y); } } else { s.die('player'); enemy.kills++; } break; } } });
+        
+        if (isVisible(s.x, s.y, 1000, camX, camY)) s.draw();
+      }
+      
+      texts.forEach((t, i) => { t.update(); t.draw(); if(t.life<=0) texts.splice(i, 1); }); ctx.restore(); 
+      
+      if (!player.dead) {
+        document.getElementById('hud-kills').innerText = player.kills; document.getElementById('hud-hs').innerText = player.hs;
+        let buffBanner = document.getElementById('player-buff-timer-banner');
+        if (buffBanner) { let now = Date.now(); let buffText = ""; if (player.speedBuffTime > now) buffText += `⚡ ${Math.ceil((player.speedBuffTime - now) / 1000)}s `; if (player.curveBuffTime > now) buffText += `♾️ ${Math.ceil((player.curveBuffTime - now) / 1000)}s `; if (player.magnetBuffTime > now) buffText += `🧲 ${Math.ceil((player.magnetBuffTime - now) / 1000)}s `; if (player.multBuffTime > now) buffText += `⭐ ${player.activeMult}X ${Math.ceil((player.multBuffTime - now) / 1000)}s `; buffBanner.innerText = buffText; }
+        
+        let radarHTML = ''; snakes.forEach(s => { if(!s.dead && s !== player) { let rx = ((s.x / WORLD_SIZE) * 120); let ry = ((s.y / WORLD_SIZE) * 120); let dSize = Math.max(5, Math.min(20, s.mass / 10)); radarHTML += `<div style="position:absolute; top:${ry}px; left:${rx}px; width:${dSize}px; height:${dSize}px; background:rgba(255, 0, 0, 0.5); border-radius:50%; transform:translate(-50%,-50%);"></div>`; } }); let px = ((player.x / WORLD_SIZE) * 120); let py = ((player.y / WORLD_SIZE) * 120); radarHTML += `<div style="position:absolute; top:${py}px; left:${px}px; width:8px; height:8px; background:#00ff00; border-radius:50%; box-shadow:0 0 8px #00ff00; transform:translate(-50%,-50%); z-index:10;"></div>`; document.getElementById('radar-entities').innerHTML = radarHTML;
+        document.getElementById('my-hs-display').innerHTML = `<span style="color:${player.team==='red'?'#ff5252':'#448aff'}">${player.name}</span>: ${player.hs} HS`;
+      } else { document.getElementById('my-hs-display').innerHTML = ""; let buffBanner = document.getElementById('player-buff-timer-banner'); if (buffBanner) buffBanner.innerText = ""; }
+      
+      if (hsRecords.length > 0) document.getElementById('hs-record-list').innerHTML = hsRecords.map((r, idx) => `<div style="display:flex; justify-content:space-between; width: 170px; margin-bottom: 2px;"><span>${idx+1}. <span style="color:${r.team==='red'?'#ff5252':'#448aff'}">${r.name}</span></span><span style="color:#ffeb3b; font-weight:bold;">${r.hs}</span></div>`).join('');
+      let topPlayers = [...snakes].filter(s => !s.dead).sort((a,b) => b.mass - a.mass).slice(0, 10); document.getElementById('global-leaderboard').innerHTML = topPlayers.map((s, idx) => `<div class="lb-row"><span>${idx+1}. <span style="color: ${s.cosmetics?s.cosmetics.color:(s.team==='red'?'#ff5252':'#448aff')}">${s.name}</span></span><span>${Math.floor(s.mass)}</span></div>`).join('');
+      
+      if(canvas.style.display === 'block') gameReqId = requestAnimationFrame(gameLoop);
+    }
+  </script>
+</body>
+</html>
