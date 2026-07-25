@@ -19,8 +19,7 @@
     .overlay-screen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: radial-gradient(circle at center, rgba(20,25,30,0.95) 0%, rgba(5,10,15,0.98) 100%);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; 
-      z-index: 99999; overflow-y: auto; overflow-x: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; overflow-y: auto; overflow-x: hidden;
     }
     
     .snake-art-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; pointer-events: none; }
@@ -91,16 +90,6 @@
     .btn-keybind { background: #333; border: 1px solid #555; padding: 8px 15px; color: #ffeb3b; border-radius: 5px; cursor: pointer; min-width: 120px; font-weight: bold; }
     .btn-keybind:hover { background: #444; border-color: #ffeb3b; }
 
-    /* Responsividade para Celulares (Mostra Loja VIP corretamente) */
-    @media (max-width: 800px), (max-height: 850px) {
-      .overlay-screen { justify-content: flex-start; padding-top: 80px; padding-bottom: 40px; }
-      .vip-panel { position: relative; bottom: auto; left: auto; margin-top: 20px; width: 90%; max-width: 440px; }
-      .logo { font-size: 60px; margin-bottom: 15px; }
-      .modal-box { width: 90%; max-width: 440px; padding: 20px; }
-      .top-right-controls { top: 10px; right: 10px; }
-      .btn-icon { width: 45px; height: 45px; font-size: 20px; }
-    }
-
     /* Modal de Pagamento PIX */
     .pix-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100000; backdrop-filter: blur(5px); }
     .pix-modal-box { background: #fff; color: #000; width: 90%; max-width: 400px; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
@@ -137,13 +126,31 @@
     .lb-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 5px; text-shadow: 1px 1px 2px #000; font-family: 'Segoe UI', sans-serif; }
     .lb-row span:nth-child(2) { color: #ccc; font-weight: bold; }
 
-    /* CONTROLES MOBILE INVERTIDOS */
+    /* CONTROLES MOBILE INVERTIDOS E OTIMIZADOS */
     #btn-speed-mobile { position: absolute; bottom: 40px; right: 40px; width: 100px; height: 100px; background: rgba(255, 82, 82, 0.2); border: 2px solid rgba(255,82,82,0.8); border-radius: 50%; font-size: 40px; display: none; justify-content: center; align-items: center; z-index: 50; pointer-events: auto; text-shadow: 0 0 10px #fff; box-shadow: 0 0 15px rgba(255,82,82,0.3); }
     #btn-speed-mobile:active { background: rgba(255, 82, 82, 0.7); transform: scale(0.95); }
     
     #joystick-zone { position: absolute; bottom: 40px; left: 40px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; display: none; pointer-events: auto; z-index: 50; }
     #joystick-knob { position: absolute; top: 50px; left: 50px; width: 50px; height: 50px; background: rgba(68, 138, 255, 0.6); border-radius: 50%; box-shadow: 0 0 15px rgba(68,138,255,0.5); }
     
+    /* RECONHECIMENTO DE MOBILE - ESCALA E ORGANIZAÇÃO DOS ELEMENTOS */
+    @media (max-width: 900px), (max-height: 600px) {
+      .overlay-screen { justify-content: flex-start; padding-top: 80px; padding-bottom: 40px; }
+      .vip-panel { position: relative; bottom: auto; left: auto; margin-top: 20px; width: 90%; max-width: 440px; }
+      .logo { font-size: 60px; margin-bottom: 15px; }
+      .modal-box { width: 90%; max-width: 440px; padding: 20px; }
+      .top-right-controls { top: 10px; right: 10px; }
+      .btn-icon { width: 45px; height: 45px; font-size: 20px; }
+      
+      .left-panel { transform: scale(0.65); transform-origin: top left; }
+      .right-panel { transform: scale(0.65); transform-origin: top right; }
+      #top-center-hud { transform: translateX(-50%) scale(0.8); transform-origin: top center; }
+      
+      #joystick-zone { width: 110px; height: 110px; bottom: 25px; left: 25px; }
+      #joystick-knob { width: 40px; height: 40px; top: 35px; left: 35px; }
+      #btn-speed-mobile { width: 80px; height: 80px; bottom: 25px; right: 25px; font-size: 30px; }
+    }
+
     #death-screen { display: none; z-index: 99999; }
   </style>
 </head>
@@ -154,7 +161,7 @@
     <div class="pix-modal-box">
       <button class="btn-close-pix" onclick="closePixModal()">×</button>
       <div class="pix-header">
-        <svg viewBox="0 0 512 512"><path d="M242.4 20.4c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7L481.6 142.1c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L254.1 292.3c-1.8 1.1-3.8 1.7-5.8 1.7s-4.1-.6-5.8-1.7L12.4 162.2c-1.8-1.1-3.3-2.6-4.3-4.3S6.4 154.1 6.4 152.1s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L242.4 20.4zM161.7 201l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm116 116l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm-207.7 22.1c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l227.6 130c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L12.4 481.6c-1.8 1.1-3.3 2.6-4.3 4.3S6.4 489.7 6.4 491.7s.6 4.1 1.7 5.8s2.6-3.3 4.3 4.3L4.1 361.9c-1.8-1.1-3.3-2.6-4.3-4.3S-1.6 353.8-1.6 351.8s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L270 201.2 161.7 201l-111.7 63.8zm218.1 124.6l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7L314 316.5c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zM499.6 361.9c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L272 512l-108.3-61.9L272 386.3l227.6-130c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l111.7-63.8 108.3 61.9z"/></svg>
+        <svg viewBox="0 0 512 512"><path d="M242.4 20.4c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7L481.6 142.1c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L254.1 292.3c-1.8 1.1-3.8 1.7-5.8 1.7s-4.1-.6-5.8-1.7L12.4 162.2c-1.8-1.1-3.3-2.6-4.3-4.3S6.4 154.1 6.4 152.1s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L242.4 20.4zM161.7 201l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm116 116l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm-207.7 22.1c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l227.6 130c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L12.4 481.6c-1.8 1.1-3.3 2.6-4.3 4.3S6.4 489.7 6.4 491.7s.6 4.1 1.7 5.8s2.6 3.3 4.3 4.3L4.1 361.9c-1.8-1.1-3.3-2.6-4.3-4.3S-1.6 353.8-1.6 351.8s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L270 201.2 161.7 201l-111.7 63.8zm218.1 124.6l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7L314 316.5c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zM499.6 361.9c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L272 512l-108.3-61.9L272 386.3l227.6-130c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l111.7-63.8 108.3 61.9z"/></svg>
         Pagamento via PIX
       </div>
       <p class="pix-instruction">Clique abaixo para copiar o código "Copia e Cola" e pague no app do seu banco.</p>
@@ -204,14 +211,12 @@
     <!-- MENU PRINCIPAL -->
     <div class="modal-box" id="menu-main">
       
-      <!-- CAMPO DE EMAIL (Obrigatório) + BOTÃO DESLOGAR -->
       <div style="font-size: 13px; color:#aaa; margin-bottom: 5px; text-align: left;">Conta / E-mail (Obrigatório):</div>
       <div style="display: flex; gap: 8px; margin-bottom: 10px;">
         <input type="email" id="email-input" placeholder="✉️ Digite seu E-mail" oninput="checkEmailLive()" style="margin: 0;">
         <button id="btn-logout" class="btn-action btn-red" style="margin: 0; padding: 0 15px; width: auto; font-size: 14px; display: none;" onclick="logout()" title="Sair da Conta">Sair</button>
       </div>
 
-      <!-- CAMPO DE NICKNAME -->
       <div style="display: flex; flex-direction: column; text-align: left; margin-bottom: 5px;">
         <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Seu Nickname:</div>
         <input type="text" id="username-input" placeholder="Nome de Jogador" maxlength="15" disabled>
@@ -345,6 +350,7 @@
     <div id="player-buff-timer-banner" style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); font-family: 'Teko', sans-serif; font-size: 28px; color: #00e5ff; text-shadow: 2px 2px 6px #000; text-align: center; pointer-events: none; z-index: 100;"></div>
 
     <div id="top-center-hud" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 50; pointer-events: auto;">
+      <button onclick="confirmAndGoToMenu()" style="background: rgba(0,0,0,0.8); border: 2px solid #e0e0e0; color: #fff; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;" title="Sair da Partida e Voltar ao Início">🏠</button>
       <button onclick="toggleAFK()" id="btn-afk" style="background: rgba(0,0,0,0.8); border: 2px solid #ff9800; color: #ff9800; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">🌀</button>
       <button class="mobile-only-control" onclick="adjustZoom(0.3)" style="background: rgba(0,0,0,0.8); border: 2px solid #4caf50; color: #4caf50; padding: 8px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🔍+</button>
       <button class="mobile-only-control" onclick="adjustZoom(-0.3)" style="background: rgba(0,0,0,0.8); border: 2px solid #f44336; color: #f44336; padding: 8px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🔍-</button>
@@ -398,13 +404,11 @@
   <canvas id="gameCanvas"></canvas>
 
   <script>
-    // --- VARIÁVEIS GLOBAIS ---
     const PIX_CODE_MENSAL = "00020126580014BR.GOV.BCB.PIX01364bab479c-481b-462b-8b1b-79e9d1eed36b520400005303986540519.905802BR592566.092.276 NAIRA DA SILVA6009SAO PAULO61080540900062250521es7ntTFmrET2xfnc95y8y63040C47";
     const PIX_CODE_VITALICIO = "00020126580014BR.GOV.BCB.PIX01364bab479c-481b-462b-8b1b-79e9d1eed36b520400005303986540599.905802BR592566.092.276 NAIRA DA SILVA6009SAO PAULO61080540900062250521teXHzwaic6voRRJc95y8y6304AAF9";
     const ADMIN_EMAIL = "eriik.eb4@gmail.com";
     const VIP_CUPON = "14.02";
 
-    // Controles de Login e Permissões
     let playerUniqueId = ""; 
     let isVIP = false; let isADM = false;
     let hasSetNick = false; 
@@ -412,9 +416,11 @@
 
     let controlCycleIndex = 0; const mobileControlModes = [{ name: '🎮', type: 'joystick' }, { name: '🎮', type: 'touch' }];
     let isAFK = false; let playerName = ""; let playerTeam = "red"; let playerSkin = "solid";
-    let activeControl = "mouse"; let soundEnabled = true;
+    let activeControl = "joystick"; let soundEnabled = true;
     let customCosmetics = { color: "#00e5ff", color2: "#ff00ff", face: "normal", acc: "none" };
-    const WORLD_SIZE = 5000; const BOT_COUNT = 30;
+    
+    const WORLD_SIZE = 10000; const BOT_COUNT = 10;
+    
     let globalZoom = 1.0; let gameReqId; let hsRecords = []; 
     let keyBinds = { speed: 'Mouse0', left: 'ArrowLeft', right: 'ArrowRight' };
     let isRebinding = false;
@@ -427,7 +433,6 @@
     const ctx = canvas.getContext('2d', { alpha: false }); 
     let width, height; let dpr = 1;
 
-    // --- FUNÇÃO TELA CHEIA ---
     function toggleFullScreen() {
       let elem = document.documentElement;
       if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
@@ -443,7 +448,6 @@
       }
     }
 
-    // --- SISTEMA DE E-MAIL E NICKNAME AO VIVO (COM LOCALSTORAGE) ---
     function checkEmailLive() {
         const email = document.getElementById('email-input').value.trim().toLowerCase();
         const statusEl = document.getElementById('nick-status');
@@ -452,8 +456,7 @@
         
         let isValidEmail = email.includes('@') && email.length > 5;
         
-        // Exibe o botão de deslogar se a conta estiver "Trancada" no sistema (localStorage)
-        if (localStorage.getItem('savedEmail') === email) {
+        if (localStorage.getItem('savedEmail') === email && email !== "") {
             btnLogout.style.display = 'block';
             document.getElementById('email-input').disabled = true;
         } else {
@@ -490,7 +493,6 @@
         }
     }
 
-    // Função de Deslogar
     function logout() {
         localStorage.removeItem('savedEmail');
         localStorage.removeItem('savedNick');
@@ -501,11 +503,7 @@
         document.getElementById('btn-logout').style.display = 'none';
         document.getElementById('username-input').value = "";
         
-        isVIP = false;
-        isADM = false;
-        hasSetNick = false;
-        savedNick = "";
-        
+        isVIP = false; isADM = false; hasSetNick = false; savedNick = "";
         checkEmailLive();
     }
 
@@ -518,13 +516,13 @@
             document.getElementById('email-input').value = storedEmail;
             if (storedNick) {
                 document.getElementById('username-input').value = storedNick;
-                savedNick = storedNick;
-                hasSetNick = true;
+                savedNick = storedNick; hasSetNick = true;
             }
-            if (storedVIP === "true") {
-                isVIP = true;
-            }
+            if (storedVIP === "true") { isVIP = true; }
         }
+        
+        let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
+        if (isMobileDevice) { activeControl = "joystick"; }
         checkEmailLive(); 
     });
 
@@ -549,11 +547,9 @@
       if (isVIP) { alert("Você já possui acesso VIP!"); return; }
       const input = document.getElementById('coupon-input'); const code = input.value.trim();
       if (code === VIP_CUPON) {
-          isVIP = true; 
-          localStorage.setItem('savedVIP', "true"); // Salva o VIP na memória
+          isVIP = true; localStorage.setItem('savedVIP', "true");
           alert("🎉 PARABÉNS!\nCupom aceito. VIP Vitalício liberado com sucesso!");
-          checkEmailLive(); 
-          input.value = "";
+          checkEmailLive(); input.value = "";
       } else if (code === "") { alert("Por favor, digite um cupom."); } 
       else { alert("Cupom inválido ou expirado."); input.value = ""; }
     }
@@ -601,11 +597,20 @@
     const btnSpeed = document.getElementById('btn-speed-mobile');
     btnSpeed.addEventListener('touchstart', e => { e.preventDefault(); isBoosting = true; }, { passive: false });
     btnSpeed.addEventListener('touchend', e => { e.preventDefault(); isBoosting = false; });
+    
     const joyZone = document.getElementById('joystick-zone'); const joyKnob = document.getElementById('joystick-knob'); let joyCenter = { x: 0, y: 0 };
     joyZone.addEventListener('touchstart', e => { e.preventDefault(); joystickActive = true; let rect = joyZone.getBoundingClientRect(); joyCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 }; updateJoystick(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
     joyZone.addEventListener('touchmove', e => { e.preventDefault(); if(joystickActive) updateJoystick(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
     joyZone.addEventListener('touchend', () => { joystickActive = false; joyKnob.style.transform = `translate(0px, 0px)`; });
-    function updateJoystick(tx, ty) { let dx = tx - joyCenter.x; let dy = ty - joyCenter.y; joystickAngle = Math.atan2(dy, dx); let dist = Math.min(Math.hypot(dx, dy), 50); joyKnob.style.transform = `translate(${Math.cos(joystickAngle)*dist}px, ${Math.sin(joystickAngle)*dist}px)`; }
+    
+    function updateJoystick(tx, ty) { 
+        let dx = tx - joyCenter.x; let dy = ty - joyCenter.y; 
+        joystickAngle = Math.atan2(dy, dx); 
+        let maxDist = joyZone.offsetWidth / 2 - joyKnob.offsetWidth / 2;
+        let dist = Math.min(Math.hypot(dx, dy), maxDist); 
+        joyKnob.style.transform = `translate(${Math.cos(joystickAngle)*dist}px, ${Math.sin(joystickAngle)*dist}px)`; 
+    }
+    
     window.addEventListener('wheel', e => { if(canvas.style.display === 'block') { adjustZoom(e.deltaY * -0.001); } }, { passive: true });
 
     function startGame(team) {
@@ -621,8 +626,7 @@
       if (typedNick === "") typedNick = "Jogador";
 
       if (!hasSetNick) {
-          savedNick = typedNick;
-          hasSetNick = true; 
+          savedNick = typedNick; hasSetNick = true; 
       } else if (isVIP) {
           savedNick = typedNick; 
       } else {
@@ -631,41 +635,47 @@
       
       playerName = savedNick;
 
-      // SALVANDO O LOGIN NO NAVEGADOR
       if (isValidEmail) {
           localStorage.setItem('savedEmail', emailDigitado);
           localStorage.setItem('savedNick', savedNick);
           if (isVIP) localStorage.setItem('savedVIP', "true");
-          
           document.getElementById('email-input').disabled = true;
           document.getElementById('btn-logout').style.display = 'block';
       }
 
-      if (emailDigitado === ADMIN_EMAIL) {
-          playerUniqueId = "ADM_OWNER";
-      } else if (emailDigitado !== "") {
-          if (!playerUniqueId) {
-              playerUniqueId = "ID-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-          }
-      }
+      if (emailDigitado === ADMIN_EMAIL) { playerUniqueId = "ADM_OWNER"; } 
+      else if (emailDigitado !== "") { if (!playerUniqueId) { playerUniqueId = "ID-" + Math.random().toString(36).substr(2, 6).toUpperCase(); } }
 
       activeControl = document.getElementById('control-select').value; playerSkin = document.getElementById('skin-select').value; playerTeam = team;
       customCosmetics = { color: document.getElementById('snake-color').value, color2: document.getElementById('snake-color2') ? document.getElementById('snake-color2').value : '#ff00ff', face: document.getElementById('snake-face').value, acc: document.getElementById('snake-acc').value };
       
       document.getElementById('start-screen').style.display = 'none'; canvas.style.display = 'block'; document.getElementById('hud').style.display = 'block';
+      
       let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
       let mobileControlsElems = document.querySelectorAll('.mobile-only-control');
       mobileControlsElems.forEach(el => { el.style.display = isMobileDevice ? 'block' : 'none'; });
-      joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
+      
+      joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; 
+      btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
       
       checkEmailLive(); 
       hsRecords = []; initGame();
+    }
+
+    function confirmAndGoToMenu() {
+        if (confirm("Deseja sair da partida e voltar ao Início?")) {
+            if (player && !player.dead) { player.die('quit'); }
+            goToMenu();
+        }
     }
     
     function respawnQuadrant(q) {
       snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; 
       player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics);
-      if (q === 1) { player.x = 2500; player.y = 1000; } else if (q === 2) { player.x = 4000; player.y = 1500; } else if (q === 3) { player.x = 1500; player.y = 2500; } else if (q === 4) { player.x = 2500; player.y = 4000; }
+      if (q === 1) { player.x = WORLD_SIZE/2; player.y = WORLD_SIZE/4; } 
+      else if (q === 2) { player.x = WORLD_SIZE*0.75; player.y = WORLD_SIZE/2; } 
+      else if (q === 3) { player.x = WORLD_SIZE/4; player.y = WORLD_SIZE/2; } 
+      else if (q === 4) { player.x = WORLD_SIZE/2; player.y = WORLD_SIZE*0.75; }
       snakes.push(player);
     }
     function respawn() { snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); }
@@ -679,18 +689,15 @@
         this.x = x || Math.random() * (WORLD_SIZE - 100) + 50; this.y = y || Math.random() * (WORLD_SIZE - 100) + 50;
         this.sprite = sprites[Math.floor(Math.random() * sprites.length)];
         this.size = isDrop ? Math.random() * 10 + 20 : Math.random() * 15 + 15;
-        this.expiresAt = isDrop ? Date.now() + 20000 : Infinity;
+        this.expiresAt = isDrop ? Date.now() + 50000 : Infinity; // 50 segundos de duração
         this.isDrop = isDrop; this.glowColor = glowColor; 
       }
       draw() { 
         if (this.isDrop && this.glowColor) {
-          ctx.globalAlpha = 0.4;
-          ctx.fillStyle = this.glowColor;
+          ctx.globalAlpha = 0.4; ctx.fillStyle = this.glowColor;
           ctx.beginPath(); ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2); ctx.fill();
           ctx.globalAlpha = 0.9; 
-        } else if (this.isDrop) {
-          ctx.globalAlpha = 0.9;
-        }
+        } else if (this.isDrop) { ctx.globalAlpha = 0.9; }
         ctx.font = `${this.size}px Arial`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(this.sprite, this.x, this.y); 
         ctx.globalAlpha = 1.0; 
       }
@@ -838,7 +845,7 @@
         if (!this.isBot && isVIP) { ctx.fillStyle = "#ffeb3b"; } else { ctx.fillStyle = "white"; }
         ctx.fillText(displayName, this.x, this.y - radius - 15);
       }
-      die(cause) { this.dead = true; if (cause !== 'redline') { let dropCount = Math.min(this.body.length, 50); for (let k = 0; k < dropCount; k += 2) { let f = new Food(this.body[k].x + (Math.random()-0.5)*25, this.body[k].y + (Math.random()-0.5)*25, true, '#ffeb3b'); f.size = 22; foods.push(f); } } if (!this.isBot) { document.getElementById('hud').style.display = 'none'; document.getElementById('death-screen').style.display = 'flex'; document.getElementById('death-reason').innerText = cause === 'redline' ? "BATEU NA REDLINE!" : "VOCÊ FOI ELIMINADO!"; let vipModal = document.getElementById('vip-spawn-modal'); if (vipModal) vipModal.style.display = isVIP ? 'block' : 'none'; } }
+      die(cause) { this.dead = true; if (cause !== 'redline' && cause !== 'quit') { let dropCount = Math.min(this.body.length, 50); for (let k = 0; k < dropCount; k += 2) { let f = new Food(this.body[k].x + (Math.random()-0.5)*25, this.body[k].y + (Math.random()-0.5)*25, true, '#ffeb3b'); f.size = 22; foods.push(f); } } if (!this.isBot && cause !== 'quit') { document.getElementById('hud').style.display = 'none'; document.getElementById('death-screen').style.display = 'flex'; document.getElementById('death-reason').innerText = cause === 'redline' ? "BATEU NA REDLINE!" : "VOCÊ FOI ELIMINADO!"; let vipModal = document.getElementById('vip-spawn-modal'); if (vipModal) vipModal.style.display = isVIP ? 'block' : 'none'; } }
     }
 
     let player, snakes = [], foods = [], multipliers = [], powerups = [], texts = [];
@@ -865,14 +872,40 @@
     function initGame() { snakes = []; foods = []; multipliers = []; powerups = []; texts = []; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); const skinOpts = ['solid', 'neon', 'zebra', 'dots', 'ghost']; for(let i=0; i<BOT_COUNT; i++) snakes.push(new Snake(`BOT ${i+1}`, i % 2 === 0 ? 'red' : 'blue', true, skinOpts[Math.floor(Math.random()*skinOpts.length)])); for(let i=0; i<450; i++) foods.push(new Food()); if(gameReqId) cancelAnimationFrame(gameReqId); gameLoop(); }
     function isVisible(x, y, padding, camX, camY) { return x > camX - (width/2)/globalZoom - padding && x < camX + (width/2)/globalZoom + padding && y > camY - (height/2)/globalZoom - padding && y < camY + (height/2)/globalZoom + padding; }
     
-    function registerKill(killer, victimX, victimY) { 
-      let cx = WORLD_SIZE / 2; let cy = WORLD_SIZE / 2; let angleToCenter = Math.atan2(cy - killer.y, cx - killer.x); let diff = Math.abs(killer.angle - angleToCenter); while (diff > Math.PI) diff -= Math.PI * 2; diff = Math.abs(diff); 
-      if (diff <= Math.PI / 4) { 
-        killer.hs++; killer.kills++; texts.push(new FloatingText(victimX, victimY, `${killer.name} - HEADSHOT!`, "#ffeb3b")); if (killer === player) playSound('hs'); 
-        if (isVIP || !killer.isBot) { let banner = document.getElementById('vip-broadcast-banner'); if (banner) { banner.innerHTML = `🌟 <b>${killer.name}</b> ELIMINOU O ALVO COM UM HEADSHOT! 🌟`; setTimeout(() => { if(banner) banner.innerHTML = ""; }, 4000); } } 
-        let rec = hsRecords.find(r => r.id === killer.id); if (rec) rec.hs = killer.hs; else hsRecords.push({ id: killer.id, name: killer.name, team: killer.team, hs: killer.hs }); hsRecords.sort((a,b) => b.hs - a.hs); hsRecords = hsRecords.slice(0, 5); 
+    // REGRA DE HS REFINADA: EXIGE QUE O JOGADOR APONTE PARA O CENTRO DO MAPA E ESTEJA LONGE DA REDLINE
+    function registerKill(killer, victimX, victimY, isHeadshotCandidate) { 
+      let cx = WORLD_SIZE / 2; 
+      let cy = WORLD_SIZE / 2; 
+      let angleToCenter = Math.atan2(cy - killer.y, cx - killer.x); 
+      let diff = Math.abs(killer.angle - angleToCenter); 
+      while (diff > Math.PI) diff -= Math.PI * 2; 
+      diff = Math.abs(diff); 
+
+      const borderBuffer = 250; 
+      let nearRedline = (victimX < borderBuffer || victimX > WORLD_SIZE - borderBuffer || victimY < borderBuffer || victimY > WORLD_SIZE - borderBuffer);
+
+      // Só aceita Headshot se o killer estiver apontando para o centro (dentro de 45 graus) E não estiver na borda
+      let pointingToCenter = (diff <= Math.PI / 4);
+
+      if (isHeadshotCandidate && pointingToCenter && !nearRedline) { 
+        killer.hs++; killer.kills++; 
+        texts.push(new FloatingText(victimX, victimY, `${killer.name} - HEADSHOT!`, "#ffeb3b")); 
+        if (killer === player) playSound('hs'); 
+        if (isVIP || !killer.isBot) { 
+          let banner = document.getElementById('vip-broadcast-banner'); 
+          if (banner) { 
+            banner.innerHTML = `🌟 <b>${killer.name}</b> ELIMINOU O ALVO COM UM HEADSHOT! 🌟`; 
+            setTimeout(() => { if(banner) banner.innerHTML = ""; }, 4000); 
+          } 
+        } 
+        let rec = hsRecords.find(r => r.id === killer.id); 
+        if (rec) rec.hs = killer.hs; 
+        else hsRecords.push({ id: killer.id, name: killer.name, team: killer.team, hs: killer.hs }); 
+        hsRecords.sort((a,b) => b.hs - a.hs); 
+        hsRecords = hsRecords.slice(0, 5); 
       } else { 
-        killer.kills++; if (!killer.isBot) texts.push(new FloatingText(victimX, victimY, "KILL!", "#ffffff")); 
+        killer.kills++; 
+        if (!killer.isBot) texts.push(new FloatingText(victimX, victimY, "KILL!", "#ffffff")); 
       } 
     }
 
@@ -898,11 +931,32 @@
       for(let i = snakes.length - 1; i >= 0; i--) {
         let s = snakes[i]; if (s.dead) { if(s.isBot) { snakes.splice(i, 1); snakes.push(new Snake(`Bot Reborn`, Math.random()>0.5?'red':'blue', true)); } continue; }
         s.update(); if (s.x < 0 || s.x > WORLD_SIZE || s.y < 0 || s.y > WORLD_SIZE) { s.die('redline'); continue; }
+        
         for (let j = foods.length - 1; j >= 0; j--) { let dx = foods[j].x - s.x; let dy = foods[j].y - s.y; if (dx*dx + dy*dy < 784) { s.mass += 1.5; foods.splice(j, 1); foods.push(new Food()); } }
         for (let j = multipliers.length - 1; j >= 0; j--) { let m = multipliers[j]; let dx = m.x - s.x; let dy = m.y - s.y; if (dx*dx + dy*dy < 1225) { s.mass *= m.mult; s.multBuffTime = Date.now() + m.duration; s.activeMult = m.mult; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `${m.mult}X (${m.duration/1000}s)!`, m.color)); multipliers.splice(j, 1); } }
         for (let j = powerups.length - 1; j >= 0; j--) { let p = powerups[j]; let dx = p.x - s.x; let dy = p.y - s.y; if (dx*dx + dy*dy < 1225) { if(p.type === 'speed') { s.speedBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `SPEED (${p.duration/1000}s)!`, "#00e5ff")); } else if(p.type === 'curve') { s.curveBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `8 INFINITO (${p.duration/1000}s)!`, "#d500f9")); } else if(p.type === 'magnet') { s.magnetBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `ÍMÃ (${p.duration/1000}s)!`, "#ff1744")); } powerups.splice(j, 1); } }
         
-        snakes.forEach(enemy => { if (s === enemy || enemy.dead || s.dead || s.team === enemy.team) return; let step = Math.max(4, Math.floor(enemy.body.length / 50)); for (let k = 0; k < enemy.body.length; k += step) { let dx = s.x - enemy.body[k].x; let dy = s.y - enemy.body[k].y; if (dx*dx + dy*dy < 484) { if (k === 0) { if (s.mass < enemy.mass) { s.die('player'); registerKill(enemy, s.x, s.y); } else { enemy.die('player'); registerKill(s, enemy.x, enemy.y); } } else { s.die('player'); enemy.kills++; } break; } } });
+        snakes.forEach(enemy => { 
+            if (s === enemy || enemy.dead || s.dead || s.team === enemy.team) return; 
+            let step = Math.max(4, Math.floor(enemy.body.length / 50)); 
+            for (let k = 0; k < enemy.body.length; k += step) { 
+                let dx = s.x - enemy.body[k].x; let dy = s.y - enemy.body[k].y; 
+                if (dx*dx + dy*dy < 484) { 
+                    if (k === 0) { 
+                        if (s.mass < enemy.mass) { 
+                            s.die('player'); registerKill(enemy, s.x, s.y, true); 
+                        } else { 
+                            enemy.die('player'); registerKill(s, enemy.x, enemy.y, true); 
+                        } 
+                    } else { 
+                        s.die('player'); 
+                        let isHsCandidate = (k <= 20); 
+                        registerKill(enemy, s.x, s.y, isHsCandidate); 
+                    } 
+                    break; 
+                } 
+            } 
+        });
         
         if (isVisible(s.x, s.y, 1000, camX, camY)) s.draw();
       }
