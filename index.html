@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WormWorld HD - Realista & Pro 3D</title>
+  <title>WormWorld HD - Realista & Pro</title>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap');
@@ -52,7 +52,6 @@
     }
     .btn-vip-buy:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,235,59,0.6); }
 
-    /* Estilos para o campo de cupom */
     .coupon-section { border-top: 1px solid rgba(255,235,59,0.3); margin-top: 10px; padding-top: 10px; }
     #coupon-input { width: 70%; padding: 6px; border-radius: 4px; border: 1px solid #555; background: #000; color: #ffeb3b; text-align: center; font-size: 12px; }
     .btn-coupon { width: 25%; padding: 6px; background: #333; border: 1px solid #555; color: white; border-radius: 4px; cursor: pointer; font-size: 12px; vertical-align: top; }
@@ -67,10 +66,13 @@
     }
     .hidden-menu { display: none !important; }
 
-    input[type="text"], select {
+    input[type="text"], input[type="email"], select {
       width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #555;
       background: #111; color: white; font-size: 15px; text-align: center; outline: none; transition: 0.3s;
     }
+    input[type="email"]:focus, input[type="text"]:focus { border-color: #448aff; box-shadow: 0 0 8px rgba(68,138,255,0.5); }
+    input:disabled { background: #222; color: #777; cursor: not-allowed; }
+    
     input[type="color"] { width: 100%; height: 50px; border: none; border-radius: 8px; background: #111; cursor: pointer; margin-bottom: 10px; }
     
     .btn-team, .btn-action {
@@ -78,12 +80,9 @@
       font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; text-transform: uppercase;
     }
     
-    .btn-google { background: #fff; color: #444; border: 1px solid #ddd; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: default; }
-    .google-icon { width: 22px; height: 22px; }
-
     .btn-red { background: linear-gradient(45deg, #b71c1c, #ff5252); } .btn-red:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 82, 82, 0.6); }
     .btn-blue { background: linear-gradient(45deg, #0d47a1, #448aff); } .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(68, 138, 255, 0.6); }
-    .btn-action:not(.btn-google) { background: #4caf50; } .btn-action:not(.btn-google):hover { background: #43a047; }
+    .btn-action { background: #4caf50; } .btn-action:hover { background: #43a047; }
     .btn-back { background: #555 !important; } .btn-back:hover { background: #777 !important; }
     .btn-edit { background: #ff9800 !important; } .btn-edit:hover { background: #e68a00 !important; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); }
 
@@ -91,28 +90,17 @@
     .btn-keybind { background: #333; border: 1px solid #555; padding: 8px 15px; color: #ffeb3b; border-radius: 5px; cursor: pointer; min-width: 120px; font-weight: bold; }
     .btn-keybind:hover { background: #444; border-color: #ffeb3b; }
 
-    /* Estilos para o Modal de Pagamento PIX */
-    .pix-modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); display: none; align-items: center;
-      justify-content: center; z-index: 100000; backdrop-filter: blur(5px);
-    }
-    .pix-modal-box {
-      background: #fff; color: #000; width: 90%; max-width: 400px;
-      padding: 25px; border-radius: 15px; text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
-    }
+    /* Modal de Pagamento PIX */
+    .pix-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100000; backdrop-filter: blur(5px); }
+    .pix-modal-box { background: #fff; color: #000; width: 90%; max-width: 400px; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
     .pix-header { font-weight: bold; font-size: 18px; margin-bottom: 15px; color: #00bfa5; display: flex; align-items: center; justify-content: center; gap: 8px;}
     .pix-header svg { width: 25px; height: 25px; fill: #00bfa5; }
     .pix-code-area { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; max-height: 100px; overflow-y: auto; margin-bottom: 15px; user-select: text; text-align: left;}
     .btn-copy-pix { background: #00bfa5; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px;}
     .btn-copy-pix:hover { background: #009688; }
-    .pix-instruction { font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.4;}
     .btn-close-pix { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; }
 
-    /* =========================================
-       HUD E RADAR
-       ========================================= */
+    /* HUD E RADAR */
     .hud-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none; z-index: 10; font-family: 'Times New Roman', Times, serif; }
     .left-panel { position: absolute; top: 15px; left: 15px; width: 220px; }
     .right-panel { position: absolute; top: 15px; right: 15px; width: 250px; text-align: right; }
@@ -148,7 +136,7 @@
 </head>
 <body>
 
-  <!-- MODAL DE PAGAMENTO PIX (Oculto por padrão) -->
+  <!-- MODAL DE PAGAMENTO PIX -->
   <div id="pix-modal" class="pix-modal-overlay">
     <div class="pix-modal-box">
       <button class="btn-close-pix" onclick="closePixModal()">×</button>
@@ -170,10 +158,10 @@
     <div class="vip-panel" id="vip-panel-ui">
       <div class="vip-title">👑 LOJA VIP</div>
       <ul class="vip-perks">
-        <li>✔️ <b>Gráficos 3D Realistas</b> (Sem Travar)</li>
-        <li>✔️ Acesso ao <b>Editor de Skins</b></li>
+        <li>✔️ <b>Sistema Sem Lag 60FPS</b></li>
+        <li>✔️ Mudança de Nick Sem Limites</li>
         <li>✔️ Nome Dourado VIP</li>
-        <li>✔️ Coroa de HS Exclusiva</li>
+        <li>✔️ Zoom Ilimitado e Skins</li>
       </ul>
       <button class="btn-vip-buy" onclick="buyVIP('Mensal')">R$ 19,90 <span style="font-weight:normal; font-size:11px;">/ Mês</span></button>
       <button class="btn-vip-buy" onclick="buyVIP('Vitalício')">R$ 99,90 <span style="font-weight:normal; font-size:11px;">/ Vitalício</span></button>
@@ -200,19 +188,18 @@
     
     <!-- MENU PRINCIPAL -->
     <div class="modal-box" id="menu-main">
-      <button class="btn-action btn-google">
-        <svg class="google-icon" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-        </svg>
-        <span id="user-id-display">Conectando...</span>
-      </button>
+      
+      <!-- CAMPO DE EMAIL (Obrigatório) -->
+      <div style="display: flex; flex-direction: column; text-align: left; margin-bottom: 10px;">
+        <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Conta / E-mail (Obrigatório):</div>
+        <input type="email" id="email-input" placeholder="✉️ Digite seu E-mail" oninput="checkEmailLive()">
+      </div>
 
+      <!-- CAMPO DE NICKNAME (Bloqueado até inserir email) -->
       <div style="display: flex; flex-direction: column; text-align: left; margin-bottom: 5px;">
-        <input type="text" id="username-input" value="Erikssandro" maxlength="15">
-        <div id="nick-status" style="font-size: 13px; color: #aaa; margin-top: -3px; margin-bottom: 10px; text-align: center;">Aguardando...</div>
+        <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Seu Nickname:</div>
+        <input type="text" id="username-input" placeholder="Nome de Jogador" maxlength="15" disabled>
+        <div id="nick-status" style="font-size: 13px; color: #aaa; margin-top: 2px; margin-bottom: 10px; text-align: center;">Aguardando E-mail...</div>
       </div>
       
       <button class="btn-action btn-edit" onclick="tryOpenEditor()">👑 EDITAR COBRA (VIP)</button>
@@ -401,8 +388,12 @@
     const ADMIN_EMAIL = "eriik.eb4@gmail.com";
     const VIP_CUPON = "14.02";
 
-    let currentUserEmail = ""; 
-    let isLogged = false; let isVIP = false; let isADM = false;
+    // Controles de Login e Permissões
+    let playerUniqueId = ""; 
+    let isVIP = false; let isADM = false;
+    let hasSetNick = false; // Garante que o jogador free mude o nick só 1 vez
+    let savedNick = "";
+
     let controlCycleIndex = 0; const mobileControlModes = [{ name: '🎮', type: 'joystick' }, { name: '🎮', type: 'touch' }];
     let isAFK = false; let playerName = ""; let playerTeam = "red"; let playerSkin = "solid";
     let activeControl = "mouse"; let soundEnabled = true;
@@ -414,35 +405,53 @@
     const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
     const keys = {}; let touchData = { x: window.innerWidth/2, y: window.innerHeight/2 };
     let joystickAngle = 0; let joystickActive = false; let isBoosting = false;
+    let frameCount = 0; // Utilizado para otimização anti-lag do HUD
     
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d', { alpha: false }); 
     let width, height; let dpr = 1;
 
-    // --- SISTEMA VIP E LOGIN ---
-    function generateUniqueId() { return 'user_' + Math.random().toString(36).substr(2, 9); }
-
-    function checkLoginStatus() {
-      currentUserEmail = ADMIN_EMAIL; 
-      isLogged = true; updateUserInterface();
+    // --- SISTEMA DE E-MAIL E NICKNAME AO VIVO ---
+    function checkEmailLive() {
+        const email = document.getElementById('email-input').value.trim().toLowerCase();
+        const statusEl = document.getElementById('nick-status');
+        const nickInput = document.getElementById('username-input');
+        
+        let isValidEmail = email.includes('@') && email.length > 5;
+        
+        if (email === ADMIN_EMAIL) {
+            isADM = true; isVIP = true;
+            statusEl.innerText = "👑 Dono / ADM Reconhecido!";
+            statusEl.style.color = "#ff5252";
+            nickInput.disabled = false;
+        } else {
+            isADM = false;
+            if (isVIP) {
+                statusEl.innerText = "〽️ VIP Vitalício Ativado! (Mude o nick à vontade)";
+                statusEl.style.color = "#ffeb3b";
+                nickInput.disabled = false;
+            } else if (isValidEmail) {
+                if (!hasSetNick) {
+                    statusEl.innerText = "✅ E-mail vinculado. Defina seu Nickname (Apenas 1 vez!)";
+                    statusEl.style.color = "#4caf50";
+                    nickInput.disabled = false;
+                } else {
+                    statusEl.innerText = "⚠️ Nickname já definido e bloqueado (Adquira VIP para mudar)";
+                    statusEl.style.color = "#aaa";
+                    nickInput.disabled = true;
+                }
+            } else {
+                statusEl.innerText = "Status: E-mail obrigatório para liberar o Nickname.";
+                statusEl.style.color = "#aaa";
+                nickInput.disabled = true;
+            }
+        }
     }
 
-    function updateUserInterface() {
-      const idDisplay = document.getElementById('user-id-display');
-      if (currentUserEmail.length > 25) { idDisplay.innerText = currentUserEmail.substr(0, 22) + '...'; } 
-      else { idDisplay.innerText = currentUserEmail; }
-      idDisplay.title = currentUserEmail; 
-
-      if (currentUserEmail === ADMIN_EMAIL) { isVIP = true; isADM = true; }
-      updateNickStatusDisplay();
-    }
-
-    function updateNickStatusDisplay() {
-      const statusEl = document.getElementById('nick-status');
-      if (isADM) { statusEl.innerText = "👑 Dono / ADM: Acesso Total"; statusEl.style.color = "#ff5252"; } 
-      else if (isVIP) { statusEl.innerText = "〽️ VIP Vitalício Ativado!"; statusEl.style.color = "#ffeb3b"; } 
-      else { statusEl.innerText = "Status: Jogador Gratuito"; statusEl.style.color = "#aaa"; }
-    }
+    // Inicializa bloqueando os botões se preenchimento automático rolar
+    window.addEventListener('load', () => {
+        checkEmailLive();
+    });
 
     let currentPixCodeShowing = "";
     function buyVIP(plan) {
@@ -466,12 +475,11 @@
       const input = document.getElementById('coupon-input'); const code = input.value.trim();
       if (code === VIP_CUPON) {
           isVIP = true; alert("🎉 PARABÉNS!\nCupom aceito. VIP Vitalício liberado com sucesso!");
-          updateNickStatusDisplay(); input.value = "";
+          checkEmailLive(); // Libera instantaneamente
+          input.value = "";
       } else if (code === "") { alert("Por favor, digite um cupom."); } 
       else { alert("Cupom inválido ou expirado."); input.value = ""; }
     }
-
-    window.addEventListener('load', checkLoginStatus);
 
     function cycleMobileControl() {
       controlCycleIndex = (controlCycleIndex + 1) % mobileControlModes.length; let mode = mobileControlModes[controlCycleIndex];
@@ -524,14 +532,50 @@
     window.addEventListener('wheel', e => { if(canvas.style.display === 'block') { adjustZoom(e.deltaY * -0.001); } }, { passive: true });
 
     function startGame(team) {
-      playerName = document.getElementById('username-input').value.trim() || "Jogador";
+      let emailDigitado = document.getElementById('email-input').value.trim().toLowerCase();
+      let isValidEmail = emailDigitado.includes('@') && emailDigitado.length > 5;
+
+      // Impede o início do jogo sem E-mail
+      if (!isValidEmail && !isVIP) {
+          alert("⚠️ AÇÃO NECESSÁRIA:\nVocê deve inserir seu E-mail / Conta Google no campo indicado para poder iniciar e salvar seu progresso.");
+          return;
+      }
+
+      // Regra do Nickname Único
+      let typedNick = document.getElementById('username-input').value.trim();
+      if (typedNick === "") typedNick = "Jogador";
+
+      if (!hasSetNick) {
+          savedNick = typedNick;
+          hasSetNick = true; 
+      } else if (isVIP) {
+          savedNick = typedNick; // VIP atualiza
+      } else {
+          // Jogador normal que já jogou tenta mudar: Força o nome antigo e atualiza a UI
+          document.getElementById('username-input').value = savedNick;
+      }
+      
+      playerName = savedNick;
+
+      // Gerador de ID Único vinculado ao E-mail
+      if (emailDigitado === ADMIN_EMAIL) {
+          playerUniqueId = "ADM_OWNER";
+      } else if (emailDigitado !== "") {
+          if (!playerUniqueId) {
+              playerUniqueId = "ID-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+          }
+      }
+
       activeControl = document.getElementById('control-select').value; playerSkin = document.getElementById('skin-select').value; playerTeam = team;
       customCosmetics = { color: document.getElementById('snake-color').value, color2: document.getElementById('snake-color2') ? document.getElementById('snake-color2').value : '#ff00ff', face: document.getElementById('snake-face').value, acc: document.getElementById('snake-acc').value };
+      
       document.getElementById('start-screen').style.display = 'none'; canvas.style.display = 'block'; document.getElementById('hud').style.display = 'block';
       let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
       let mobileControlsElems = document.querySelectorAll('.mobile-only-control');
       mobileControlsElems.forEach(el => { el.style.display = isMobileDevice ? 'block' : 'none'; });
       joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
+      
+      checkEmailLive(); // Atualiza a cor e bloqueia o campo pra próxima vez
       hsRecords = []; initGame();
     }
     
@@ -544,7 +588,7 @@
     function respawn() { snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); }
     function goToMenu() { snakes = snakes.filter(s => s !== player); if(gameReqId) cancelAnimationFrame(gameReqId); gameReqId = null; document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'none'; canvas.style.display = 'none'; document.getElementById('start-screen').style.display = 'flex'; openMenu('menu-main'); }
 
-    // --- OBJETOS DO JOGO ---
+    // --- OBJETOS DO JOGO (Emojis de Volta) ---
     
     class Food {
       constructor(x, y, isDrop = false, glowColor = null) {
@@ -580,10 +624,8 @@
       }
       draw() {
         let timeLeft = Math.max(0, Math.ceil((this.createdAt + this.duration - Date.now()) / 1000));
-        ctx.beginPath(); ctx.arc(this.x + 6, this.y + 6, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fill();
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(10,10,15,0.9)'; ctx.fill();
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fill();
         ctx.strokeStyle = this.color; ctx.lineWidth = 3; ctx.stroke();
-        ctx.beginPath(); ctx.arc(this.x, this.y - this.size*0.4, this.size*0.5, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fill();
         ctx.fillStyle = this.color; ctx.font = "bold 18px 'Teko'"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(`${this.mult}X (${timeLeft}s)`, this.x, this.y);
       }
     }
@@ -598,10 +640,8 @@
       }
       draw() {
         let timeLeft = Math.max(0, Math.ceil((this.createdAt + this.duration - Date.now()) / 1000));
-        ctx.beginPath(); ctx.arc(this.x + 5, this.y + 5, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fill();
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(10,10,15,0.9)'; ctx.fill();
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fill();
         ctx.strokeStyle = this.color; ctx.lineWidth = 3; ctx.stroke();
-        ctx.beginPath(); ctx.arc(this.x, this.y - this.size*0.4, this.size*0.5, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fill();
         ctx.fillStyle = this.color; ctx.font = "bold 16px 'Segoe UI'"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(`${this.symbol} ${timeLeft}s`, this.x, this.y);
       }
     }
@@ -612,6 +652,7 @@
       draw() { ctx.globalAlpha = Math.max(0, this.life); ctx.font = "bold 28px 'Teko', Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 5; ctx.strokeStyle = "#000"; ctx.strokeText(this.text, this.x, this.y); ctx.fillStyle = this.color; ctx.fillText(this.text, this.x, this.y); ctx.globalAlpha = 1.0; }
     }
 
+    // --- COBRA (Visual Original Restabelecido) ---
     class Snake {
       constructor(name, team, isBot = false, skin = 'solid', cosmetics = null) {
         this.id = Math.random().toString(36).substr(2, 9);
@@ -648,60 +689,36 @@
       draw() {
         if (this.dead || this.body.length === 0) return;
         const radius = 16;
-        
         ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalAlpha = this.skin === 'ghost' ? 0.4 : 1.0;
 
         ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
         for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
-        ctx.strokeStyle = 'rgba(0,0,0,0.6)'; 
-        ctx.lineWidth = radius * 2.6; 
-        
-        ctx.strokeStyle = (this.team === 'red') ? 'rgba(255, 82, 82, 0.8)' : 'rgba(68, 138, 255, 0.8)';
-        ctx.lineWidth = radius * 3.0; 
-        ctx.stroke();
+        ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = radius * 2.6; ctx.stroke();
 
         ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
         for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
-        
+        ctx.strokeStyle = (this.team === 'red') ? 'rgba(255, 82, 82, 0.8)' : 'rgba(68, 138, 255, 0.8)'; ctx.lineWidth = radius * 3.0; ctx.stroke();
+
+        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
+        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
         if (this.skin === 'gradient' && this.body.length > 5) {
-          let lastIdx = this.body.length - 1;
-          let grad = ctx.createLinearGradient(this.body[0].x, this.body[0].y, this.body[lastIdx].x, this.body[lastIdx].y);
-          grad.addColorStop(0, this.baseColor);
-          grad.addColorStop(1, this.color2);
-          ctx.strokeStyle = grad;
-        } else {
-          ctx.strokeStyle = this.baseColor; 
-        }
-        
-        ctx.lineWidth = radius * 2.2; 
-        ctx.stroke();
+          let lastIdx = this.body.length - 1; let grad = ctx.createLinearGradient(this.body[0].x, this.body[0].y, this.body[lastIdx].x, this.body[lastIdx].y);
+          grad.addColorStop(0, this.baseColor); grad.addColorStop(1, this.color2); ctx.strokeStyle = grad;
+        } else { ctx.strokeStyle = this.baseColor; }
+        ctx.lineWidth = radius * 2.2; ctx.stroke();
 
         ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
         for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
-        
-        if (this.skin === 'solid') {
-          ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([4, 12]); ctx.stroke(); ctx.setLineDash([]);
-        } 
-        else if (this.skin === 'zebra') { 
-          ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([12, 18]); ctx.stroke(); ctx.setLineDash([]); 
-        } 
-        else if (this.skin === 'dots') { 
-          ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = radius * 1.5; ctx.setLineDash([0, 25]); ctx.stroke(); ctx.setLineDash([]); 
-        }
-        else if (this.skin === 'checkered') {
-          ctx.strokeStyle = this.color2; ctx.lineWidth = radius * 2.2; ctx.setLineDash([15, 15]); ctx.stroke(); ctx.setLineDash([]);
-        }
-        else if (this.skin === 'neon') {
-          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = radius * 0.8; ctx.stroke();
-        }
+        if (this.skin === 'solid') { ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([4, 12]); ctx.stroke(); ctx.setLineDash([]); } 
+        else if (this.skin === 'zebra') { ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([12, 18]); ctx.stroke(); ctx.setLineDash([]); } 
+        else if (this.skin === 'dots') { ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = radius * 1.5; ctx.setLineDash([0, 25]); ctx.stroke(); ctx.setLineDash([]); }
+        else if (this.skin === 'checkered') { ctx.strokeStyle = this.color2; ctx.lineWidth = radius * 2.2; ctx.setLineDash([15, 15]); ctx.stroke(); ctx.setLineDash([]); }
+        else if (this.skin === 'neon') { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = radius * 0.8; ctx.stroke(); }
 
         ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
         for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x - radius*0.3, this.body[i].y - radius*0.3);
-        ctx.strokeStyle = 'rgba(255,255,255,0.25)'; 
-        ctx.lineWidth = radius * 0.8; 
-        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = radius * 0.8; ctx.stroke();
 
-        // --- ROSTO ---
         ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
         let face = this.cosmetics ? this.cosmetics.face : 'normal';
         let emojiMap = { 'cat': '🐱', 'dog': '🐶', 'pig': '🐷', 'rabbit': '🐰', 'alien': '👽', 'robot': '🤖', 'demon': '👹', 'skull': '💀', 'cool': '😎', 'nerd': '🤓' };
@@ -730,19 +747,14 @@
         if (Date.now() < this.curveBuffTime) { ctx.fillStyle = '#d500f9'; ctx.fillText('♾️', this.x, buffY); }
         if (Date.now() < this.magnetBuffTime) { ctx.fillStyle = '#ff1744'; ctx.fillText('🧲', this.x + 15, buffY); }
         
+        // --- NOME DOS JOGADORES (Nomes Dourados para VIPs) ---
         let displayName = this.name;
         if (!this.isBot && isVIP) { displayName += (isADM ? " 👑" : " 〽️"); }
 
         ctx.font = "bold 15px 'Segoe UI'"; ctx.textAlign = "center";
-        
-        ctx.fillStyle = "rgba(0,0,0,0.6)";
-        ctx.fillText(displayName, this.x + 2, this.y - radius - 14);
+        ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillText(displayName, this.x + 2, this.y - radius - 14);
 
-        if (!this.isBot && isVIP) {
-            ctx.fillStyle = "#ffeb3b"; 
-        } else {
-            ctx.fillStyle = "white"; 
-        }
+        if (!this.isBot && isVIP) { ctx.fillStyle = "#ffeb3b"; } else { ctx.fillStyle = "white"; }
         ctx.fillText(displayName, this.x, this.y - radius - 15);
       }
       die(cause) { this.dead = true; if (cause !== 'redline') { let dropCount = Math.min(this.body.length, 50); for (let k = 0; k < dropCount; k += 2) { let f = new Food(this.body[k].x + (Math.random()-0.5)*25, this.body[k].y + (Math.random()-0.5)*25, true, '#ffeb3b'); f.size = 22; foods.push(f); } } if (!this.isBot) { document.getElementById('hud').style.display = 'none'; document.getElementById('death-screen').style.display = 'flex'; document.getElementById('death-reason').innerText = cause === 'redline' ? "BATEU NA REDLINE!" : "VOCÊ FOI ELIMINADO!"; let vipModal = document.getElementById('vip-spawn-modal'); if (vipModal) vipModal.style.display = isVIP ? 'block' : 'none'; } }
@@ -753,11 +765,9 @@
 
     function drawGridAndRedline(camX, camY) { 
       ctx.fillStyle = '#1e2124'; ctx.fillRect(camX - (width/2)/globalZoom, camY - (height/2)/globalZoom, width/globalZoom, height/globalZoom); 
-      
       const hexSize = 100; const hexHeight = hexSize * Math.sqrt(3); 
       const startX = Math.floor((camX - (width/2)/globalZoom) / (hexSize * 1.5)) - 1; const startY = Math.floor((camY - (height/2)/globalZoom) / hexHeight) - 1; 
       const endX = startX + (width/globalZoom) / hexSize + 2; const endY = startY + (height/globalZoom) / hexHeight + 2; 
-      
       ctx.beginPath(); 
       for (let i = startX; i < endX; i++) { 
         for (let j = startY; j < endY; j++) { 
@@ -767,7 +777,6 @@
       } 
       ctx.strokeStyle = "rgba(255, 255, 255, 0.02)"; ctx.lineWidth = 4; ctx.stroke();
       ctx.strokeStyle = "rgba(255, 255, 255, 0.05)"; ctx.lineWidth = 1; ctx.stroke(); 
-
       ctx.strokeStyle = "rgba(255, 0, 0, 0.8)"; ctx.lineWidth = 20; ctx.strokeRect(0, 0, WORLD_SIZE, WORLD_SIZE); 
       ctx.strokeStyle = "rgba(255, 0, 0, 0.1)"; ctx.lineWidth = 80; ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80); 
     }
@@ -787,7 +796,9 @@
     }
 
     function gameLoop() {
+      frameCount++; // Throttling HUD anti-lag
       let camX = player.dead ? WORLD_SIZE/2 : player.x; let camY = player.dead ? WORLD_SIZE/2 : player.y;
+      
       ctx.save(); ctx.scale(dpr, dpr); ctx.translate(width/2, height/2); ctx.scale(globalZoom, globalZoom); ctx.translate(-camX, -camY);
       
       drawGridAndRedline(camX, camY);
@@ -817,17 +828,20 @@
       
       texts.forEach((t, i) => { t.update(); t.draw(); if(t.life<=0) texts.splice(i, 1); }); ctx.restore(); 
       
-      if (!player.dead) {
-        document.getElementById('hud-kills').innerText = player.kills; document.getElementById('hud-hs').innerText = player.hs;
-        let buffBanner = document.getElementById('player-buff-timer-banner');
-        if (buffBanner) { let now = Date.now(); let buffText = ""; if (player.speedBuffTime > now) buffText += `⚡ ${Math.ceil((player.speedBuffTime - now) / 1000)}s `; if (player.curveBuffTime > now) buffText += `♾️ ${Math.ceil((player.curveBuffTime - now) / 1000)}s `; if (player.magnetBuffTime > now) buffText += `🧲 ${Math.ceil((player.magnetBuffTime - now) / 1000)}s `; if (player.multBuffTime > now) buffText += `⭐ ${player.activeMult}X ${Math.ceil((player.multBuffTime - now) / 1000)}s `; buffBanner.innerText = buffText; }
-        
-        let radarHTML = ''; snakes.forEach(s => { if(!s.dead && s !== player) { let rx = ((s.x / WORLD_SIZE) * 120); let ry = ((s.y / WORLD_SIZE) * 120); let dSize = Math.max(5, Math.min(20, s.mass / 10)); radarHTML += `<div style="position:absolute; top:${ry}px; left:${rx}px; width:${dSize}px; height:${dSize}px; background:rgba(255, 0, 0, 0.5); border-radius:50%; transform:translate(-50%,-50%);"></div>`; } }); let px = ((player.x / WORLD_SIZE) * 120); let py = ((player.y / WORLD_SIZE) * 120); radarHTML += `<div style="position:absolute; top:${py}px; left:${px}px; width:8px; height:8px; background:#00ff00; border-radius:50%; box-shadow:0 0 8px #00ff00; transform:translate(-50%,-50%); z-index:10;"></div>`; document.getElementById('radar-entities').innerHTML = radarHTML;
-        document.getElementById('my-hs-display').innerHTML = `<span style="color:${player.team==='red'?'#ff5252':'#448aff'}">${player.name}</span>: ${player.hs} HS`;
-      } else { document.getElementById('my-hs-display').innerHTML = ""; let buffBanner = document.getElementById('player-buff-timer-banner'); if (buffBanner) buffBanner.innerText = ""; }
-      
-      if (hsRecords.length > 0) document.getElementById('hs-record-list').innerHTML = hsRecords.map((r, idx) => `<div style="display:flex; justify-content:space-between; width: 170px; margin-bottom: 2px;"><span>${idx+1}. <span style="color:${r.team==='red'?'#ff5252':'#448aff'}">${r.name}</span></span><span style="color:#ffeb3b; font-weight:bold;">${r.hs}</span></div>`).join('');
-      let topPlayers = [...snakes].filter(s => !s.dead).sort((a,b) => b.mass - a.mass).slice(0, 10); document.getElementById('global-leaderboard').innerHTML = topPlayers.map((s, idx) => `<div class="lb-row"><span>${idx+1}. <span style="color: ${s.cosmetics?s.cosmetics.color:(s.team==='red'?'#ff5252':'#448aff')}">${s.name}</span></span><span>${Math.floor(s.mass)}</span></div>`).join('');
+      // OTIMIZAÇÃO: Atualização do DOM a 12 FPS (a cada 5 frames) para remover Lag
+      if (frameCount % 5 === 0) {
+          if (!player.dead) {
+            document.getElementById('hud-kills').innerText = player.kills; document.getElementById('hud-hs').innerText = player.hs;
+            let buffBanner = document.getElementById('player-buff-timer-banner');
+            if (buffBanner) { let now = Date.now(); let buffText = ""; if (player.speedBuffTime > now) buffText += `⚡ ${Math.ceil((player.speedBuffTime - now) / 1000)}s `; if (player.curveBuffTime > now) buffText += `♾️ ${Math.ceil((player.curveBuffTime - now) / 1000)}s `; if (player.magnetBuffTime > now) buffText += `🧲 ${Math.ceil((player.magnetBuffTime - now) / 1000)}s `; if (player.multBuffTime > now) buffText += `⭐ ${player.activeMult}X ${Math.ceil((player.multBuffTime - now) / 1000)}s `; buffBanner.innerText = buffText; }
+            
+            let radarHTML = ''; snakes.forEach(s => { if(!s.dead && s !== player) { let rx = ((s.x / WORLD_SIZE) * 120); let ry = ((s.y / WORLD_SIZE) * 120); let dSize = Math.max(5, Math.min(20, s.mass / 10)); radarHTML += `<div style="position:absolute; top:${ry}px; left:${rx}px; width:${dSize}px; height:${dSize}px; background:rgba(255, 0, 0, 0.5); border-radius:50%; transform:translate(-50%,-50%);"></div>`; } }); let px = ((player.x / WORLD_SIZE) * 120); let py = ((player.y / WORLD_SIZE) * 120); radarHTML += `<div style="position:absolute; top:${py}px; left:${px}px; width:8px; height:8px; background:#00ff00; border-radius:50%; box-shadow:0 0 8px #00ff00; transform:translate(-50%,-50%); z-index:10;"></div>`; document.getElementById('radar-entities').innerHTML = radarHTML;
+            document.getElementById('my-hs-display').innerHTML = `<span style="color:${player.team==='red'?'#ff5252':'#448aff'}">${player.name}</span>: ${player.hs} HS`;
+          } else { document.getElementById('my-hs-display').innerHTML = ""; let buffBanner = document.getElementById('player-buff-timer-banner'); if (buffBanner) buffBanner.innerText = ""; }
+          
+          if (hsRecords.length > 0) document.getElementById('hs-record-list').innerHTML = hsRecords.map((r, idx) => `<div style="display:flex; justify-content:space-between; width: 170px; margin-bottom: 2px;"><span>${idx+1}. <span style="color:${r.team==='red'?'#ff5252':'#448aff'}">${r.name}</span></span><span style="color:#ffeb3b; font-weight:bold;">${r.hs}</span></div>`).join('');
+          let topPlayers = [...snakes].filter(s => !s.dead).sort((a,b) => b.mass - a.mass).slice(0, 10); document.getElementById('global-leaderboard').innerHTML = topPlayers.map((s, idx) => `<div class="lb-row"><span>${idx+1}. <span style="color: ${s.cosmetics?s.cosmetics.color:(s.team==='red'?'#ff5252':'#448aff')}">${s.name}</span></span><span>${Math.floor(s.mass)}</span></div>`).join('');
+      }
       
       if(canvas.style.display === 'block') gameReqId = requestAnimationFrame(gameLoop);
     }
