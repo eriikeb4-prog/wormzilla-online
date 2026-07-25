@@ -19,7 +19,8 @@
     .overlay-screen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: radial-gradient(circle at center, rgba(20,25,30,0.95) 0%, rgba(5,10,15,0.98) 100%);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; 
+      z-index: 99999; overflow-y: auto; overflow-x: hidden;
     }
     
     .snake-art-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; pointer-events: none; }
@@ -57,7 +58,7 @@
     .btn-coupon { width: 25%; padding: 6px; background: #333; border: 1px solid #555; color: white; border-radius: 4px; cursor: pointer; font-size: 12px; vertical-align: top; }
     .btn-coupon:hover { background: #444; }
 
-    .logo { font-family: 'Teko', sans-serif; font-size: 90px; color: #fff; text-shadow: 0 0 20px #ff5252, 0 0 40px #ff5252; margin-bottom: 20px; z-index: 2; }
+    .logo { font-family: 'Teko', sans-serif; font-size: 90px; color: #fff; text-shadow: 0 0 20px #ff5252, 0 0 40px #ff5252; margin-bottom: 20px; z-index: 2; text-align: center; }
     
     .modal-box {
       background: rgba(15, 15, 20, 0.85); border: 2px solid rgba(255, 255, 255, 0.1);
@@ -89,6 +90,16 @@
     .keybind-row { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 14px; }
     .btn-keybind { background: #333; border: 1px solid #555; padding: 8px 15px; color: #ffeb3b; border-radius: 5px; cursor: pointer; min-width: 120px; font-weight: bold; }
     .btn-keybind:hover { background: #444; border-color: #ffeb3b; }
+
+    /* Responsividade para Celulares (Mostra Loja VIP corretamente) */
+    @media (max-width: 800px), (max-height: 850px) {
+      .overlay-screen { justify-content: flex-start; padding-top: 80px; padding-bottom: 40px; }
+      .vip-panel { position: relative; bottom: auto; left: auto; margin-top: 20px; width: 90%; max-width: 440px; }
+      .logo { font-size: 60px; margin-bottom: 15px; }
+      .modal-box { width: 90%; max-width: 440px; padding: 20px; }
+      .top-right-controls { top: 10px; right: 10px; }
+      .btn-icon { width: 45px; height: 45px; font-size: 20px; }
+    }
 
     /* Modal de Pagamento PIX */
     .pix-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100000; backdrop-filter: blur(5px); }
@@ -126,9 +137,11 @@
     .lb-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 5px; text-shadow: 1px 1px 2px #000; font-family: 'Segoe UI', sans-serif; }
     .lb-row span:nth-child(2) { color: #ccc; font-weight: bold; }
 
-    #btn-speed-mobile { position: absolute; bottom: 40px; left: 40px; width: 100px; height: 100px; background: rgba(255, 82, 82, 0.2); border: 2px solid rgba(255,82,82,0.8); border-radius: 50%; font-size: 40px; display: none; justify-content: center; align-items: center; z-index: 50; pointer-events: auto; text-shadow: 0 0 10px #fff; box-shadow: 0 0 15px rgba(255,82,82,0.3); }
+    /* CONTROLES MOBILE INVERTIDOS */
+    #btn-speed-mobile { position: absolute; bottom: 40px; right: 40px; width: 100px; height: 100px; background: rgba(255, 82, 82, 0.2); border: 2px solid rgba(255,82,82,0.8); border-radius: 50%; font-size: 40px; display: none; justify-content: center; align-items: center; z-index: 50; pointer-events: auto; text-shadow: 0 0 10px #fff; box-shadow: 0 0 15px rgba(255,82,82,0.3); }
     #btn-speed-mobile:active { background: rgba(255, 82, 82, 0.7); transform: scale(0.95); }
-    #joystick-zone { position: absolute; bottom: 40px; right: 40px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; display: none; pointer-events: auto; z-index: 50; }
+    
+    #joystick-zone { position: absolute; bottom: 40px; left: 40px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; display: none; pointer-events: auto; z-index: 50; }
     #joystick-knob { position: absolute; top: 50px; left: 50px; width: 50px; height: 50px; background: rgba(68, 138, 255, 0.6); border-radius: 50%; box-shadow: 0 0 15px rgba(68,138,255,0.5); }
     
     #death-screen { display: none; z-index: 99999; }
@@ -141,7 +154,7 @@
     <div class="pix-modal-box">
       <button class="btn-close-pix" onclick="closePixModal()">×</button>
       <div class="pix-header">
-        <svg viewBox="0 0 512 512"><path d="M242.4 20.4c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7L481.6 142.1c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L254.1 292.3c-1.8 1.1-3.8 1.7-5.8 1.7s-4.1-.6-5.8-1.7L12.4 162.2c-1.8-1.1-3.3-2.6-4.3-4.3S6.4 154.1 6.4 152.1s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L242.4 20.4zM161.7 201l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm116 116l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm-207.7 22.1c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l227.6 130c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L12.4 481.6c-1.8 1.1-3.3 2.6-4.3 4.3S6.4 489.7 6.4 491.7s.6 4.1 1.7 5.8s2.6 3.3 4.3 4.3L4.1 361.9c-1.8-1.1-3.3-2.6-4.3-4.3S-1.6 353.8-1.6 351.8s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L270 201.2 161.7 201l-111.7 63.8zm218.1 124.6l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7L314 316.5c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zM499.6 361.9c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L272 512l-108.3-61.9L272 386.3l227.6-130c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l111.7-63.8 108.3 61.9z"/></svg>
+        <svg viewBox="0 0 512 512"><path d="M242.4 20.4c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7L481.6 142.1c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L254.1 292.3c-1.8 1.1-3.8 1.7-5.8 1.7s-4.1-.6-5.8-1.7L12.4 162.2c-1.8-1.1-3.3-2.6-4.3-4.3S6.4 154.1 6.4 152.1s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L242.4 20.4zM161.7 201l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm116 116l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm-207.7 22.1c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l227.6 130c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L12.4 481.6c-1.8 1.1-3.3 2.6-4.3 4.3S6.4 489.7 6.4 491.7s.6 4.1 1.7 5.8s2.6-3.3 4.3 4.3L4.1 361.9c-1.8-1.1-3.3-2.6-4.3-4.3S-1.6 353.8-1.6 351.8s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L270 201.2 161.7 201l-111.7 63.8zm218.1 124.6l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7L314 316.5c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zM499.6 361.9c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L272 512l-108.3-61.9L272 386.3l227.6-130c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l111.7-63.8 108.3 61.9z"/></svg>
         Pagamento via PIX
       </div>
       <p class="pix-instruction">Clique abaixo para copiar o código "Copia e Cola" e pague no app do seu banco.</p>
@@ -173,7 +186,9 @@
       </div>
     </div>
 
+    <!-- BOTÕES SUPERIORES -->
     <div class="top-right-controls">
+      <button class="btn-icon" id="btn-fullscreen" onclick="toggleFullScreen()" title="Tela Cheia">🔲</button>
       <button class="btn-icon" id="btn-sound" onclick="toggleSound()" title="Som">🔊</button>
       <button class="btn-icon" onclick="openMenu('menu-controls')" title="Controles">🎮</button>
       <button class="btn-icon" onclick="tryOpenSkins()" title="Textura da Skin (VIP)">🎨</button>
@@ -189,13 +204,14 @@
     <!-- MENU PRINCIPAL -->
     <div class="modal-box" id="menu-main">
       
-      <!-- CAMPO DE EMAIL (Obrigatório) -->
-      <div style="display: flex; flex-direction: column; text-align: left; margin-bottom: 10px;">
-        <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Conta / E-mail (Obrigatório):</div>
-        <input type="email" id="email-input" placeholder="✉️ Digite seu E-mail" oninput="checkEmailLive()">
+      <!-- CAMPO DE EMAIL (Obrigatório) + BOTÃO DESLOGAR -->
+      <div style="font-size: 13px; color:#aaa; margin-bottom: 5px; text-align: left;">Conta / E-mail (Obrigatório):</div>
+      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <input type="email" id="email-input" placeholder="✉️ Digite seu E-mail" oninput="checkEmailLive()" style="margin: 0;">
+        <button id="btn-logout" class="btn-action btn-red" style="margin: 0; padding: 0 15px; width: auto; font-size: 14px; display: none;" onclick="logout()" title="Sair da Conta">Sair</button>
       </div>
 
-      <!-- CAMPO DE NICKNAME (Bloqueado até inserir email) -->
+      <!-- CAMPO DE NICKNAME -->
       <div style="display: flex; flex-direction: column; text-align: left; margin-bottom: 5px;">
         <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Seu Nickname:</div>
         <input type="text" id="username-input" placeholder="Nome de Jogador" maxlength="15" disabled>
@@ -272,7 +288,7 @@
           <option value="custom">Teclas (A, D ou Setas)</option>
         </optgroup>
         <optgroup label="Mobile">
-          <option value="joystick">Joystick (Direita) + Speed (Esquerda)</option>
+          <option value="joystick">Joystick (Esquerda) + Speed (Direita)</option>
           <option value="touch">Tocar na Tela</option>
         </optgroup>
       </select>
@@ -391,7 +407,7 @@
     // Controles de Login e Permissões
     let playerUniqueId = ""; 
     let isVIP = false; let isADM = false;
-    let hasSetNick = false; // Garante que o jogador free mude o nick só 1 vez
+    let hasSetNick = false; 
     let savedNick = "";
 
     let controlCycleIndex = 0; const mobileControlModes = [{ name: '🎮', type: 'joystick' }, { name: '🎮', type: 'touch' }];
@@ -405,19 +421,45 @@
     const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
     const keys = {}; let touchData = { x: window.innerWidth/2, y: window.innerHeight/2 };
     let joystickAngle = 0; let joystickActive = false; let isBoosting = false;
-    let frameCount = 0; // Utilizado para otimização anti-lag do HUD
+    let frameCount = 0; 
     
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d', { alpha: false }); 
     let width, height; let dpr = 1;
 
-    // --- SISTEMA DE E-MAIL E NICKNAME AO VIVO ---
+    // --- FUNÇÃO TELA CHEIA ---
+    function toggleFullScreen() {
+      let elem = document.documentElement;
+      if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+        if (elem.requestFullscreen) { elem.requestFullscreen(); } 
+        else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } 
+        else if (elem.mozRequestFullScreen) { elem.mozRequestFullScreen(); } 
+        else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT); }
+      } else {
+        if (document.exitFullscreen) { document.exitFullscreen(); } 
+        else if (document.msExitFullscreen) { document.msExitFullscreen(); } 
+        else if (document.mozCancelFullScreen) { document.mozCancelFullScreen(); } 
+        else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
+      }
+    }
+
+    // --- SISTEMA DE E-MAIL E NICKNAME AO VIVO (COM LOCALSTORAGE) ---
     function checkEmailLive() {
         const email = document.getElementById('email-input').value.trim().toLowerCase();
         const statusEl = document.getElementById('nick-status');
         const nickInput = document.getElementById('username-input');
+        const btnLogout = document.getElementById('btn-logout');
         
         let isValidEmail = email.includes('@') && email.length > 5;
+        
+        // Exibe o botão de deslogar se a conta estiver "Trancada" no sistema (localStorage)
+        if (localStorage.getItem('savedEmail') === email) {
+            btnLogout.style.display = 'block';
+            document.getElementById('email-input').disabled = true;
+        } else {
+            btnLogout.style.display = 'none';
+            document.getElementById('email-input').disabled = false;
+        }
         
         if (email === ADMIN_EMAIL) {
             isADM = true; isVIP = true;
@@ -448,9 +490,42 @@
         }
     }
 
-    // Inicializa bloqueando os botões se preenchimento automático rolar
-    window.addEventListener('load', () => {
+    // Função de Deslogar
+    function logout() {
+        localStorage.removeItem('savedEmail');
+        localStorage.removeItem('savedNick');
+        localStorage.removeItem('savedVIP');
+        
+        document.getElementById('email-input').value = "";
+        document.getElementById('email-input').disabled = false;
+        document.getElementById('btn-logout').style.display = 'none';
+        document.getElementById('username-input').value = "";
+        
+        isVIP = false;
+        isADM = false;
+        hasSetNick = false;
+        savedNick = "";
+        
         checkEmailLive();
+    }
+
+    window.addEventListener('load', () => { 
+        const storedEmail = localStorage.getItem('savedEmail');
+        const storedNick = localStorage.getItem('savedNick');
+        const storedVIP = localStorage.getItem('savedVIP');
+
+        if (storedEmail) {
+            document.getElementById('email-input').value = storedEmail;
+            if (storedNick) {
+                document.getElementById('username-input').value = storedNick;
+                savedNick = storedNick;
+                hasSetNick = true;
+            }
+            if (storedVIP === "true") {
+                isVIP = true;
+            }
+        }
+        checkEmailLive(); 
     });
 
     let currentPixCodeShowing = "";
@@ -474,8 +549,10 @@
       if (isVIP) { alert("Você já possui acesso VIP!"); return; }
       const input = document.getElementById('coupon-input'); const code = input.value.trim();
       if (code === VIP_CUPON) {
-          isVIP = true; alert("🎉 PARABÉNS!\nCupom aceito. VIP Vitalício liberado com sucesso!");
-          checkEmailLive(); // Libera instantaneamente
+          isVIP = true; 
+          localStorage.setItem('savedVIP', "true"); // Salva o VIP na memória
+          alert("🎉 PARABÉNS!\nCupom aceito. VIP Vitalício liberado com sucesso!");
+          checkEmailLive(); 
           input.value = "";
       } else if (code === "") { alert("Por favor, digite um cupom."); } 
       else { alert("Cupom inválido ou expirado."); input.value = ""; }
@@ -514,7 +591,7 @@
     function playSound(type) { if (!soundEnabled) return; if (type === 'hs') { try { let utterance = new SpeechSynthesisUtterance("Headshot"); utterance.lang = "en-US"; utterance.pitch = 0.1; utterance.rate = 0.7; utterance.volume = 1.0; window.speechSynthesis.speak(utterance); } catch(e) {} } }
 
     window.addEventListener('contextmenu', e => e.preventDefault());
-    window.addEventListener('mousedown', e => { if(isRebinding || e.target.closest('.modal-box') || e.target.closest('.vip-panel') || e.target.closest('.pix-modal-box')) return; let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = true; keys[key] = true; });
+    window.addEventListener('mousedown', e => { if(isRebinding || e.target.closest('.modal-box') || e.target.closest('.vip-panel') || e.target.closest('.pix-modal-box') || e.target.closest('.top-right-controls')) return; let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = true; keys[key] = true; });
     window.addEventListener('mouseup', e => { let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = false; keys[key] = false; });
     window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
     window.addEventListener('keydown', e => { if(isRebinding || document.activeElement.tagName === 'INPUT') return; keys[e.code] = true; if (e.code === keyBinds.speed) isBoosting = true; });
@@ -535,13 +612,11 @@
       let emailDigitado = document.getElementById('email-input').value.trim().toLowerCase();
       let isValidEmail = emailDigitado.includes('@') && emailDigitado.length > 5;
 
-      // Impede o início do jogo sem E-mail
       if (!isValidEmail && !isVIP) {
           alert("⚠️ AÇÃO NECESSÁRIA:\nVocê deve inserir seu E-mail / Conta Google no campo indicado para poder iniciar e salvar seu progresso.");
           return;
       }
 
-      // Regra do Nickname Único
       let typedNick = document.getElementById('username-input').value.trim();
       if (typedNick === "") typedNick = "Jogador";
 
@@ -549,15 +624,23 @@
           savedNick = typedNick;
           hasSetNick = true; 
       } else if (isVIP) {
-          savedNick = typedNick; // VIP atualiza
+          savedNick = typedNick; 
       } else {
-          // Jogador normal que já jogou tenta mudar: Força o nome antigo e atualiza a UI
           document.getElementById('username-input').value = savedNick;
       }
       
       playerName = savedNick;
 
-      // Gerador de ID Único vinculado ao E-mail
+      // SALVANDO O LOGIN NO NAVEGADOR
+      if (isValidEmail) {
+          localStorage.setItem('savedEmail', emailDigitado);
+          localStorage.setItem('savedNick', savedNick);
+          if (isVIP) localStorage.setItem('savedVIP', "true");
+          
+          document.getElementById('email-input').disabled = true;
+          document.getElementById('btn-logout').style.display = 'block';
+      }
+
       if (emailDigitado === ADMIN_EMAIL) {
           playerUniqueId = "ADM_OWNER";
       } else if (emailDigitado !== "") {
@@ -575,7 +658,7 @@
       mobileControlsElems.forEach(el => { el.style.display = isMobileDevice ? 'block' : 'none'; });
       joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
       
-      checkEmailLive(); // Atualiza a cor e bloqueia o campo pra próxima vez
+      checkEmailLive(); 
       hsRecords = []; initGame();
     }
     
@@ -588,7 +671,7 @@
     function respawn() { snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); }
     function goToMenu() { snakes = snakes.filter(s => s !== player); if(gameReqId) cancelAnimationFrame(gameReqId); gameReqId = null; document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'none'; canvas.style.display = 'none'; document.getElementById('start-screen').style.display = 'flex'; openMenu('menu-main'); }
 
-    // --- OBJETOS DO JOGO (Emojis de Volta) ---
+    // --- OBJETOS DO JOGO ---
     
     class Food {
       constructor(x, y, isDrop = false, glowColor = null) {
@@ -652,7 +735,6 @@
       draw() { ctx.globalAlpha = Math.max(0, this.life); ctx.font = "bold 28px 'Teko', Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 5; ctx.strokeStyle = "#000"; ctx.strokeText(this.text, this.x, this.y); ctx.fillStyle = this.color; ctx.fillText(this.text, this.x, this.y); ctx.globalAlpha = 1.0; }
     }
 
-    // --- COBRA (Visual Original Restabelecido) ---
     class Snake {
       constructor(name, team, isBot = false, skin = 'solid', cosmetics = null) {
         this.id = Math.random().toString(36).substr(2, 9);
@@ -747,7 +829,6 @@
         if (Date.now() < this.curveBuffTime) { ctx.fillStyle = '#d500f9'; ctx.fillText('♾️', this.x, buffY); }
         if (Date.now() < this.magnetBuffTime) { ctx.fillStyle = '#ff1744'; ctx.fillText('🧲', this.x + 15, buffY); }
         
-        // --- NOME DOS JOGADORES (Nomes Dourados para VIPs) ---
         let displayName = this.name;
         if (!this.isBot && isVIP) { displayName += (isADM ? " 👑" : " 〽️"); }
 
@@ -796,7 +877,7 @@
     }
 
     function gameLoop() {
-      frameCount++; // Throttling HUD anti-lag
+      frameCount++; 
       let camX = player.dead ? WORLD_SIZE/2 : player.x; let camY = player.dead ? WORLD_SIZE/2 : player.y;
       
       ctx.save(); ctx.scale(dpr, dpr); ctx.translate(width/2, height/2); ctx.scale(globalZoom, globalZoom); ctx.translate(-camX, -camY);
@@ -828,7 +909,6 @@
       
       texts.forEach((t, i) => { t.update(); t.draw(); if(t.life<=0) texts.splice(i, 1); }); ctx.restore(); 
       
-      // OTIMIZAÇÃO: Atualização do DOM a 12 FPS (a cada 5 frames) para remover Lag
       if (frameCount % 5 === 0) {
           if (!player.dead) {
             document.getElementById('hud-kills').innerText = player.kills; document.getElementById('hud-hs').innerText = player.hs;
