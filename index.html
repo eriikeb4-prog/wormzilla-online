@@ -146,6 +146,7 @@
       .right-panel { transform: scale(0.65); transform-origin: top right; }
       #top-center-hud { transform: translateX(-50%) scale(0.8); transform-origin: top center; }
       
+      /* Reduz e ajusta o joystick e speed proporcionalmente ao dedo */
       #joystick-zone { width: 110px; height: 110px; bottom: 25px; left: 25px; }
       #joystick-knob { width: 40px; height: 40px; top: 35px; left: 35px; }
       #btn-speed-mobile { width: 80px; height: 80px; bottom: 25px; right: 25px; font-size: 30px; }
@@ -404,6 +405,7 @@
   <canvas id="gameCanvas"></canvas>
 
   <script>
+    // --- VARIÁVEIS GLOBAIS ---
     const PIX_CODE_MENSAL = "00020126580014BR.GOV.BCB.PIX01364bab479c-481b-462b-8b1b-79e9d1eed36b520400005303986540519.905802BR592566.092.276 NAIRA DA SILVA6009SAO PAULO61080540900062250521es7ntTFmrET2xfnc95y8y63040C47";
     const PIX_CODE_VITALICIO = "00020126580014BR.GOV.BCB.PIX01364bab479c-481b-462b-8b1b-79e9d1eed36b520400005303986540599.905802BR592566.092.276 NAIRA DA SILVA6009SAO PAULO61080540900062250521teXHzwaic6voRRJc95y8y6304AAF9";
     const ADMIN_EMAIL = "eriik.eb4@gmail.com";
@@ -419,6 +421,7 @@
     let activeControl = "joystick"; let soundEnabled = true;
     let customCosmetics = { color: "#00e5ff", color2: "#ff00ff", face: "normal", acc: "none" };
     
+    // MAPA AMPLIADO E POUCOS BOTS
     const WORLD_SIZE = 10000; const BOT_COUNT = 10;
     
     let globalZoom = 1.0; let gameReqId; let hsRecords = []; 
@@ -689,7 +692,7 @@
         this.x = x || Math.random() * (WORLD_SIZE - 100) + 50; this.y = y || Math.random() * (WORLD_SIZE - 100) + 50;
         this.sprite = sprites[Math.floor(Math.random() * sprites.length)];
         this.size = isDrop ? Math.random() * 10 + 20 : Math.random() * 15 + 15;
-        this.expiresAt = isDrop ? Date.now() + 50000 : Infinity; // 50 segundos de duração
+        this.expiresAt = isDrop ? Date.now() + 50000 : Infinity; // Duração exata de 50s
         this.isDrop = isDrop; this.glowColor = glowColor; 
       }
       draw() { 
@@ -872,40 +875,19 @@
     function initGame() { snakes = []; foods = []; multipliers = []; powerups = []; texts = []; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); const skinOpts = ['solid', 'neon', 'zebra', 'dots', 'ghost']; for(let i=0; i<BOT_COUNT; i++) snakes.push(new Snake(`BOT ${i+1}`, i % 2 === 0 ? 'red' : 'blue', true, skinOpts[Math.floor(Math.random()*skinOpts.length)])); for(let i=0; i<450; i++) foods.push(new Food()); if(gameReqId) cancelAnimationFrame(gameReqId); gameLoop(); }
     function isVisible(x, y, padding, camX, camY) { return x > camX - (width/2)/globalZoom - padding && x < camX + (width/2)/globalZoom + padding && y > camY - (height/2)/globalZoom - padding && y < camY + (height/2)/globalZoom + padding; }
     
-    // REGRA DE HS REFINADA: EXIGE QUE O JOGADOR APONTE PARA O CENTRO DO MAPA E ESTEJA LONGE DA REDLINE
-    function registerKill(killer, victimX, victimY, isHeadshotCandidate) { 
-      let cx = WORLD_SIZE / 2; 
-      let cy = WORLD_SIZE / 2; 
-      let angleToCenter = Math.atan2(cy - killer.y, cx - killer.x); 
-      let diff = Math.abs(killer.angle - angleToCenter); 
-      while (diff > Math.PI) diff -= Math.PI * 2; 
-      diff = Math.abs(diff); 
-
-      const borderBuffer = 250; 
+    // SISTEMA DE HEADSHOT AJUSTADO (BLOQUEIA PERTO DA REDLINE E VERIFICA CORTE PERFEITO)
+    function registerKill(killer, victimX, victimY, isHeadshot) { 
+      const borderBuffer = 250; // Margem de segurança da parede
       let nearRedline = (victimX < borderBuffer || victimX > WORLD_SIZE - borderBuffer || victimY < borderBuffer || victimY > WORLD_SIZE - borderBuffer);
 
-      // Só aceita Headshot se o killer estiver apontando para o centro (dentro de 45 graus) E não estiver na borda
-      let pointingToCenter = (diff <= Math.PI / 4);
-
-      if (isHeadshotCandidate && pointingToCenter && !nearRedline) { 
+      if (isHeadshot && !nearRedline) { 
         killer.hs++; killer.kills++; 
         texts.push(new FloatingText(victimX, victimY, `${killer.name} - HEADSHOT!`, "#ffeb3b")); 
         if (killer === player) playSound('hs'); 
-        if (isVIP || !killer.isBot) { 
-          let banner = document.getElementById('vip-broadcast-banner'); 
-          if (banner) { 
-            banner.innerHTML = `🌟 <b>${killer.name}</b> ELIMINOU O ALVO COM UM HEADSHOT! 🌟`; 
-            setTimeout(() => { if(banner) banner.innerHTML = ""; }, 4000); 
-          } 
-        } 
-        let rec = hsRecords.find(r => r.id === killer.id); 
-        if (rec) rec.hs = killer.hs; 
-        else hsRecords.push({ id: killer.id, name: killer.name, team: killer.team, hs: killer.hs }); 
-        hsRecords.sort((a,b) => b.hs - a.hs); 
-        hsRecords = hsRecords.slice(0, 5); 
+        if (isVIP || !killer.isBot) { let banner = document.getElementById('vip-broadcast-banner'); if (banner) { banner.innerHTML = `🌟 <b>${killer.name}</b> ELIMINOU O ALVO COM UM HEADSHOT! 🌟`; setTimeout(() => { if(banner) banner.innerHTML = ""; }, 4000); } } 
+        let rec = hsRecords.find(r => r.id === killer.id); if (rec) rec.hs = killer.hs; else hsRecords.push({ id: killer.id, name: killer.name, team: killer.team, hs: killer.hs }); hsRecords.sort((a,b) => b.hs - a.hs); hsRecords = hsRecords.slice(0, 5); 
       } else { 
-        killer.kills++; 
-        if (!killer.isBot) texts.push(new FloatingText(victimX, victimY, "KILL!", "#ffffff")); 
+        killer.kills++; if (!killer.isBot) texts.push(new FloatingText(victimX, victimY, "KILL!", "#ffffff")); 
       } 
     }
 
@@ -950,8 +932,8 @@
                         } 
                     } else { 
                         s.die('player'); 
-                        let isHsCandidate = (k <= 20); 
-                        registerKill(enemy, s.x, s.y, isHsCandidate); 
+                        let isHs = (k <= 20); // Se o corte for na cabeça/pescoço do inimigo
+                        registerKill(enemy, s.x, s.y, isHs); 
                     } 
                     break; 
                 } 
