@@ -1,16 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WormWorld HD - Xbox Edition 2026</title>
+  <title>SNAKE FRIENDs🐍 - Xbox Edition 2026</title>
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap');
+    /* Fontes Modernas e Cyberpunk */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,800;1,700;1,800&family=Orbitron:wght@400;700;900&display=swap');
 
     * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-    body, html { width: 100%; height: 100%; overflow: hidden; background: #121418; font-family: 'Segoe UI', sans-serif; color: white; touch-action: none; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: #0a0d14; font-family: 'Montserrat', sans-serif; color: white; touch-action: none; transition: font-family 0.3s; }
     
     #gameCanvas { display: none; }
 
@@ -35,6 +35,12 @@
     }
     .btn-icon:hover { background: rgba(0,229,255,0.2); transform: scale(1.1); box-shadow: 0 0 20px rgba(0,229,255,0.6); }
 
+    #btn-font { font-family: 'Times New Roman', serif; font-style: italic; font-weight: 900; background: linear-gradient(45deg, #111, #333); border-color: #ffeb3b; color: #ffeb3b; }
+    #btn-font:hover { box-shadow: 0 0 20px rgba(255, 235, 59, 0.6); background: rgba(255, 235, 59, 0.2); }
+    
+    #btn-skin { background: linear-gradient(45deg, #ffb300, #ff6f00); border-color: #ffea00; color: #fff;}
+    #btn-skin:hover { box-shadow: 0 0 20px rgba(255, 234, 0, 0.8); transform: scale(1.1); }
+
     /* PAINEL VIP */
     .vip-panel {
       position: absolute; bottom: 20px; left: 20px;
@@ -43,8 +49,8 @@
       box-shadow: 0 0 30px rgba(255, 235, 59, 0.2); z-index: 10; width: 280px;
       backdrop-filter: blur(5px);
     }
-    .vip-title { color: #ffeb3b; font-family: 'Teko', sans-serif; font-size: 28px; margin-bottom: 10px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,235,59,0.5); }
-    .vip-perks { text-align: left; font-size: 13px; color: #ccc; margin-bottom: 10px; list-style: none; line-height: 1.5; }
+    .vip-title { color: #ffeb3b; font-family: inherit; font-size: 24px; font-weight: 900; margin-bottom: 10px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,235,59,0.5); }
+    .vip-perks { text-align: left; font-size: 13px; color: #ccc; margin-bottom: 10px; list-style: none; line-height: 1.5; font-weight: bold;}
     .vip-perks li { margin-bottom: 3px; }
     .btn-vip-buy {
       background: linear-gradient(45deg, #fbc02d, #f57f17); border: none;
@@ -54,79 +60,140 @@
     .btn-vip-buy:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,235,59,0.6); }
 
     .coupon-section { border-top: 1px solid rgba(255,235,59,0.3); margin-top: 10px; padding-top: 10px; }
-    #coupon-input { width: 70%; padding: 6px; border-radius: 4px; border: 1px solid #555; background: #000; color: #ffeb3b; text-align: center; font-size: 12px; }
-    .btn-coupon { width: 25%; padding: 6px; background: #333; border: 1px solid #555; color: white; border-radius: 4px; cursor: pointer; font-size: 12px; vertical-align: top; }
+    #coupon-input { width: 70%; padding: 6px; border-radius: 4px; border: 1px solid #555; background: #000; color: #ffeb3b; text-align: center; font-size: 12px; font-family: inherit; font-weight: bold;}
+    .btn-coupon { width: 25%; padding: 6px; background: #333; border: 1px solid #555; color: white; border-radius: 4px; cursor: pointer; font-size: 12px; vertical-align: top; font-family: inherit; font-weight: bold;}
     .btn-coupon:hover { background: #444; }
 
-    .logo { font-family: 'Teko', sans-serif; font-size: 80px; color: #fff; text-shadow: 0 0 20px #00e5ff, 0 0 40px #00e5ff; margin-bottom: 5px; z-index: 2; text-align: center; line-height: 1; }
+    /* CHAT GLOBAL BR NO MENU INICIAL */
+    .chat-panel {
+      background: rgba(15, 20, 28, 0.95); border: 2px solid #00e5ff; border-radius: 12px; 
+      display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); 
+      backdrop-filter: blur(5px);
+    }
+    #global-chat-panel { position: absolute; bottom: 20px; left: 320px; width: 320px; height: 260px; z-index: 10; }
+    
+    .chat-header { background: rgba(0,0,0,0.5); padding: 8px; font-weight: bold; font-size: 13px; color: #fff; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); font-family: 'Orbitron', sans-serif;}
+    .chat-messages { flex: 1; padding: 10px; overflow-y: auto; font-size: 12px; display: flex; flex-direction: column; gap: 5px; word-break: break-word;}
+    .chat-msg { background: rgba(255,255,255,0.05); padding: 5px 8px; border-radius: 6px; font-family: inherit;}
+    .chat-msg .sender { font-weight: 900; margin-right: 5px; }
+    .chat-input-area { display: flex; border-top: 1px solid rgba(255,255,255,0.1); }
+    .chat-input-area input { flex: 1; background: transparent; border: none; padding: 10px; color: white; font-size: 12px; font-weight: bold; margin: 0; outline: none; font-family: inherit;}
+    .chat-input-area button { background: #00e5ff; border: none; color: black; font-weight: bold; padding: 0 15px; cursor: pointer; font-family: inherit;}
+    .chat-input-area button:hover { background: #00b8d4; }
+
+    /* PAINEL DE ESTATÍSTICAS GLOBAIS DO JOGADOR */
+    .player-stats-panel {
+      position: absolute; top: 90px; right: 20px;
+      background: rgba(15, 20, 28, 0.95); border: 2px solid #00e5ff;
+      border-radius: 12px; padding: 15px; text-align: left;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); z-index: 10; width: 220px;
+      backdrop-filter: blur(5px); display: flex; flex-direction: column; gap: 8px;
+    }
+    .stats-nick { color: #00e5ff; font-family: inherit; font-size: 18px; font-weight: 900; text-align: center; text-transform: uppercase; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 8px; margin-bottom: 5px; text-shadow: 0 0 8px rgba(0,229,255,0.5); word-break: break-all;}
+    .stats-list { list-style: none; font-size: 13px; color: #ccc; font-weight: bold; }
+    .stats-list li { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center;}
+    .stats-list span { color: #fff; font-family: inherit; font-size: 15px;}
+
+    /* PAINEL PREVIEW DA COBRA NO MENU INICIAL (DIREITA) */
+    .home-preview-panel {
+      position: absolute; bottom: 20px; right: 20px;
+      background: rgba(15, 20, 28, 0.95); border: 2px solid #ffeb3b;
+      border-radius: 12px; padding: 12px; text-align: center;
+      box-shadow: 0 0 20px rgba(255, 235, 59, 0.2); z-index: 10; width: 260px;
+      backdrop-filter: blur(5px); display: flex; flex-direction: column; align-items: center;
+    }
+
+    .logo { font-family: inherit; font-weight: 900; font-size: 80px; color: #ffeb3b; text-shadow: 0 0 20px #ff6f00, 0 0 40px #ff6f00; margin-bottom: 5px; z-index: 2; text-align: center; line-height: 1; }
     
     .modal-box {
       background: rgba(15, 20, 28, 0.9); border: 2px solid rgba(0, 229, 255, 0.2);
       padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,229,255,0.05);
-      text-align: center; width: 440px; position: relative; z-index: 2; backdrop-filter: blur(5px);
+      text-align: center; width: 520px; max-width: 95%; position: relative; z-index: 2; backdrop-filter: blur(5px);
     }
+    .modal-store { width: 900px !important; max-width: 95%; display: flex; gap: 20px; text-align: left; padding: 20px; }
+    
     .hidden-menu { display: none !important; }
 
     input[type="text"], input[type="email"], select {
       width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #444;
       background: #0d1117; color: white; font-size: 15px; text-align: center; outline: none; transition: 0.3s;
+      font-family: inherit; font-weight: bold;
     }
-    input[type="email"]:focus, input[type="text"]:focus { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.4); }
-    input:disabled { background: #1a1a1a; color: #777; cursor: not-allowed; }
     
-    input[type="color"] { width: 100%; height: 50px; border: none; border-radius: 8px; background: #111; cursor: pointer; margin-bottom: 10px; }
+    input[type="text"]:focus, select:focus { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.4); }
+    input:disabled { background: #1a1a1a !important; color: #777 !important; border-color: #333 !important; cursor: not-allowed; }
+    select { cursor: pointer; background: #161b22; }
     
     .btn-team, .btn-action {
-      width: 100%; padding: 15px; margin: 8px 0; border: none; border-radius: 8px;
-      font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; text-transform: uppercase;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 8px;
+      font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.2s; color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-family: inherit; letter-spacing: 1px;
     }
     
     .btn-red { background: linear-gradient(45deg, #b71c1c, #ff5252); } .btn-red:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 82, 82, 0.6); }
     .btn-blue { background: linear-gradient(45deg, #0d47a1, #2979ff); } .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(41, 121, 255, 0.6); }
+    .btn-yellow { background: linear-gradient(45deg, #f57f17, #ffea00); color: #000; } .btn-yellow:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 234, 0, 0.6); }
+    .btn-green { background: linear-gradient(45deg, #1b5e20, #00e676); color: #000; } .btn-green:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 230, 118, 0.6); }
+    
     .btn-action { background: linear-gradient(45deg, #00b0ff, #00e5ff); color: #000; } .btn-action:hover { background: linear-gradient(45deg, #0091ea, #00b8d4); box-shadow: 0 4px 15px rgba(0,229,255,0.4); }
+    .btn-save { background: linear-gradient(45deg, #00e676, #1b5e20) !important; color: #fff !important; } .btn-save:hover { box-shadow: 0 4px 15px rgba(0,230,118,0.5) !important; }
     .btn-back { background: #444 !important; color: #fff !important; } .btn-back:hover { background: #666 !important; }
-    .btn-edit { background: linear-gradient(45deg, #ff9100, #ffab40) !important; color: #000 !important; } .btn-edit:hover { box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); }
 
-    .keybind-row { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 14px; }
-    .btn-keybind { background: #222; border: 1px solid #555; padding: 8px 15px; color: #ffeb3b; border-radius: 5px; cursor: pointer; min-width: 120px; font-weight: bold; }
+    .keybind-row { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 14px; font-weight: bold; }
+    .btn-keybind { background: #222; border: 1px solid #555; padding: 8px 15px; color: #ffeb3b; border-radius: 5px; cursor: pointer; min-width: 120px; font-weight: bold; font-family: inherit;}
     .btn-keybind:hover { background: #333; border-color: #ffeb3b; }
+
+    /* Custom Store Scrollbar */
+    .custom-scroll::-webkit-scrollbar { width: 8px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #ffeb3b; border-radius: 10px; }
+    
+    .store-label { color: #ffeb3b; font-size: 12px; font-weight: 900; margin-top: 10px; margin-bottom: 2px; text-transform: uppercase; font-family: 'Orbitron', sans-serif;}
 
     /* Modal de Pagamento PIX */
     .pix-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100000; backdrop-filter: blur(5px); }
     .pix-modal-box { background: #161b22; color: #fff; width: 90%; max-width: 400px; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; border: 1px solid #00e5ff; }
-    .pix-header { font-weight: bold; font-size: 18px; margin-bottom: 15px; color: #00e5ff; display: flex; align-items: center; justify-content: center; gap: 8px;}
+    .pix-header { font-family: inherit; font-weight: bold; font-size: 18px; margin-bottom: 15px; color: #00e5ff; display: flex; align-items: center; justify-content: center; gap: 8px;}
     .pix-header svg { width: 25px; height: 25px; fill: #00e5ff; }
     .pix-code-area { background: #0d1117; border: 1px solid #333; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; max-height: 100px; overflow-y: auto; margin-bottom: 15px; user-select: text; text-align: left; color: #a5d6ff;}
-    .btn-copy-pix { background: #00bfa5; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px;}
+    .btn-copy-pix { font-family: inherit; background: #00bfa5; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px;}
     .btn-copy-pix:hover { background: #009688; }
     .btn-close-pix { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; }
 
-    /* HUD E RADAR */
-    .hud-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none; z-index: 10; font-family: 'Times New Roman', Times, serif; }
-    .left-panel { position: absolute; top: 15px; left: 15px; width: 220px; }
-    .right-panel { position: absolute; top: 15px; right: 15px; width: 250px; text-align: right; }
+    /* HUD E RADAR E CHAT DA EQUIPE */
+    .hud-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none; z-index: 10; font-family: inherit; }
+    .left-panel { position: absolute; top: 15px; left: 15px; width: 300px; display: flex; flex-direction: column; height: 95%; pointer-events: none;}
+    .right-panel { position: absolute; top: 15px; right: 15px; width: 280px; text-align: right; }
+    
+    .hud-chat { width: 100%; height: 200px; background: rgba(10, 15, 20, 0.85); border: 1px solid rgba(255,255,255,0.2); margin-top: auto; pointer-events: auto; border-radius: 12px; margin-bottom: 15px;}
+    
+    #btn-mic { background: rgba(0,0,0,0.8); border: 2px solid #f44336; color: #f44336; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
+    #btn-mic.active { border-color: #4caf50; color: #4caf50; text-shadow: 0 0 5px #4caf50; box-shadow: 0 0 10px rgba(76,175,80,0.4);}
 
     .radar-wrapper { position: relative; width: 140px; height: 140px; margin-left: 20px; }
     .radar-container { position: absolute; top: 10px; left: 10px; width: 120px; height: 120px; border-radius: 50%; border: 3px solid rgba(0,229,255,0.5); background: rgba(0,0,0,0.85); overflow: hidden; box-shadow: 0 0 15px rgba(0,229,255,0.2); }
     .radar-container::after { content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: rgba(255,255,255,0.15); transform: translateX(-50%); }
     .radar-container::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.15); transform: translateY(-50%); }
     
-    .clock-num { position: absolute; font-family: 'Arial', sans-serif; font-size: 11px; font-weight: bold; color: rgba(255,255,255,0.6); transform: translate(-50%, -50%); z-index: 3; }
+    .clock-num { position: absolute; font-family: inherit; font-size: 11px; font-weight: bold; color: rgba(255,255,255,0.6); transform: translate(-50%, -50%); z-index: 3; }
     .clock-center { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: #00e5ff; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5; box-shadow: 0 0 6px #00e5ff; }
     .radar-entities { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 6; }
 
-    .my-hs-box { margin-top: 15px; margin-left: 20px; font-family: 'Teko', sans-serif; font-size: 24px; color: #fff; text-shadow: 1px 1px 4px #000; font-weight: bold; min-height: 35px; }
-    .hs-record-box { margin-top: 5px; margin-left: 20px; font-family: 'Segoe UI', sans-serif; font-size: 14px; text-shadow: 1px 1px 2px #000; background: rgba(15,20,28,0.8); padding: 10px; border-radius: 8px; border-left: 3px solid #ffeb3b; border: 1px solid rgba(255,235,59,0.2); }
-    .hs-record-title { color: #ffeb3b; font-weight: bold; margin-bottom: 5px; font-family: 'Teko', sans-serif; font-size: 20px; letter-spacing: 1px; }
+    .my-hs-box { margin-top: 15px; margin-left: 20px; font-family: inherit; font-size: 22px; color: #fff; text-shadow: 1px 1px 4px #000; font-weight: bold; min-height: 35px; }
+    .hs-record-box { margin-top: 5px; margin-left: 20px; font-family: inherit; font-size: 13px; font-weight: bold; text-shadow: 1px 1px 2px #000; background: rgba(15,20,28,0.8); padding: 10px; border-radius: 8px; border-left: 3px solid #ffeb3b; border: 1px solid rgba(255,235,59,0.2); }
+    .hs-record-title { color: #ffeb3b; font-weight: 900; margin-bottom: 5px; font-family: inherit; font-size: 16px; letter-spacing: 1px; }
 
-    .stats-row { display: flex; justify-content: flex-start; margin-top: 10px; margin-left: 20px; text-align: center; font-size: 15px; }
+    .stats-row { display: flex; justify-content: flex-start; margin-top: 10px; margin-left: 20px; text-align: center; font-size: 13px; font-weight: bold; }
     .stat-col { display: flex; flex-direction: column; margin-right: 20px; }
-    .stat-col .val { font-size: 18px; margin-top: 2px; font-weight: bold; }
+    .stat-col .val { font-family: inherit; font-size: 18px; margin-top: 2px; font-weight: bold; }
     
-    .leaderboard-title { font-family: 'Teko', sans-serif; font-size: 24px; color: #00e5ff; margin-bottom: 10px; text-shadow: 1px 1px 3px #000; letter-spacing: 1px; }
-    .lb-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 5px; text-shadow: 1px 1px 2px #000; font-family: 'Segoe UI', sans-serif; }
-    .lb-row span:nth-child(2) { color: #ccc; font-weight: bold; }
+    .leaderboard-title { font-family: inherit; font-size: 22px; font-weight: 900; color: #00e5ff; margin-bottom: 10px; text-shadow: 1px 1px 3px #000; letter-spacing: 1px; }
+    .lb-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; text-shadow: 1px 1px 2px #000; font-family: inherit; font-weight: bold; }
+    .lb-row span:nth-child(2) { font-family: inherit; color: #ccc; font-weight: bold; }
+
+    #kill-feed { margin-top: 20px; text-align: right; font-family: inherit; font-style: italic; font-weight: 900; font-size: 15px; text-shadow: 1.5px 1.5px 3px #000; pointer-events: none; }
+    .kill-feed-item { margin-bottom: 6px; animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
     /* CONTROLES MOBILE */
     #btn-speed-mobile { position: absolute; bottom: 40px; right: 40px; width: 100px; height: 100px; background: rgba(0, 229, 255, 0.15); border: 2px solid rgba(0,229,255,0.7); border-radius: 50%; font-size: 40px; display: none; justify-content: center; align-items: center; z-index: 50; pointer-events: auto; text-shadow: 0 0 10px #fff; box-shadow: 0 0 20px rgba(0,229,255,0.3); }
@@ -138,10 +205,15 @@
     @media (max-width: 900px), (max-height: 600px) {
       .overlay-screen { justify-content: flex-start; padding-top: 70px; padding-bottom: 30px; }
       .vip-panel { position: relative; bottom: auto; left: auto; margin-top: 15px; width: 90%; max-width: 440px; }
-      .logo { font-size: 55px; margin-bottom: 10px; }
-      .modal-box { width: 90%; max-width: 440px; padding: 18px; }
+      .home-preview-panel { display: none; }
+      #global-chat-panel { display: none; }
+      .logo { font-size: 45px; margin-bottom: 10px; }
+      .modal-box { width: 95%; max-width: 480px; padding: 18px; }
+      .modal-store { flex-direction: column; width: 95% !important; overflow-y: auto;}
+      
       .top-right-controls { top: 10px; right: 10px; }
       .btn-icon { width: 42px; height: 42px; font-size: 18px; }
+      .player-stats-panel { top: 60px; right: 10px; width: 180px; padding: 10px; }
       
       .left-panel { transform: scale(0.65); transform-origin: top left; }
       .right-panel { transform: scale(0.65); transform-origin: top right; }
@@ -162,7 +234,7 @@
     <div class="pix-modal-box">
       <button class="btn-close-pix" onclick="closePixModal()">×</button>
       <div class="pix-header">
-        <svg viewBox="0 0 512 512"><path d="M242.4 20.4c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7L481.6 142.1c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L254.1 292.3c-1.8 1.1-3.8 1.7-5.8 1.7s-4.1-.6-5.8-1.7L12.4 162.2c-1.8-1.1-3.3-2.6-4.3-4.3S6.4 154.1 6.4 152.1s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L242.4 20.4zM161.7 201l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm116 116l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm-207.7 22.1c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l227.6 130c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L12.4 481.6c-1.8 1.1-3.3 2.6-4.3 4.3S6.4 489.7 6.4 491.7s.6 4.1 1.7 5.8s2.6 3.3 4.3 4.3L4.1 361.9c-1.8-1.1-3.3-2.6-4.3-4.3S-1.6 353.8-1.6 351.8s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L270 201.2 161.7 201l-111.7 63.8zm218.1 124.6l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7L314 316.5c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zM499.6 361.9c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L272 512l-108.3-61.9L272 386.3l227.6-130c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l111.7-63.8 108.3 61.9z"/></svg>
+        <svg viewBox="0 0 512 512"><path d="M242.4 20.4c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7L481.6 142.1c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L254.1 292.3c-1.8 1.1-3.8 1.7-5.8 1.7s-4.1-.6-5.8-1.7L12.4 162.2c-1.8-1.1-3.3-2.6-4.3-4.3S6.4 154.1 6.4 152.1s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L242.4 20.4zM161.7 201l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm116 116l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7l-19.7-11.3c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zm-207.7 22.1c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l227.6 130c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L12.4 481.6c-1.8 1.1-3.3 2.6-4.3 4.3S6.4 489.7 6.4 491.7s.6 4.1 1.7 5.8s2.6-3.3 4.3-4.3L4.1 361.9c-1.8-1.1-3.3-2.6-4.3-4.3S-1.6 353.8-1.6 351.8s.6-4.1 1.7-5.8s2.6-3.3 4.3-4.3L270 201.2 161.7 201l-111.7 63.8zm218.1 124.6l19.7 11.3c2.4 1.4 5.1 2.1 7.9 2.1s5.5-.7 7.9-2.1l19.7-11.3c2.4-1.4 4.4-3.3 5.8-5.7s2.1-5.1 2.1-7.9s-.7-5.5-2.1-7.9s-3.3-4.4-5.8-5.7L314 316.5c-2.4-1.4-5.1-2.1-7.9-2.1s-5.5.7-7.9 2.1l-19.7 11.3c-2.4 1.4-4.4 3.3-5.8 5.7s-2.1 5.1-2.1 7.9s.7 5.5 2.1 7.9s3.3 4.4 5.8 5.7zM499.6 361.9c1.8 1.1 3.3 2.6 4.3 4.3s1.7 3.8 1.7 5.8s-.6 4.1-1.7 5.8s-2.6 3.3-4.3 4.3L272 512l-108.3-61.9L272 386.3l227.6-130c1.8-1.1 3.8-1.7 5.8-1.7s4.1.6 5.8 1.7l111.7-63.8 108.3 61.9z"/></svg>
         Pagamento via PIX
       </div>
       <p class="pix-instruction">Clique abaixo para copiar o código "Copia e Cola" e pague no app do seu banco.</p>
@@ -175,17 +247,17 @@
   <!-- TELAS INICIAIS -->
   <div id="start-screen" class="overlay-screen">
     
-    <!-- PAINEL VIP (LOJA) -->
+    <!-- PAINEL VIP -->
     <div class="vip-panel" id="vip-panel-ui">
       <div class="vip-title">👑 LOJA VIP</div>
       <ul class="vip-perks">
         <li>✔️ <b>Servidor Único BR #01</b></li>
         <li>✔️ Mudança de Nick Sem Limites</li>
-        <li>✔️ Nome Dourado VIP</li>
-        <li>✔️ Zoom Ilimitado e Skins</li>
+        <li>✔️ Roupas Douradas VIP</li>
+        <li>✔️ Zoom Ilimitado e Personalização</li>
       </ul>
       <button class="btn-vip-buy" onclick="buyVIP('Mensal')">R$ 19,90 <span style="font-weight:normal; font-size:11px;">/ Mês</span></button>
-      <button class="btn-vip-buy" onclick="buyVIP('Vitalício')">R$ 99,90 <span style="font-weight:normal; font-size:11px;">/ Vitalício</span></button>
+      <button class="btn-vip-buy" onclick="buyVIP('Vitalício')">R$ 59,99 <span style="font-weight:normal; font-size:11px;">/ Vitalício</span></button>
       
       <!-- Seção de Cupom -->
       <div class="coupon-section">
@@ -194,111 +266,222 @@
       </div>
     </div>
 
+    <!-- CHAT GLOBAL NO MENU INICIAL -->
+    <div class="chat-panel" id="global-chat-panel">
+      <div class="chat-header">💬 Chat Global BR #01</div>
+      <div class="chat-messages custom-scroll" id="global-chat-msgs"></div>
+      <div class="chat-input-area">
+        <input type="text" id="global-chat-input" placeholder="Conversar no Global..." onkeypress="handleGlobalChat(event)">
+        <button onclick="sendGlobalChat()">Enviar</button>
+      </div>
+    </div>
+
+    <!-- PREVIEW DA COBRA NO MENU INICIAL (DIREITA) - HORIZONTAL E MAIOR -->
+    <div class="home-preview-panel">
+      <div style="font-size: 13px; color: #ffeb3b; font-weight: 900; margin-bottom: 8px; font-family: 'Orbitron'; text-transform: uppercase;">🐍 SUA COBRA SALVA</div>
+      <canvas id="homePreviewCanvas" width="230" height="130" style="background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid #ffeb3b;"></canvas>
+    </div>
+
     <!-- BOTÕES SUPERIORES -->
     <div class="top-right-controls">
+      <button class="btn-icon" id="btn-skin" onclick="openMenu('menu-vip-store')" title="Loja VIP Skins e Roupas">🐍</button>
+      <button class="btn-icon" id="btn-font" onclick="openMenu('menu-fonts')" title="Mudar Fonte">F</button>
       <button class="btn-icon" id="btn-settings" onclick="openMenu('menu-settings')" title="Configurações & ID">⚙️</button>
       <button class="btn-icon" id="btn-fullscreen" onclick="toggleFullScreen()" title="Tela Cheia">🔲</button>
       <button class="btn-icon" id="btn-sound" onclick="toggleSound()" title="Som">🔊</button>
       <button class="btn-icon" onclick="openMenu('menu-controls')" title="Controles">🎮</button>
-      <button class="btn-icon" onclick="tryOpenSkins()" title="Textura da Skin (VIP)">🎨</button>
+    </div>
+
+    <!-- PAINEL DE ESTATÍSTICAS DO JOGADOR -->
+    <div class="player-stats-panel" id="player-stats-panel-ui">
+      <div class="stats-nick" id="stats-nick-display">VISITANTE</div>
+      <ul class="stats-list">
+        <li>Recorde Máximo:<span id="stats-score-display">0</span></li>
+        <li>Headshots Totais:<span id="stats-hs-display">0</span></li>
+        <li>Kills Totais:<span id="stats-kills-display">0</span></li>
+      </ul>
     </div>
 
     <svg class="snake-art-bg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
-      <path class="snake-path" d="M-100,200 Q150,50 300,300 T800,150 T1200,400" fill="none" stroke="#00e5ff" stroke-width="30" stroke-linecap="round"/>
-      <path class="snake-path" d="M-50,800 Q250,600 400,800 T900,600 T1300,900" fill="none" stroke="#2979ff" stroke-width="30" stroke-linecap="round" style="animation-delay: -4s;"/>
+      <path class="snake-path" d="M-100,200 Q150,50 300,300 T800,150 T1200,400" fill="none" stroke="#ffeb3b" stroke-width="30" stroke-linecap="round"/>
+      <path class="snake-path" d="M-50,800 Q250,600 400,800 T900,600 T1300,900" fill="none" stroke="#ff5252" stroke-width="30" stroke-linecap="round" style="animation-delay: -4s;"/>
     </svg>
 
-    <div class="logo">WORMZILLA.IO</div>
-    <div style="color: #00e5ff; font-size: 14px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(0,229,255,0.5);">🟢 Servidor Oficial BR #01 (Unificado)</div>
+    <div class="logo">SNAKE FRIENDs🐍</div>
+    <div style="color: #ffeb3b; font-size: 14px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255,235,59,0.5);">🟢 Servidor Oficial BR #01 (Unificado)</div>
     
     <!-- MENU PRINCIPAL -->
     <div class="modal-box" id="menu-main">
-      <div style="font-size: 13px; color:#aaa; margin-bottom: 5px; text-align: left;">Conta / E-mail (Obrigatório):</div>
-      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-        <input type="email" id="email-input" placeholder="✉️ Digite seu E-mail" oninput="checkEmailLive()" style="margin: 0;">
+      <div style="font-size: 13px; color:#aaa; margin-bottom: 5px; text-align: left; font-weight:bold;">Conta (Obrigatório):</div>
+      <div id="login-container" style="display: flex; gap: 8px; margin-bottom: 10px;">
+        
+        <!-- BOTÃO GOOGLE LOGIN -->
+        <button id="btn-google-login" class="btn-action" style="background: #fff; color: #444; border: 2px solid #4285F4; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Montserrat';" onclick="googleLogin()">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Fazer login com o Google
+        </button>
+
+        <!-- Campo Oculto apenas para lógica do sistema antigo -->
+        <input type="email" id="email-input" style="display: none;">
+
+        <div id="logged-email-display" style="display:none; flex:1; align-items:center; justify-content:center; background:#0d1117; border:1px solid #444; border-radius:8px; padding:12px; color:#fff; font-size:13px; font-weight:bold;"></div>
         <button id="btn-logout" class="btn-action btn-red" style="margin: 0; padding: 0 15px; width: auto; font-size: 14px; display: none;" onclick="logout()" title="Sair da Conta">Sair</button>
       </div>
 
       <div style="display: flex; flex-direction: column; text-align: left; margin-bottom: 5px;">
-        <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Seu Nickname:</div>
+        <div style="font-size: 13px; color:#aaa; margin-bottom: 5px; font-weight:bold;">Seu Nickname:</div>
         <input type="text" id="username-input" placeholder="Nome de Jogador" maxlength="15" disabled>
-        <div id="nick-status" style="font-size: 13px; color: #aaa; margin-top: 2px; margin-bottom: 10px; text-align: center;">Aguardando E-mail...</div>
+        <div id="nick-status" style="font-size: 13px; color: #aaa; margin-top: 2px; margin-bottom: 10px; text-align: center; font-weight:bold;">Aguardando Conta Google...</div>
       </div>
       
-      <button class="btn-action btn-edit" onclick="tryOpenEditor()">👑 EDITAR COBRA (VIP)</button>
-      <p style="margin-top: 15px; font-size: 13px; color:#ccc;">(A Cobra só corre se você segurar o botão de Acelerar!)</p>
+      <p style="margin-top: 10px; margin-bottom: 15px; font-size: 12px; color:#ccc; font-style:italic;">(A Cobra só corre se você segurar o botão de Acelerar!)</p>
       
-      <div style="display: flex; gap: 10px;">
-        <button class="btn-team btn-red" onclick="startGame('red')">ENTRAR - VERMELHO</button>
-        <button class="btn-team btn-blue" onclick="startGame('blue')">ENTRAR - AZUL</button>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button class="btn-team btn-red" onclick="startGame('red')">VERMELHO</button>
+        <button class="btn-team btn-blue" onclick="startGame('blue')">AZUL</button>
+        <button class="btn-team btn-yellow" onclick="startGame('yellow')">AMARELO</button>
+        <button class="btn-team btn-green" onclick="startGame('green')">VERDE</button>
       </div>
+    </div>
+
+    <!-- LOJA VIP SUPER SKINS (AO VIVO) -->
+    <div class="modal-box hidden-menu modal-store" id="menu-vip-store">
+      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 2px solid rgba(255,235,59,0.2); padding-right: 20px;">
+        <h2 style="color: #ffeb3b; margin-bottom: 15px; font-weight:900; font-family:'Orbitron';">👑 LOJA VIP</h2>
+        <canvas id="previewCanvas" width="300" height="360" style="background: radial-gradient(circle, rgba(20,25,35,1) 0%, rgba(5,8,12,1) 100%); border-radius: 15px; border: 2px solid #ffeb3b; box-shadow: 0 0 30px rgba(255,235,59,0.3);"></canvas>
+        <button class="btn-action btn-save" style="margin-top:15px; width:100%;" onclick="confirmAndSaveStore()">💾 CONFIRMAR E SALVAR</button>
+        <button class="btn-action btn-back" style="margin-top:8px; width:100%;" onclick="openMenu('menu-main')">⬅️ VOLTAR AO INÍCIO</button>
+      </div>
+      <div style="flex: 1; overflow-y: auto; max-height: 480px; padding-left: 10px;" class="custom-scroll">
+        <h3 style="color: #00e5ff; margin-bottom: 15px; font-weight:900; text-align: center;">Personalize em Tempo Real</h3>
+        
+        <div class="store-label">1. Rostos</div>
+        <select id="s-face" onchange="updateCustoms()">
+          <option value="padrao">Padrão 2026</option>
+          <option value="redondo">Redondo Fofo</option>
+          <option value="oval">Oval (Alien)</option>
+          <option value="quadrado">Quadrado (Robô)</option>
+          <option value="largo">Largo (Sapo)</option>
+        </select>
+
+        <div class="store-label">2. Bocas</div>
+        <select id="s-mouth" onchange="updateCustoms()">
+          <option value="sorriso">Sorriso Simples</option>
+          <option value="aberta">Boca Aberta (Feliz)</option>
+          <option value="fofa">Boca Fofa (UwU)</option>
+          <option value="vampiro">Vampiro (Presas)</option>
+          <option value="banguela">Banguela</option>
+          <option value="triste">Triste / Bravo</option>
+          <option value="lingua">Língua pra fora</option>
+        </select>
+
+        <div class="store-label">3. Olhos</div>
+        <select id="s-eyes" onchange="updateCustoms()">
+          <option value="normal">Normal (Bolinhas)</option>
+          <option value="irritado">Irritado (Bravo)</option>
+          <option value="fofo">Fofo (Brilhante)</option>
+          <option value="oculos">Óculos Escuros</option>
+          <option value="ciclope">Ciclope (1 Olho)</option>
+          <option value="estrelas">Estrelas (Fã)</option>
+          <option value="chorando">Chorando (Anime)</option>
+          <option value="zumbi">Zumbi (Vazio)</option>
+        </select>
+
+        <div class="store-label">4. Corpo da Cobra</div>
+        <select id="s-body" onchange="updateCustoms()">
+          <option value="bolinhas">Bolinhas (Clássico)</option>
+          <option value="liso">Liso (Tubo Fluido)</option>
+          <option value="quadrado">Quadrados (Minecraft)</option>
+          <option value="triangulos">Espigado (Triângulos)</option>
+        </select>
+
+        <div class="store-label">5. Skins Base / Roupas</div>
+        <select id="s-skin" onchange="updateCustoms()">
+          <option value="padrao">Cor do Time Padrão</option>
+          <option value="ouro">👑 Dourada VIP (Ouro Puro)</option>
+          <option value="prata">Prata Metálica</option>
+          <option value="neon">Neon Cyberpunk</option>
+          <option value="escura">Matéria Escura</option>
+          <option value="arcoiris">Arco-íris Liso</option>
+          <option value="fantasma">Fantasma (Translúcida)</option>
+        </select>
+
+        <div class="store-label">6. Orelhas (Visual Real)</div>
+        <select id="s-ear" onchange="updateCustoms()">
+          <option value="nenhuma">Nenhuma</option>
+          <option value="gato">Orelhas de Gato</option>
+          <option value="cachorro">Orelhas de Cachorro</option>
+          <option value="coelho">Orelhas de Coelho</option>
+          <option value="elfo">Orelhas de Elfo</option>
+          <option value="urso">Orelhas de Urso</option>
+        </select>
+
+        <div class="store-label">7. Skins Temáticas (+200 Variações Mágicas)</div>
+        <select id="s-theme" onchange="updateCustoms()">
+          <option value="nenhum">Nenhuma (Usa a Base Acima)</option>
+          <optgroup label="Elementos da Natureza">
+            <option value="fogo">🔥 Fogo Escaldante</option>
+            <option value="agua">💧 Água Cristalina</option>
+            <option value="terra">🌱 Terra / Planta</option>
+            <option value="ar">🌪️ Ar / Vento</option>
+            <option value="raio">⚡ Tempestade de Raios</option>
+            <option value="gelo">❄️ Gelo Congelante</option>
+          </optgroup>
+          <optgroup label="Animes & Pop Culture">
+            <option value="dragonball">🟠 Dragonball (Esferas)</option>
+            <option value="naruto">🌀 Naruto (Chakra)</option>
+            <option value="pikachu">⚡ Pikachu (Elétrico)</option>
+            <option value="homemaranha">🕷️ Homem-Aranha</option>
+            <option value="superman">⭐ Super-Homem</option>
+            <option value="ironman">🤖 Homem de Ferro</option>
+            <option value="frozen">❄️ Frozen Mágica</option>
+            <option value="reileao">🦁 Rei Leão</option>
+          </optgroup>
+          <optgroup label="Especiais">
+            <option value="baralho">🃏 Baralho (Cartas)</option>
+            <option value="zumbi">🧟 Zumbi Tóxico</option>
+            <option value="peixinho">🐟 Peixinho do Mar</option>
+            <option value="doces">🍬 Chuva de Doces</option>
+            <option value="espacial">🌌 Galáxia Espacial</option>
+            <option value="dinheiro">💸 Magnata (Notas)</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <!-- MENU DE FONTES -->
+    <div class="modal-box hidden-menu" id="menu-fonts">
+      <h2 style="color: #ffeb3b; margin-bottom: 15px; font-weight:900;">✒️ Mudar Fonte (Word)</h2>
+      <p style="color: #ccc; font-size: 13px; margin-bottom: 15px;">Personalize a fonte de todo o jogo conforme desejar.</p>
+      <select id="font-select" onchange="changeGlobalFont()">
+        <option value="'Montserrat', sans-serif">Padrão 2026 (Montserrat)</option>
+        <option value="Arial, sans-serif">Arial</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="'Courier New', monospace">Courier New</option>
+        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+        <option value="Impact, sans-serif">Impact</option>
+        <option value="Verdana, sans-serif">Verdana</option>
+        <option value="Tahoma, sans-serif">Tahoma</option>
+        <option value="Georgia, serif">Georgia</option>
+      </select>
+      <button class="btn-action btn-save" style="margin-top:15px;" onclick="saveFontAndBack()">💾 CONFIRMAR E SALVAR</button>
+      <button class="btn-action btn-back" style="margin-top:8px;" onclick="openMenu('menu-main')">⬅️ VOLTAR AO INÍCIO</button>
     </div>
 
     <!-- MENU DE CONFIGURAÇÕES & ID ÚNICO -->
     <div class="modal-box hidden-menu" id="menu-settings">
-      <h2 style="color: #00e5ff; margin-bottom: 15px;">⚙️ Configurações & ID</h2>
-      <div style="font-size: 13px; color: #aaa; margin-bottom: 5px; text-align: left;">Seu ID Único de Jogador:</div>
+      <h2 style="color: #00e5ff; margin-bottom: 15px; font-weight:900;">⚙️ Configurações & ID</h2>
+      <div style="font-size: 13px; color: #aaa; margin-bottom: 5px; text-align: left; font-weight:bold;">Seu ID Único de Jogador:</div>
       <div id="display-unique-id" style="background: #0d1117; padding: 12px; border-radius: 8px; color: #00e5ff; font-family: monospace; font-size: 15px; margin-bottom: 15px; border: 1px solid #333; word-break: break-all;">WZ-GERANDO...</div>
       <button class="btn-action" style="background: #00bfa5; color: #fff;" onclick="copyUniqueId()">Copiar Meu ID Único</button>
-      <div style="margin-top: 20px; font-size: 12px; color: #777; line-height: 1.4;">Este ID é exclusivo da sua conta neste navegador para extensões e suporte técnico em 2026.</div>
-      <button class="btn-action btn-back" style="margin-top:20px;" onclick="openMenu('menu-main')">Voltar ao Início</button>
-    </div>
-
-    <!-- MENU DE EDIÇÃO DA COBRA -->
-    <div class="modal-box hidden-menu" id="menu-editor">
-      <h2 style="color: #ff9800; margin-bottom: 15px;">👑 Editor VIP</h2>
-      
-      <div style="display: flex; gap: 15px; text-align: left;">
-        <div style="flex: 1;">
-          <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Cor Base:</div>
-          <input type="color" id="snake-color" value="#00e5ff" style="height:35px; margin-bottom:5px;">
-          <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Cor Secundária (Texturas):</div>
-          <input type="color" id="snake-color2" value="#ff00ff" style="height:35px;">
-        </div>
-        <div style="flex: 1;">
-          <div style="font-size: 13px; color:#aaa; margin-bottom: 5px;">Rosto / Olhos:</div>
-          <select id="snake-face">
-            <optgroup label="Expressões">
-              <option value="normal">Padrão</option>
-              <option value="angry">Bravo 😠</option>
-              <option value="cute">Fofo 🥺</option>
-              <option value="large">Olhos Grandes 😳</option>
-              <option value="small">Olhos Pequenos 😶</option>
-              <option value="crying">Chorando 😭</option>
-              <option value="closed">Olhos Fechados 😌</option>
-              <option value="cool">Estiloso 😎</option>
-              <option value="nerd">Nerd 🤓</option>
-            </optgroup>
-            <optgroup label="Criaturas & Emojis">
-              <option value="alien">Alien 👽</option>
-              <option value="robot">Robô 🤖</option>
-              <option value="demon">Demônio 👹</option>
-              <option value="skull">Caveira 💀</option>
-              <option value="cat">Gato 🐱</option>
-              <option value="dog">Cachorro 🐶</option>
-              <option value="pig">Porco 🐷</option>
-              <option value="rabbit">Coelho 🐰</option>
-            </optgroup>
-          </select>
-        </div>
-      </div>
-
-      <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 5px; margin-top: 10px;">Acessórios Especiais:</div>
-      <select id="snake-acc">
-        <option value="none">Nenhum</option>
-        <option value="crown">Coroa Rei/Rainha 👑</option>
-        <option value="mustache">Bigode de Respeito 🧔</option>
-        <option value="halo">Auréola de Anjo 👼</option>
-        <option value="ears_rabbit">Orelhas de Coelho 🐰</option>
-        <option value="glasses">Óculos Escuros 🕶️</option>
-        <option value="fangs">Presas de Vampiro 🧛</option>
-      </select>
-      <button class="btn-action btn-back" style="margin-top:20px;" onclick="openMenu('menu-main')">Salvar Estilo</button>
+      <div style="margin-top: 20px; font-size: 12px; color: #777; line-height: 1.4; font-weight:bold;">Este ID é exclusivo da sua conta neste navegador para extensões e suporte técnico.</div>
+      <button class="btn-action btn-save" style="margin-top:15px;" onclick="openMenu('menu-main')">💾 CONFIRMAR E SALVAR</button>
+      <button class="btn-action btn-back" style="margin-top:8px;" onclick="openMenu('menu-main')">⬅️ VOLTAR AO INÍCIO</button>
     </div>
 
     <!-- MENU DE CONTROLES -->
     <div class="modal-box hidden-menu" id="menu-controls">
-      <h2 style="color: #4caf50; margin-bottom: 5px;">🎮 Controles</h2>
+      <h2 style="color: #4caf50; margin-bottom: 5px; font-weight:900;">🎮 Controles</h2>
       <select id="control-select">
         <optgroup label="PC / Desktop">
           <option value="mouse">Mouse (Seguir Cursor)</option>
@@ -309,61 +492,48 @@
           <option value="touch">Tocar na Tela</option>
         </optgroup>
       </select>
-      <p style="text-align: left; font-size: 13px; color:#aaa; margin-top: 15px;">Mapeamento de Teclas:</p>
-      <div class="keybind-row"><span>Acelerar / Speed Turbo:</span><button id="bind-speed" class="btn-keybind" onclick="startRebind('speed', this)">[ Mouse0 ]</button></div>
+      <p style="text-align: left; font-size: 13px; color:#aaa; margin-top: 15px; font-weight:bold;">Mapeamento de Teclas:</p>
+      <div class="keybind-row"><span>Acelerar / Turbo:</span><button id="bind-speed" class="btn-keybind" onclick="startRebind('speed', this)">[ Mouse0 ]</button></div>
       <div class="keybind-row"><span>Virar Esquerda:</span><button id="bind-left" class="btn-keybind" onclick="startRebind('left', this)">[ ArrowLeft ]</button></div>
       <div class="keybind-row"><span>Virar Direita:</span><button id="bind-right" class="btn-keybind" onclick="startRebind('right', this)">[ ArrowRight ]</button></div>
-      <button class="btn-action btn-back" style="margin-top:20px;" onclick="openMenu('menu-main')">Confirmar e Voltar</button>
-    </div>
-
-    <!-- MENU LOJA DE SKINS VIP -->
-    <div class="modal-box hidden-menu" id="menu-skins">
-      <h2 style="color: #ff9800; margin-bottom: 15px;">🎨 Texturas VIP</h2>
-      <select id="skin-select">
-        <option value="solid">Realista (Anéis Escamados)</option>
-        <option value="gradient">Degradê (Usa Cor Secundária)</option>
-        <option value="neon">Neon Brilhante (Laser)</option>
-        <option value="zebra">Zebra (Listrada Preta)</option>
-        <option value="checkered">Xadrez (Usa Cor Secundária)</option>
-        <option value="dots">Pontilhada</option>
-        <option value="ghost">Fantasma (Transparente)</option>
-      </select>
-      <button class="btn-action btn-back" onclick="openMenu('menu-main')">Confirmar e Voltar</button>
+      <button class="btn-action btn-save" style="margin-top:15px;" onclick="openMenu('menu-main')">💾 CONFIRMAR E SALVAR</button>
+      <button class="btn-action btn-back" style="margin-top:8px;" onclick="openMenu('menu-main')">⬅️ VOLTAR AO INÍCIO</button>
     </div>
   </div>
 
   <!-- TELA DE MORTE -->
   <div id="death-screen" class="overlay-screen">
     <div class="modal-box">
-      <h1 style="color: #ff5252; margin-bottom: 5px; text-transform: uppercase;">Você Morreu!</h1>
-      <p id="death-reason" style="margin-bottom: 20px; color: #ccc;"></p>
+      <h1 style="color: #ff5252; margin-bottom: 5px; text-transform: uppercase; font-weight:900;">Você Morreu!</h1>
+      <p id="death-reason" style="margin-bottom: 20px; color: #ccc; font-weight:bold;"></p>
       
       <div style="display: flex; gap: 10px;">
         <button class="btn-action" onclick="respawn()">Voltar para a Arena</button>
       
-    <!-- SELETOR DE RENASCIMENTO (EXCLUSIVO VIP) -->
-    <div id="vip-spawn-modal" style="display:none; margin-top: 15px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 10px; border: 2px solid #ffeb3b;">
-      <div style="color: #ffeb3b; font-weight: bold; margin-bottom: 8px; font-family:'Teko'; font-size:22px;">📍 ESCOLHA A REGIÃO DE RENASCIMENTO (VIP)</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        <button class="btn-action" style="padding:8px; font-size:14px; background:#e65100;" onclick="respawnQuadrant(1)">Norte</button>
-        <button class="btn-action" style="padding:8px; font-size:14px; background:#0d47a1;" onclick="respawnQuadrant(2)">Nordeste</button>
-        <button class="btn-action" style="padding:8px; font-size:14px; background:#1b5e20;" onclick="respawnQuadrant(3)">Centro-Oeste</button>
-        <button class="btn-action" style="padding:8px; font-size:14px; background:#4a148c;" onclick="respawnQuadrant(4)">Sul</button>
-      </div>
-    </div>
-        <button class="btn-action btn-back" onclick="goToMenu()">Início</button>
+        <!-- SELETOR DE RENASCIMENTO (EXCLUSIVO VIP) -->
+        <div id="vip-spawn-modal" style="display:none; margin-top: 15px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 10px; border: 2px solid #ffeb3b;">
+          <div style="color: #ffeb3b; font-weight: bold; margin-bottom: 8px; font-size:20px;">📍 ESCOLHA O RENASCIMENTO (VIP)</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn-action" style="padding:8px; font-size:14px; background:#e65100;" onclick="respawnQuadrant(1)">Norte</button>
+            <button class="btn-action" style="padding:8px; font-size:14px; background:#0d47a1;" onclick="respawnQuadrant(2)">Nordeste</button>
+            <button class="btn-action" style="padding:8px; font-size:14px; background:#1b5e20;" onclick="respawnQuadrant(3)">Centro-Oeste</button>
+            <button class="btn-action" style="padding:8px; font-size:14px; background:#4a148c;" onclick="respawnQuadrant(4)">Sul</button>
+          </div>
+        </div>
+        <button class="btn-action btn-back" onclick="goToMenu()">⬅️ VOLTAR AO INÍCIO</button>
       </div>
     </div>
   </div>
 
   <!-- HUD IN-GAME -->
   <div class="hud-layer" id="hud">
-    <div id="vip-broadcast-banner" style="position: absolute; top: 65px; left: 50%; transform: translateX(-50%); font-family: 'Teko', sans-serif; font-size: 26px; color: #ffeb3b; text-shadow: 2px 2px 4px #000; text-align: center; pointer-events: none; z-index: 100;"></div>
-    <div id="player-buff-timer-banner" style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); font-family: 'Teko', sans-serif; font-size: 28px; color: #00e5ff; text-shadow: 2px 2px 6px #000; text-align: center; pointer-events: none; z-index: 100;"></div>
+    <div id="player-buff-timer-banner" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 24px; color: #00e5ff; text-shadow: 2px 2px 6px #000; text-align: center; pointer-events: none; z-index: 100; font-weight:bold;"></div>
 
-    <div id="top-center-hud" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 50; pointer-events: auto;">
+    <!-- BOTÕES HUD (CIMA) E AUDIO -->
+    <div id="top-center-hud" style="position: absolute; top: 55px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 50; pointer-events: auto;">
       <button onclick="confirmAndGoToMenu()" style="background: rgba(0,0,0,0.8); border: 2px solid #e0e0e0; color: #fff; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;" title="Sair da Partida e Voltar ao Início">🏠</button>
-      <button onclick="toggleAFK()" id="btn-afk" style="background: rgba(0,0,0,0.8); border: 2px solid #ff9800; color: #ff9800; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">🌀</button>
+      <button id="btn-mic" onclick="toggleMic()" title="Voz da Equipe">🔇 Equipe</button>
+      <button onclick="toggleAFK()" id="btn-afk" style="background: rgba(0,0,0,0.8); border: 2px solid #ff9800; color: #ff9800; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">🌀 AFK</button>
       <button class="mobile-only-control" onclick="adjustZoom(0.3)" style="background: rgba(0,0,0,0.8); border: 2px solid #4caf50; color: #4caf50; padding: 8px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🔍+</button>
       <button class="mobile-only-control" onclick="adjustZoom(-0.3)" style="background: rgba(0,0,0,0.8); border: 2px solid #f44336; color: #f44336; padding: 8px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🔍-</button>
       <button class="mobile-only-control" onclick="cycleMobileControl()" id="btn-cycle-ctrl" style="background: rgba(0,0,0,0.8); border: 2px solid #448aff; color: #448aff; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; display:none;">🎮</button>
@@ -390,7 +560,7 @@
       </div>
       
       <div class="my-hs-box" id="my-hs-display"></div>
-      <div id="active-buffs-display" style="margin-top: 10px; margin-left: 20px; font-family: 'Teko', sans-serif; font-size: 20px; color: #00e5ff; text-shadow: 1px 1px 3px #000; font-weight: bold; min-height: 25px;"></div>
+      <div id="active-buffs-display" style="margin-top: 10px; margin-left: 20px; font-size: 20px; color: #00e5ff; text-shadow: 1px 1px 3px #000; font-weight: bold; min-height: 25px;"></div>
 
       <div class="hs-record-box">
         <div class="hs-record-title">👑 RECORDES DE HS</div>
@@ -398,15 +568,27 @@
       </div>
 
       <div class="stats-row">
+        <div class="stat-col"><span>RECORDE</span><span class="val" id="hud-record" style="color: #ffeb3b;">0</span></div>
         <div class="stat-col"><span>HS</span><span class="val" id="hud-hs">0</span></div>
         <div class="stat-col"><span>KILL</span><span class="val" id="hud-kills">0</span></div>
         <div class="stat-col"><span>ZOOM</span><span class="val" id="hud-zoom" style="color:#8bc34a;">100%</span></div>
+      </div>
+
+      <!-- CHAT DA EQUIPE IN-GAME -->
+      <div class="chat-panel hud-chat" id="team-chat-panel">
+        <div class="chat-header" id="team-chat-header">💬 Chat Equipe</div>
+        <div class="chat-messages custom-scroll" id="team-chat-msgs"></div>
+        <div class="chat-input-area">
+          <input type="text" id="team-chat-input" placeholder="Pressione ENTER para falar..." onkeypress="handleTeamChat(event)">
+        </div>
       </div>
     </div>
 
     <div class="right-panel">
       <div class="leaderboard-title">🏆 TOP PLAYERS</div>
       <div id="global-leaderboard"></div>
+      
+      <div id="kill-feed"></div>
     </div>
 
     <div id="joystick-zone"><div id="joystick-knob"></div></div>
@@ -425,13 +607,120 @@
     let isVIP = false; let isADM = false;
     let hasSetNick = false; 
     let savedNick = "";
+    
+    let currentGlobalFont = "'Montserrat', sans-serif";
+
+    // Lógica do Microfone (Voice Chat Simulado)
+    let micEnabled = false;
+    function toggleMic() {
+        micEnabled = !micEnabled;
+        let btnMic = document.getElementById('btn-mic');
+        if(micEnabled) {
+            btnMic.classList.add('active');
+            btnMic.innerHTML = '🎙️ Equipe';
+            // Simula aviso no chat
+            let chatMsgs = document.getElementById('team-chat-msgs');
+            chatMsgs.innerHTML += `<div class="chat-msg" style="color:#4caf50;"><i>🔊 Você entrou no canal de voz da Equipe!</i></div>`;
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        } else {
+            btnMic.classList.remove('active');
+            btnMic.innerHTML = '🔇 Equipe';
+            let chatMsgs = document.getElementById('team-chat-msgs');
+            chatMsgs.innerHTML += `<div class="chat-msg" style="color:#f44336;"><i>🔇 Você saiu do canal de voz.</i></div>`;
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        }
+    }
+
+    // Configurações do Jogador VIP
+    let myCustoms = {
+      face: 'padrao', mouth: 'sorriso', eyes: 'normal',
+      body: 'bolinhas', skin: 'padrao', ear: 'nenhuma',
+      theme: 'nenhum'
+    };
+
+    function updateCustoms() {
+        myCustoms.face = document.getElementById('s-face').value;
+        myCustoms.mouth = document.getElementById('s-mouth').value;
+        myCustoms.eyes = document.getElementById('s-eyes').value;
+        myCustoms.body = document.getElementById('s-body').value;
+        myCustoms.skin = document.getElementById('s-skin').value;
+        myCustoms.ear = document.getElementById('s-ear').value;
+        myCustoms.theme = document.getElementById('s-theme').value;
+        
+        localStorage.setItem('myCustoms', JSON.stringify(myCustoms));
+        if(player) player.customs = {...myCustoms}; 
+    }
+
+    function confirmAndSaveStore() {
+        updateCustoms();
+        openMenu('menu-main');
+    }
+
+    function saveFontAndBack() {
+        localStorage.setItem('savedFont', document.getElementById('font-select').value);
+        openMenu('menu-main');
+    }
+
+    // Lógica de Chats (Simulação Funcional)
+    function sendGlobalChat() {
+        let input = document.getElementById('global-chat-input');
+        let msg = input.value.trim();
+        if(msg === '') return;
+        
+        let nick = document.getElementById('username-input').value.trim() || 'Visitante';
+        let chatMsgs = document.getElementById('global-chat-msgs');
+        
+        let color = isVIP ? '#ffeb3b' : '#fff';
+        let prefix = isVIP ? '👑 ' : '';
+        
+        chatMsgs.innerHTML += `<div class="chat-msg"><span class="sender" style="color:${color};">${prefix}${nick}:</span> ${msg}</div>`;
+        input.value = '';
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    }
+
+    function handleGlobalChat(e) { if(e.key === 'Enter') sendGlobalChat(); }
+
+    function handleTeamChat(e) {
+        if(e.key === 'Enter') {
+            let input = document.getElementById('team-chat-input');
+            let msg = input.value.trim();
+            if(msg !== '') {
+                let chatMsgs = document.getElementById('team-chat-msgs');
+                let tColor = player ? player.baseColor : '#fff';
+                let nick = player ? player.name : 'Eu';
+                chatMsgs.innerHTML += `<div class="chat-msg"><span class="sender" style="color:${tColor};">${nick}:</span> ${msg}</div>`;
+                input.value = '';
+                chatMsgs.scrollTop = chatMsgs.scrollHeight;
+            }
+            input.blur(); // Sai do input após enviar
+        }
+    }
+
+    // Bots simulando o Chat Global
+    setInterval(() => {
+        let panel = document.getElementById('global-chat-panel');
+        if(panel && panel.style.display !== 'none' && document.getElementById('start-screen').style.display !== 'none') {
+            if(Math.random() < 0.08) {
+                let msgs = ["Alguém pra jogar na equipe Azul?", "Lag?", "Salve família", "O VIP tá compensando muito", "Bora pro topo!", "gg", "Quem bater meu recorde eu dou VIP"];
+                let names = ["João_BR", "MatadorDeCobra", "SnekMaster", "Faker", "AdminFake", "Gamer2026"];
+                let chatMsgs = document.getElementById('global-chat-msgs');
+                chatMsgs.innerHTML += `<div class="chat-msg"><span class="sender" style="color:#aaa;">${names[Math.floor(Math.random()*names.length)]}:</span> ${msgs[Math.floor(Math.random()*msgs.length)]}</div>`;
+                chatMsgs.scrollTop = chatMsgs.scrollHeight;
+            }
+        }
+    }, 2000);
+
+
+    // Recorde Global de Pontuação
+    let globalBestRecord = parseFloat(localStorage.getItem('globalBestRecord')) || 0;
+    let globalTotalHS = parseInt(localStorage.getItem('globalTotalHS')) || 0;
+    let globalTotalKills = parseInt(localStorage.getItem('globalTotalKills')) || 0;
 
     let controlCycleIndex = 0; const mobileControlModes = [{ name: '🎮', type: 'joystick' }, { name: '🎮', type: 'touch' }];
-    let isAFK = false; let playerName = ""; let playerTeam = "red"; let playerSkin = "solid";
+    let isAFK = false; let playerName = ""; let playerTeam = "red";
     let activeControl = "joystick"; let soundEnabled = true;
-    let customCosmetics = { color: "#00e5ff", color2: "#ff00ff", face: "normal", acc: "none" };
     
-    const WORLD_SIZE = 10000; const BOT_COUNT = 10;
+    const WORLD_SIZE = 10000; const BOT_COUNT = 15;
     
     let globalZoom = 1.0; let gameReqId; let hsRecords = []; 
     let keyBinds = { speed: 'Mouse0', left: 'ArrowLeft', right: 'ArrowRight' };
@@ -445,125 +734,145 @@
     const ctx = canvas.getContext('2d', { alpha: false }); 
     let width, height; let dpr = 1;
 
-    function toggleFullScreen() {
-      let elem = document.documentElement;
-      if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-        if (elem.requestFullscreen) { elem.requestFullscreen(); } 
-        else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } 
-        else if (elem.mozRequestFullScreen) { elem.mozRequestFullScreen(); } 
-        else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT); }
-      } else {
-        if (document.exitFullscreen) { document.exitFullscreen(); } 
-        else if (document.msExitFullscreen) { document.msExitFullscreen(); } 
-        else if (document.mozCancelFullScreen) { document.mozCancelFullScreen(); } 
-        else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
-      }
-    }
+    // PREVIEW EM TEMPO REAL NA LOJA & NA TELA INICIAL
+    function previewLoop() {
+        let pCanvas = document.getElementById('previewCanvas');
+        let hCanvas = document.getElementById('homePreviewCanvas');
 
-    // Gerador / Recuperador de ID Único
-    function getOrCreateUniqueId() {
-        let uid = localStorage.getItem('playerUniqueId');
-        if (!uid) {
-            uid = 'WZ-' + Math.random().toString(36).substr(2, 4).toUpperCase() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
-            localStorage.setItem('playerUniqueId', uid);
-        }
-        return uid;
-    }
+        let drawSnakeToCanvas = (targetCanvas, sizeScale = 1.0, isHorizontal = false) => {
+            if(!targetCanvas) return;
+            let pCtx = targetCanvas.getContext('2d');
+            pCtx.clearRect(0,0,targetCanvas.width, targetCanvas.height);
+            
+            let time = Date.now() * 0.003;
+            let cx = (targetCanvas.width / 2) / sizeScale;
+            let cy = (targetCanvas.height / 2) / sizeScale;
 
-    function copyUniqueId() {
-        let uid = document.getElementById('display-unique-id').innerText;
-        navigator.clipboard.writeText(uid).then(() => {
-            alert("ID Único copiado com sucesso: " + uid);
-        });
+            let simSnake = new Snake('Preview', playerTeam || 'red', false);
+            simSnake.customs = {...myCustoms};
+            simSnake.body = [];
+            
+            if (isHorizontal) {
+                for(let i=0; i<12; i++) {
+                   simSnake.body.push({x: cx - i*14, y: cy + Math.sin(time + i*0.3)*20});
+                }
+                simSnake.angle = Math.cos(time)*0.3; 
+            } else {
+                for(let i=0; i<12; i++) {
+                   simSnake.body.push({x: cx + Math.sin(time + i*0.3)*20, y: cy + i*14});
+                }
+                simSnake.angle = Math.PI/-2 + Math.cos(time)*0.3; 
+            }
+            
+            pCtx.save();
+            pCtx.scale(sizeScale, sizeScale);
+            
+            if (isHorizontal) {
+                pCtx.translate(cx - simSnake.body[0].x + 20, cy - simSnake.body[0].y - 5); 
+            } else {
+                pCtx.translate(cx - simSnake.body[0].x, cy - simSnake.body[0].y + 30); 
+            }
+            
+            simSnake.draw(pCtx); 
+            pCtx.restore();
+        };
+
+        if(pCanvas && pCanvas.offsetParent !== null) drawSnakeToCanvas(pCanvas, 1.3, false);
+        if(hCanvas && hCanvas.offsetParent !== null) drawSnakeToCanvas(hCanvas, 1.4, true);
+        
+        requestAnimationFrame(previewLoop);
+    }
+    requestAnimationFrame(previewLoop);
+
+    function googleLogin() {
+        const authUrl = "https://accounts.google.com/v3/signin/accountchooser?as=-ehwbPiJnembvRsVOJkiJXnO1UgDxlBoSaByvBSXSYQ&client_id=189957581422-476kf5r5i2kili987fbjhgtkosnr7ujd.apps.googleusercontent.com&display=popup&gis_params=GAcqKy1laHdiUGlKbmVtYnZSc1ZPSmtpSlhuTzFVZ0R4bEJvU2FCeXZCU1hTWVE4AUJAOTgwZGIzNmQ5MzhmMDkyN2RlYzYzNGFjYjYzYjc2MGZhMzVlMDk4YzNlNmE4MzEzYWE0NzFmNmFlMTQ4NjgzOQ&gislp=1&gsiwebsdk=gis_attributes&origin=https%3A%2F%2Fwormzilla.io&prompt=select_account&redirect_uri=gis_transform&response_mode=form_post&response_type=id_token&scope=openid+email+profile&upstream_experiment_id=117788636&dsh=-ehwbPiJnembvRsVOJkiJXnO1UgDxlBoSaByvBSXSYQ&o2v=1&service=lso&flowName=GeneralOAuthFlow&opparams=%253Fgislp%253D1%2526response_mode%253Dform_post%2526gis_params%253DGAcqKy1laHdiUGlKbmVtYnZSc1ZPSmtpSlhuTzFVZ0R4bEJvU2FCeXZCU1hTWVE4AUJAOTgwZGIzNmQ5MzhmMDkyN2RlYzYzNGFjYjYzYjc2MGZhMzVlMDk4YzNlNmE4MzEzYWE0NzFmNmFlMTQ4NjgzOQ%2526upstream_experiment_id%253D117788636&continue=https%3A%2F%2Faccounts.google.com%2Fsignin%2Foauth%2Fconsent%3Fauthuser%3Dunknown%26part%3DAJi8hAO4KGiTrRHpDHzeixfATu2i9vzEBG-iRcoBXP5lUGqAR3sqi7sCR5qsx9RenIEIeQSX7GOS_XnAzacPxBoQ2_1iBa2bkLL5kWzpN6a3eAyUetOxcTfbJzsy_BNTsWOcHUk-XFJXMn08H93iJYQDHvoytEfuXWyC2MfUZgT9xwhl_oY92TF1c7MMKGrbnH5SRh5E008RyQp2QTaaV_dcPgLlYiqNv2wblTp2dNGBru5JozMArFi4FIyEeNvNPZXLPKRFS-OpSbCC6U4y7lugLT1C-bNmWTEJAvrBfqIjJsxNbYp5Bz2vw5lFdQfrHoFZDoZr7kQnlOjpqQCxwof-amqbfHsvOQoL1CpHqeK5tr0PN23NHETBGotEspIxN16ISYOG4y-Dc1zbU7Ei8WDy8SxWGLwSwNkwwT_nEQPvGcBOa3FcTEUkDVRDv9jS2ZjJUalOST5tQ0W0CNjNSzfqI7Xyw1wJ8KUzAH3gSULucLT7nc-nOuo%26flowName%3DGeneralOAuthFlow%26as%3D-ehwbPiJnembvRsVOJkiJXnO1UgDxlBoSaByvBSXSYQ%26client_id%3D189957581422-476kf5r5i2kili987fbjhgtkosnr7ujd.apps.googleusercontent.com%26requestPath%3D%252Fsignin%252Foauth%252Fconsent%23&app_domain=https%3A%2F%2Fsnake friends";
+        window.location.href = authUrl;
     }
 
     function checkEmailLive() {
-        const email = document.getElementById('email-input').value.trim().toLowerCase();
+        const emailInput = document.getElementById('email-input');
+        const email = emailInput.value.trim().toLowerCase();
         const statusEl = document.getElementById('nick-status');
         const nickInput = document.getElementById('username-input');
         const btnLogout = document.getElementById('btn-logout');
+        const btnLogin = document.getElementById('btn-google-login');
+        const displayEmail = document.getElementById('logged-email-display');
         
-        let isValidEmail = email.includes('@') && email.length > 5;
+        let isGmail = email.endsWith('@gmail.com') || email.endsWith('@googlemail.com') || email === ADMIN_EMAIL;
+        let isValidEmail = email.includes('@') && email.length > 5 && isGmail;
         
-        if (localStorage.getItem('savedEmail') === email && email !== "") {
+        if (localStorage.getItem('savedEmail') === email && isValidEmail) {
             btnLogout.style.display = 'block';
-            document.getElementById('email-input').disabled = true;
+            displayEmail.style.display = 'flex';
+            displayEmail.innerText = "Conta Google: " + email;
+            btnLogin.style.display = 'none';
+            emailInput.style.display = 'none';
         } else {
             btnLogout.style.display = 'none';
-            document.getElementById('email-input').disabled = false;
+            displayEmail.style.display = 'none';
+            btnLogin.style.display = 'flex';
+            emailInput.style.display = 'block';
         }
         
         if (email === ADMIN_EMAIL) {
-            isADM = true; isVIP = true;
-            statusEl.innerText = "👑 Dono / ADM Reconhecido!";
-            statusEl.style.color = "#ff5252";
-            nickInput.disabled = false;
+            isADM = true; isVIP = true; statusEl.innerText = "👑 Dono / ADM Reconhecido!"; statusEl.style.color = "#ff5252"; nickInput.disabled = false;
         } else {
             isADM = false;
-            if (isVIP) {
-                statusEl.innerText = "〽️ VIP Vitalício Ativado! (Mude o nick à vontade)";
-                statusEl.style.color = "#ffeb3b";
-                nickInput.disabled = false;
-            } else if (isValidEmail) {
-                if (!hasSetNick) {
-                    statusEl.innerText = "✅ E-mail vinculado. Defina seu Nickname (Apenas 1 vez!)";
-                    statusEl.style.color = "#4caf50";
-                    nickInput.disabled = false;
-                } else {
-                    statusEl.innerText = "⚠️ Nickname já definido e bloqueado (Adquira VIP para mudar)";
-                    statusEl.style.color = "#aaa";
-                    nickInput.disabled = true;
-                }
-            } else {
-                statusEl.innerText = "Status: E-mail obrigatório para liberar o Nickname.";
-                statusEl.style.color = "#aaa";
-                nickInput.disabled = true;
+            if (isVIP) { 
+                statusEl.innerText = "〽️ VIP Vitalício Ativado!"; statusEl.style.color = "#ffeb3b"; nickInput.disabled = false; 
+            } 
+            else if (isValidEmail) {
+                if (!hasSetNick) { statusEl.innerText = "✅ Conta Google vinculada. Defina Nickname"; statusEl.style.color = "#4caf50"; nickInput.disabled = false; } 
+                else { statusEl.innerText = "⚠️ Nickname bloqueado (Adquira VIP)"; statusEl.style.color = "#aaa"; nickInput.disabled = true; }
+            } else if (email.length > 5 && email.includes('@')) {
+                statusEl.innerText = "⚠️ O login só é permitido com uma conta Google (@gmail.com)"; statusEl.style.color = "#ff5252"; nickInput.disabled = true;
+            } else { 
+                statusEl.innerText = "Aguardando Conta Google..."; statusEl.style.color = "#aaa"; nickInput.disabled = true; 
             }
         }
     }
 
     function logout() {
-        localStorage.removeItem('savedEmail');
-        localStorage.removeItem('savedNick');
-        localStorage.removeItem('savedVIP');
-        
+        localStorage.removeItem('savedEmail'); localStorage.removeItem('savedNick'); localStorage.removeItem('savedVIP');
+        localStorage.removeItem('globalBestRecord'); localStorage.removeItem('globalTotalHS'); localStorage.removeItem('globalTotalKills');
+        globalBestRecord = 0; globalTotalHS = 0; globalTotalKills = 0;
         document.getElementById('email-input').value = "";
-        document.getElementById('email-input').disabled = false;
-        document.getElementById('btn-logout').style.display = 'none';
         document.getElementById('username-input').value = "";
-        
-        isVIP = false; isADM = false; hasSetNick = false; savedNick = "";
-        checkEmailLive();
+        isVIP = false; isADM = false; hasSetNick = false; savedNick = ""; updateStatsPanel(); checkEmailLive();
     }
 
     window.addEventListener('load', () => { 
-        playerUniqueId = getOrCreateUniqueId();
-        document.getElementById('display-unique-id').innerText = playerUniqueId;
+        playerUniqueId = getOrCreateUniqueId(); document.getElementById('display-unique-id').innerText = playerUniqueId;
+        const storedEmail = localStorage.getItem('savedEmail'); const storedNick = localStorage.getItem('savedNick'); const storedVIP = localStorage.getItem('savedVIP');
+        
+        const storedCustoms = localStorage.getItem('myCustoms');
+        if (storedCustoms) {
+            myCustoms = JSON.parse(storedCustoms);
+            document.getElementById('s-face').value = myCustoms.face;
+            document.getElementById('s-mouth').value = myCustoms.mouth;
+            document.getElementById('s-eyes').value = myCustoms.eyes;
+            document.getElementById('s-body').value = myCustoms.body;
+            document.getElementById('s-skin').value = myCustoms.skin;
+            document.getElementById('s-ear').value = myCustoms.ear;
+            if(myCustoms.theme) document.getElementById('s-theme').value = myCustoms.theme;
+        }
 
-        const storedEmail = localStorage.getItem('savedEmail');
-        const storedNick = localStorage.getItem('savedNick');
-        const storedVIP = localStorage.getItem('savedVIP');
+        const storedFont = localStorage.getItem('savedFont');
+        if(storedFont) { document.getElementById('font-select').value = storedFont; changeGlobalFont(); }
 
         if (storedEmail) {
             document.getElementById('email-input').value = storedEmail;
-            if (storedNick) {
-                document.getElementById('username-input').value = storedNick;
-                savedNick = storedNick; hasSetNick = true;
-            }
+            if (storedNick) { document.getElementById('username-input').value = storedNick; savedNick = storedNick; hasSetNick = true; }
             if (storedVIP === "true") { isVIP = true; }
         }
-        
-        let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
-        if (isMobileDevice) { activeControl = "joystick"; }
-        checkEmailLive(); 
+        if (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent)) activeControl = "joystick";
+        checkEmailLive(); updateStatsPanel();
     });
 
     let currentPixCodeShowing = "";
     function buyVIP(plan) {
-      const modal = document.getElementById('pix-modal');
-      const codeDisplay = document.getElementById('pix-code-display');
-      if (plan === 'Mensal') { currentPixCodeShowing = PIX_CODE_MENSAL; } 
-      else if (plan === 'Vitalício') { currentPixCodeShowing = PIX_CODE_VITALICIO; }
+      const modal = document.getElementById('pix-modal'); const codeDisplay = document.getElementById('pix-code-display');
+      if (plan === 'Mensal') currentPixCodeShowing = PIX_CODE_MENSAL; else currentPixCodeShowing = PIX_CODE_VITALICIO;
       codeDisplay.innerText = currentPixCodeShowing; modal.style.display = 'flex';
     }
     function closePixModal() { document.getElementById('pix-modal').style.display = 'none'; }
@@ -580,26 +889,20 @@
       const input = document.getElementById('coupon-input'); const code = input.value.trim();
       if (code === VIP_CUPON) {
           isVIP = true; localStorage.setItem('savedVIP', "true");
-          alert("🎉 PARABÉNS!\nCupom aceito. VIP Vitalício liberado com sucesso!");
-          checkEmailLive(); input.value = "";
-      } else if (code === "") { alert("Por favor, digite um cupom."); } 
-      else { alert("Cupom inválido ou expirado."); input.value = ""; }
+          alert("🎉 PARABÉNS!\nCupom aceito. VIP Vitalício liberado com sucesso!"); checkEmailLive(); input.value = "";
+      } else if (code === "") alert("Por favor, digite um cupom."); else { alert("Cupom inválido ou expirado."); input.value = ""; }
     }
 
     function cycleMobileControl() {
-      controlCycleIndex = (controlCycleIndex + 1) % mobileControlModes.length; let mode = mobileControlModes[controlCycleIndex];
-      activeControl = mode.type; let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
-      let mobileControlsElems = document.querySelectorAll('.mobile-only-control');
-      mobileControlsElems.forEach(el => { el.style.display = isMobileDevice ? 'block' : 'none'; });
-      let joyZone = document.getElementById('joystick-zone'); let btnSpeed = document.getElementById('btn-speed-mobile');
-      if(joyZone) joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; 
-      if(btnSpeed) btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
+      controlCycleIndex = (controlCycleIndex + 1) % mobileControlModes.length; activeControl = mobileControlModes[controlCycleIndex].type; 
+      let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
+      document.querySelectorAll('.mobile-only-control').forEach(el => el.style.display = isMobileDevice ? 'block' : 'none');
+      document.getElementById('joystick-zone').style.display = (activeControl === 'joystick') ? 'block' : 'none'; 
+      document.getElementById('btn-speed-mobile').style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
     }
 
     function toggleAFK() { isAFK = !isAFK; let btn = document.getElementById('btn-afk'); btn.style.background = isAFK ? "#ff9800" : "rgba(0,0,0,0.8)"; btn.style.color = isAFK ? "#000" : "#ff9800"; }
     function adjustZoom(amount) { let zoomMin = isVIP ? 0.02 : 0.4; let zoomMax = isVIP ? 20.0 : 2.5; globalZoom += amount; globalZoom = Math.max(zoomMin, Math.min(globalZoom, zoomMax)); document.getElementById('hud-zoom').innerText = Math.round(globalZoom * 100) + '%'; }
-    function tryOpenEditor() { if (!isVIP) { alert("🔒 RECURSO BLOQUEADO!\nA Edição de Skins é exclusiva para VIPs."); return; } openMenu('menu-editor'); }
-    function tryOpenSkins() { if (!isVIP) { alert("🔒 RECURSO BLOQUEADO!\nTexturas Especiais são exclusivas VIP."); return; } openMenu('menu-skins'); }
     function openMenu(menuId) { if(isRebinding) return; document.querySelectorAll('.modal-box').forEach(b => b.classList.add('hidden-menu')); document.getElementById(menuId).classList.remove('hidden-menu'); }
     function toggleSound() { soundEnabled = !soundEnabled; document.getElementById('btn-sound').innerText = soundEnabled ? '🔊' : '🔇'; }
 
@@ -616,13 +919,17 @@
     function resizeCanvas() { dpr = window.devicePixelRatio || 1; width = window.innerWidth; height = window.innerHeight; canvas.width = width * dpr; canvas.height = height * dpr; canvas.style.width = width + 'px'; canvas.style.height = height + 'px'; }
     resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
-    function playSound(type) { if (!soundEnabled) return; if (type === 'hs') { try { let utterance = new SpeechSynthesisUtterance("Headshot"); utterance.lang = "en-US"; utterance.pitch = 0.1; utterance.rate = 0.7; utterance.volume = 1.0; window.speechSynthesis.speak(utterance); } catch(e) {} } }
+    function playSound(type) { if (!soundEnabled) return; if (type === 'hs') { try { let utt = new SpeechSynthesisUtterance("Headshot"); utt.lang = "en-US"; utt.pitch = 0.1; utt.rate = 0.7; utt.volume = 1.0; window.speechSynthesis.speak(utt); } catch(e) {} } }
 
     window.addEventListener('contextmenu', e => e.preventDefault());
-    window.addEventListener('mousedown', e => { if(isRebinding || e.target.closest('.modal-box') || e.target.closest('.vip-panel') || e.target.closest('.pix-modal-box') || e.target.closest('.top-right-controls')) return; let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = true; keys[key] = true; });
+    window.addEventListener('mousedown', e => { if(isRebinding || e.target.closest('.modal-box') || e.target.closest('.vip-panel') || e.target.closest('.player-stats-panel') || e.target.closest('.pix-modal-box') || e.target.closest('.top-right-controls') || e.target.closest('.home-preview-panel') || e.target.closest('.chat-panel')) return; let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = true; keys[key] = true; });
     window.addEventListener('mouseup', e => { let key = `Mouse${e.button}`; if (key === keyBinds.speed) isBoosting = false; keys[key] = false; });
     window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    window.addEventListener('keydown', e => { if(isRebinding || document.activeElement.tagName === 'INPUT') return; keys[e.code] = true; if (e.code === keyBinds.speed) isBoosting = true; });
+    window.addEventListener('keydown', e => { 
+        if (e.key === 'Enter' && canvas.style.display === 'block') { document.getElementById('team-chat-input').focus(); return; }
+        if(isRebinding || document.activeElement.tagName === 'INPUT') return; 
+        keys[e.code] = true; if (e.code === keyBinds.speed) isBoosting = true; 
+    });
     window.addEventListener('keyup', e => { if (document.activeElement.tagName === 'INPUT') return; keys[e.code] = false; if (e.code === keyBinds.speed) isBoosting = false; });
     canvas.addEventListener('touchmove', e => { if (activeControl === 'touch') { touchData.x = e.touches[0].clientX; touchData.y = e.touches[0].clientY; } }, { passive: false });
 
@@ -636,101 +943,118 @@
     joyZone.addEventListener('touchend', () => { joystickActive = false; joyKnob.style.transform = `translate(0px, 0px)`; });
     
     function updateJoystick(tx, ty) { 
-        let dx = tx - joyCenter.x; let dy = ty - joyCenter.y; 
-        joystickAngle = Math.atan2(dy, dx); 
-        let maxDist = joyZone.offsetWidth / 2 - joyKnob.offsetWidth / 2;
-        let dist = Math.min(Math.hypot(dx, dy), maxDist); 
+        let dx = tx - joyCenter.x; let dy = ty - joyCenter.y; joystickAngle = Math.atan2(dy, dx); 
+        let maxDist = joyZone.offsetWidth / 2 - joyKnob.offsetWidth / 2; let dist = Math.min(Math.hypot(dx, dy), maxDist); 
         joyKnob.style.transform = `translate(${Math.cos(joystickAngle)*dist}px, ${Math.sin(joystickAngle)*dist}px)`; 
     }
-    
-    window.addEventListener('wheel', e => { if(canvas.style.display === 'block') { adjustZoom(e.deltaY * -0.001); } }, { passive: true });
+    window.addEventListener('wheel', e => { if(canvas.style.display === 'block') adjustZoom(e.deltaY * -0.001); }, { passive: true });
 
     function startGame(team) {
-      let emailDigitado = document.getElementById('email-input').value.trim().toLowerCase();
-      let isValidEmail = emailDigitado.includes('@') && emailDigitado.length > 5;
-
-      if (!isValidEmail && !isVIP) {
-          alert("⚠️ AÇÃO NECESSÁRIA:\nVocê deve inserir seu E-mail / Conta Google no campo indicado para poder iniciar e salvar seu progresso.");
-          return;
-      }
-
-      let typedNick = document.getElementById('username-input').value.trim();
-      if (typedNick === "") typedNick = "Jogador";
-
-      if (!hasSetNick) {
-          savedNick = typedNick; hasSetNick = true; 
-      } else if (isVIP) {
-          savedNick = typedNick; 
-      } else {
-          document.getElementById('username-input').value = savedNick;
+      let emailDigitado = document.getElementById('email-input').value.trim().toLowerCase() || localStorage.getItem('savedEmail') || "";
+      let isGmail = emailDigitado.endsWith('@gmail.com') || emailDigitado.endsWith('@googlemail.com') || emailDigitado === ADMIN_EMAIL;
+      let isValidEmail = emailDigitado.includes('@') && emailDigitado.length > 5 && isGmail;
+      
+      if (!isValidEmail && !isVIP) { 
+          alert("⚠️ AÇÃO NECESSÁRIA:\nO jogo só é liberado logando com a sua conta Google."); 
+          return; 
       }
       
+      let typedNick = document.getElementById('username-input').value.trim();
+      if (typedNick === "") typedNick = "Jogador";
+      if (!hasSetNick) { savedNick = typedNick; hasSetNick = true; } 
+      else if (isVIP) savedNick = typedNick; 
+      else document.getElementById('username-input').value = savedNick;
       playerName = savedNick;
 
       if (isValidEmail) {
-          localStorage.setItem('savedEmail', emailDigitado);
-          localStorage.setItem('savedNick', savedNick);
+          localStorage.setItem('savedEmail', emailDigitado); localStorage.setItem('savedNick', savedNick);
           if (isVIP) localStorage.setItem('savedVIP', "true");
-          document.getElementById('email-input').disabled = true;
-          document.getElementById('btn-logout').style.display = 'block';
+          document.getElementById('email-input').disabled = true; document.getElementById('btn-logout').style.display = 'block';
       }
-
-      if (emailDigitado === ADMIN_EMAIL) { playerUniqueId = "ADM_OWNER"; } 
-
-      activeControl = document.getElementById('control-select').value; playerSkin = document.getElementById('skin-select').value; playerTeam = team;
-      customCosmetics = { color: document.getElementById('snake-color').value, color2: document.getElementById('snake-color2') ? document.getElementById('snake-color2').value : '#ff00ff', face: document.getElementById('snake-face').value, acc: document.getElementById('snake-acc').value };
+      updateStatsPanel(); if (emailDigitado === ADMIN_EMAIL) playerUniqueId = "ADM_OWNER";
+      activeControl = document.getElementById('control-select').value; playerTeam = team;
       
+      let tChatHeader = document.getElementById('team-chat-header');
+      if(team==='red') {tChatHeader.style.color='#ff1744'; tChatHeader.innerText='💬 Chat Equipe VERMELHA';}
+      else if(team==='blue') {tChatHeader.style.color='#00e5ff'; tChatHeader.innerText='💬 Chat Equipe AZUL';}
+      else if(team==='yellow') {tChatHeader.style.color='#ffea00'; tChatHeader.innerText='💬 Chat Equipe AMARELA';}
+      else if(team==='green') {tChatHeader.style.color='#00e676'; tChatHeader.innerText='💬 Chat Equipe VERDE';}
+
       document.getElementById('start-screen').style.display = 'none'; canvas.style.display = 'block'; document.getElementById('hud').style.display = 'block';
-      
       let isMobileDevice = (navigator.maxTouchPoints > 0 || /Mobi|Android/i.test(navigator.userAgent));
-      let mobileControlsElems = document.querySelectorAll('.mobile-only-control');
-      mobileControlsElems.forEach(el => { el.style.display = isMobileDevice ? 'block' : 'none'; });
-      
+      document.querySelectorAll('.mobile-only-control').forEach(el => el.style.display = isMobileDevice ? 'block' : 'none');
       joyZone.style.display = (activeControl === 'joystick') ? 'block' : 'none'; 
       btnSpeed.style.display = (activeControl === 'joystick' || activeControl === 'touch') ? 'flex' : 'none';
-      
-      checkEmailLive(); 
-      hsRecords = []; initGame();
+      checkEmailLive(); hsRecords = []; initGame();
     }
 
-    function confirmAndGoToMenu() {
-        if (confirm("Deseja sair da partida e voltar ao Início?")) {
-            if (player && !player.dead) { player.die('quit'); }
-            goToMenu();
-        }
-    }
+    function confirmAndGoToMenu() { if (confirm("Sair da partida e voltar ao Início?")) { if (player && !player.dead) player.die('quit'); goToMenu(); } }
     
     function respawnQuadrant(q) {
       snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; 
-      player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics);
-      if (q === 1) { player.x = WORLD_SIZE/2; player.y = WORLD_SIZE/4; } 
-      else if (q === 2) { player.x = WORLD_SIZE*0.75; player.y = WORLD_SIZE/2; } 
-      else if (q === 3) { player.x = WORLD_SIZE/4; player.y = WORLD_SIZE/2; } 
-      else if (q === 4) { player.x = WORLD_SIZE/2; player.y = WORLD_SIZE*0.75; }
+      player = new Snake(playerName, playerTeam, false);
+      if (q === 1) { player.x = WORLD_SIZE/2; player.y = WORLD_SIZE/4; } else if (q === 2) { player.x = WORLD_SIZE*0.75; player.y = WORLD_SIZE/2; } 
+      else if (q === 3) { player.x = WORLD_SIZE/4; player.y = WORLD_SIZE/2; } else if (q === 4) { player.x = WORLD_SIZE/2; player.y = WORLD_SIZE*0.75; }
       snakes.push(player);
     }
-    function respawn() { snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); snakes.push(player); }
+    function respawn() { snakes = snakes.filter(s => s !== player); document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'block'; player = new Snake(playerName, playerTeam, false); snakes.push(player); }
     function goToMenu() { snakes = snakes.filter(s => s !== player); if(gameReqId) cancelAnimationFrame(gameReqId); gameReqId = null; document.getElementById('death-screen').style.display = 'none'; document.getElementById('hud').style.display = 'none'; canvas.style.display = 'none'; document.getElementById('start-screen').style.display = 'flex'; openMenu('menu-main'); }
 
-    // --- OBJETOS DO JOGO (COM BÔNUS E TEMPOS EXATOS) ---
-    
+    // ==========================================
+    // QUADTREE CLASSES PARA OTIMIZAÇÃO
+    // ==========================================
+    class Point { constructor(x, y, userData) { this.x = x; this.y = y; this.userData = userData; } }
+    class Rectangle {
+      constructor(x, y, w, h) { this.x = x; this.y = y; this.w = w; this.h = h; }
+      contains(point) { return (point.x >= this.x - this.w && point.x <= this.x + this.w && point.y >= this.y - this.h && point.y <= this.y + this.h); }
+      intersects(range) { return !(range.x - range.w > this.x + this.w || range.x + range.w < this.x - this.w || range.y - range.h > this.y + this.h || range.y + range.h < this.y - this.h); }
+    }
+    class Circle {
+      constructor(x, y, r) { this.x = x; this.y = y; this.r = r; this.rSquared = this.r * this.r; }
+      contains(point) { return (Math.pow((point.x - this.x), 2) + Math.pow((point.y - this.y), 2)) <= this.rSquared; }
+      intersects(range) { let xDist = Math.abs(range.x - this.x); let yDist = Math.abs(range.y - this.y); let r = this.r; let w = range.w; let h = range.h; let edges = Math.pow((xDist - w), 2) + Math.pow((yDist - h), 2); if (xDist > (r + w) || yDist > (r + h)) return false; if (xDist <= w || yDist <= h) return true; return edges <= this.rSquared; }
+    }
+    class QuadTree {
+      constructor(boundary, capacity) { this.boundary = boundary; this.capacity = capacity; this.points = []; this.divided = false; }
+      subdivide() {
+        let x = this.boundary.x; let y = this.boundary.y; let w = this.boundary.w; let h = this.boundary.h;
+        this.northeast = new QuadTree(new Rectangle(x + w / 2, y - h / 2, w / 2, h / 2), this.capacity);
+        this.northwest = new QuadTree(new Rectangle(x - w / 2, y - h / 2, w / 2, h / 2), this.capacity);
+        this.southeast = new QuadTree(new Rectangle(x + w / 2, y + h / 2, w / 2, h / 2), this.capacity);
+        this.southwest = new QuadTree(new Rectangle(x - w / 2, y + h / 2, w / 2, h / 2), this.capacity);
+        this.divided = true;
+      }
+      insert(point) {
+        if (!this.boundary.contains(point)) return false;
+        if (this.points.length < this.capacity) { this.points.push(point); return true; } 
+        else { if (!this.divided) this.subdivide(); if (this.northeast.insert(point)) return true; if (this.northwest.insert(point)) return true; if (this.southeast.insert(point)) return true; if (this.southwest.insert(point)) return true; }
+      }
+      query(range, found = []) {
+        if (!this.boundary.intersects(range)) return found;
+        for (let p of this.points) { if (range.contains(p)) found.push(p); }
+        if (this.divided) { this.northeast.query(range, found); this.northwest.query(range, found); this.southeast.query(range, found); this.southwest.query(range, found); }
+        return found;
+      }
+    }
+
+    // --- OBJETOS DO JOGO ---
     class Food {
       constructor(x, y, isDrop = false, glowColor = null) {
         const sprites = ['🍎', '🍌', '🍉', '🍇', '🍓', '🍒', '🍍', '🥝', '🍑'];
         this.x = x || Math.random() * (WORLD_SIZE - 100) + 50; this.y = y || Math.random() * (WORLD_SIZE - 100) + 50;
         this.sprite = sprites[Math.floor(Math.random() * sprites.length)];
         this.size = isDrop ? Math.random() * 10 + 20 : Math.random() * 15 + 15;
-        this.expiresAt = isDrop ? Date.now() + 50000 : Infinity; // 50 segundos para massa de quem morre
+        this.expiresAt = isDrop ? Date.now() + 50000 : Infinity;
         this.isDrop = isDrop; this.glowColor = glowColor; 
       }
-      draw() { 
+      draw(renderCtx = ctx) { 
         if (this.isDrop && this.glowColor) {
-          ctx.globalAlpha = 0.4; ctx.fillStyle = this.glowColor;
-          ctx.beginPath(); ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2); ctx.fill();
-          ctx.globalAlpha = 0.9; 
-        } else if (this.isDrop) { ctx.globalAlpha = 0.9; }
-        ctx.font = `${this.size}px Arial`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(this.sprite, this.x, this.y); 
-        ctx.globalAlpha = 1.0; 
+          renderCtx.globalAlpha = 0.4; renderCtx.fillStyle = this.glowColor;
+          renderCtx.beginPath(); renderCtx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2); renderCtx.fill();
+          renderCtx.globalAlpha = 0.9; 
+        } else if (this.isDrop) { renderCtx.globalAlpha = 0.9; }
+        renderCtx.font = `${this.size}px ${currentGlobalFont}`; renderCtx.textAlign = "center"; renderCtx.textBaseline = "middle"; renderCtx.fillText(this.sprite, this.x, this.y); 
+        renderCtx.globalAlpha = 1.0; 
       }
     }
 
@@ -738,17 +1062,16 @@
       constructor() {
         this.x = Math.random() * (WORLD_SIZE - 200) + 100; this.y = Math.random() * (WORLD_SIZE - 200) + 100;
         const rand = Math.random();
-        // Tempos exatos solicitados: 10x = 21s, 5x = 40s, 2x = 120s
         if (rand > 0.8) { this.mult = 10; this.duration = 21000; this.color = '#ffeb3b'; } 
         else if (rand > 0.4) { this.mult = 5; this.duration = 40000; this.color = '#ffffff'; } 
         else { this.mult = 2; this.duration = 120000; this.color = '#ff9800'; } 
         this.size = 25; this.createdAt = Date.now();
       }
-      draw() {
+      draw(renderCtx = ctx) {
         let timeLeft = Math.max(0, Math.ceil((this.createdAt + this.duration - Date.now()) / 1000));
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fill();
-        ctx.strokeStyle = this.color; ctx.lineWidth = 3; ctx.stroke();
-        ctx.fillStyle = this.color; ctx.font = "bold 18px 'Teko'"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(`${this.mult}X (${timeLeft}s)`, this.x, this.y);
+        renderCtx.beginPath(); renderCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); renderCtx.fillStyle = 'rgba(0,0,0,0.8)'; renderCtx.fill();
+        renderCtx.strokeStyle = this.color; renderCtx.lineWidth = 3; renderCtx.stroke();
+        renderCtx.fillStyle = this.color; renderCtx.font = `bold 18px ${currentGlobalFont}`; renderCtx.textAlign = "center"; renderCtx.textBaseline = "middle"; renderCtx.fillText(`${this.mult}X (${timeLeft}s)`, this.x, this.y);
       }
     }
 
@@ -756,80 +1079,83 @@
       constructor(type) {
         this.type = type; this.x = Math.random() * (WORLD_SIZE - 400) + 200; this.y = Math.random() * (WORLD_SIZE - 400) + 200;
         this.size = 22; this.createdAt = Date.now();
-        // Todos com 40s exatos (Speed, ímã/irmã, 8 infinito)
         if (type === 'speed') { this.color = '#00e5ff'; this.symbol = '⚡'; this.duration = 40000; } 
         else if (type === 'magnet') { this.color = '#ff1744'; this.symbol = '🧲'; this.duration = 40000; } 
         else { this.color = '#d500f9'; this.symbol = '♾️'; this.duration = 40000; }
       }
-      draw() {
+      draw(renderCtx = ctx) {
         let timeLeft = Math.max(0, Math.ceil((this.createdAt + this.duration - Date.now()) / 1000));
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fill();
-        ctx.strokeStyle = this.color; ctx.lineWidth = 3; ctx.stroke();
-        ctx.fillStyle = this.color; ctx.font = "bold 16px 'Segoe UI'"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(`${this.symbol} ${timeLeft}s`, this.x, this.y);
+        renderCtx.beginPath(); renderCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); renderCtx.fillStyle = 'rgba(0,0,0,0.8)'; renderCtx.fill();
+        renderCtx.strokeStyle = this.color; renderCtx.lineWidth = 3; renderCtx.stroke();
+        renderCtx.fillStyle = this.color; renderCtx.font = `bold 16px ${currentGlobalFont}`; renderCtx.textAlign = "center"; renderCtx.textBaseline = "middle"; renderCtx.fillText(`${this.symbol} ${timeLeft}s`, this.x, this.y);
       }
     }
 
     class FloatingText {
       constructor(x, y, text, color = '#ffeb3b') { this.x = x; this.y = y; this.text = text; this.life = 1.0; this.color = color; }
       update() { this.y -= 1.0; this.life -= 0.02; }
-      draw() { ctx.globalAlpha = Math.max(0, this.life); ctx.font = "bold 28px 'Teko', Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 5; ctx.strokeStyle = "#000"; ctx.strokeText(this.text, this.x, this.y); ctx.fillStyle = this.color; ctx.fillText(this.text, this.x, this.y); ctx.globalAlpha = 1.0; }
+      draw(renderCtx = ctx) { renderCtx.globalAlpha = Math.max(0, this.life); renderCtx.font = `900 28px ${currentGlobalFont}`; renderCtx.textAlign = "center"; renderCtx.textBaseline = "middle"; renderCtx.lineWidth = 5; renderCtx.strokeStyle = "#000"; renderCtx.strokeText(this.text, this.x, this.y); renderCtx.fillStyle = this.color; renderCtx.fillText(this.text, this.x, this.y); renderCtx.globalAlpha = 1.0; }
     }
 
-    // --- COBRA COM DESIGN MODERNO 2026 (XBOX STYLE) ---
+    // --- COBRA MEGA VIP COM MAIS DE 200 VARIAÇÕES REAIS ---
     class Snake {
-      constructor(name, team, isBot = false, skin = 'solid', cosmetics = null) {
+      constructor(name, team, isBot = false) {
         this.id = Math.random().toString(36).substr(2, 9);
         this.x = Math.random() * (WORLD_SIZE - 1000) + 500; this.y = Math.random() * (WORLD_SIZE - 1000) + 500;
-        this.angle = Math.random() * Math.PI * 2; this.speed = 3.0; this.body = []; this.mass = 40; this.name = name; this.team = team; this.isBot = isBot; this.skin = skin; this.kills = 0; this.hs = 0; this.dead = false; this.boosting = false;
+        this.angle = Math.random() * Math.PI * 2; this.speed = 3.0; this.body = []; this.mass = 40; this.name = name; this.team = team; this.isBot = isBot; this.kills = 0; this.hs = 0; this.dead = false; this.boosting = false;
         this.speedBuffTime = 0; this.curveBuffTime = 0; this.magnetBuffTime = 0; this.multBuffTime = 0; this.activeMult = 1;
-        if (!isBot && cosmetics) { this.cosmetics = cosmetics; this.baseColor = cosmetics.color; this.color2 = cosmetics.color2 || '#ffffff'; } 
-        else { this.baseColor = team === 'red' ? '#ff1744' : '#00e5ff'; this.color2 = team === 'red' ? '#ffeb3b' : '#2979ff'; let randomFace = ['normal','angry','cute','cat','dog','alien','skull','robot'][Math.floor(Math.random()*8)]; this.cosmetics = { color: this.baseColor, color2: this.color2, face: randomFace, acc: 'none' }; }
+        
+        if(isBot) {
+            const arrSkins = ['padrao','ouro','prata','neon','escura','arcoiris'];
+            const arrFace = ['padrao','redondo','oval','quadrado','largo'];
+            const arrTheme = ['nenhum','fogo','agua','terra','ar','dragonball','naruto','pikachu','baralho','zumbi','peixinho'];
+            const arrMouth = ['sorriso','aberta','fofa','vampiro','banguela'];
+            const arrEyes = ['normal','irritado','fofo','oculos','ciclope'];
+            const arrEar = ['nenhuma','gato','cachorro','elfo','coelho','urso'];
+            const arrBody = ['bolinhas','liso','quadrado','triangulos'];
+            this.customs = {
+                face: arrFace[Math.floor(Math.random()*arrFace.length)],
+                mouth: arrMouth[Math.floor(Math.random()*arrMouth.length)],
+                eyes: arrEyes[Math.floor(Math.random()*arrEyes.length)],
+                body: arrBody[Math.floor(Math.random()*arrBody.length)],
+                skin: arrSkins[Math.floor(Math.random()*arrSkins.length)],
+                ear: arrEar[Math.floor(Math.random()*arrEar.length)],
+                theme: (Math.random() < 0.3) ? arrTheme[Math.floor(Math.random()*arrTheme.length)] : 'nenhum'
+            };
+        } else {
+            this.customs = {...myCustoms}; 
+        }
+        
+        if (team === 'red') this.baseColor = '#ff1744'; else if (team === 'blue') this.baseColor = '#00e5ff';
+        else if (team === 'yellow') this.baseColor = '#ffea00'; else if (team === 'green') this.baseColor = '#00e676';
+        else this.baseColor = '#ffffff';
+
         for(let i=0; i<this.mass; i++) this.body.push({x: this.x, y: this.y});
       }
       update() {
         if (this.dead) return;
         let currentSpeed = this.speed; 
         
-        // Curva justa equilibrada por padrão, melhorando muito apenas ao pegar o 8 infinito
-        let turnSpeed = 0.18; 
-        
         let hasSpeedBuff = Date.now() < this.speedBuffTime; 
         let hasCurveBuff = Date.now() < this.curveBuffTime; 
         let hasMagnetBuff = Date.now() < this.magnetBuffTime;
         
-        if (hasCurveBuff) turnSpeed = 0.60; 
-        
         this.boosting = (!this.isBot && isBoosting && this.mass > 20);
-        if (this.boosting) {
-          currentSpeed = hasSpeedBuff ? 9.0 : 6.0; 
-          if (!hasCurveBuff) turnSpeed = 0.15; 
-          this.mass -= 0.25; 
-        }
+        if (this.boosting) { currentSpeed = hasSpeedBuff ? 9.0 : 6.0; this.mass -= 0.25; }
 
         if (hasMagnetBuff) {
-          for (let j = 0; j < foods.length; j++) {
-            let f = foods[j]; let dx = this.x - f.x; let dy = this.y - f.y; let distSq = dx*dx + dy*dy;
-            if (distSq < 60000) { f.x += dx * 0.08; f.y += dy * 0.08; }
-          }
+          for (let j = 0; j < foods.length; j++) { let f = foods[j]; let dx = this.x - f.x; let dy = this.y - f.y; let distSq = dx*dx + dy*dy; if (distSq < 60000) { f.x += dx * 0.08; f.y += dy * 0.08; } }
         }
 
-        if (this.isBot) {
-          if (Math.random() < 0.05) this.angle += (Math.random() - 0.5) * 1.5;
+        if (this.isBot) { if (Math.random() < 0.05) this.angle += (Math.random() - 0.5) * 1.5;
         } else {
-          if (isAFK) {
-            this.angle += 0.04;
-          } else {
-            let targetAngle = this.angle; let diff = 0;
-            if (activeControl === 'mouse') { targetAngle = Math.atan2(mouse.y - height/2, mouse.x - width/2); diff = targetAngle - this.angle; }
-            else if (activeControl === 'touch') { targetAngle = Math.atan2(touchData.y - height/2, touchData.x - width/2); diff = targetAngle - this.angle; }
-            else if (activeControl === 'joystick' && joystickActive) { targetAngle = joystickAngle; diff = targetAngle - this.angle; }
-            else if (activeControl === 'custom') { 
-              if (keys[keyBinds.left]) this.angle -= turnSpeed; if (keys[keyBinds.right]) this.angle += turnSpeed; 
-            }
-            if (activeControl === 'mouse' || activeControl === 'touch' || (activeControl === 'joystick' && joystickActive)) {
-              while (diff < -Math.PI) diff += Math.PI * 2; while (diff > Math.PI) diff -= Math.PI * 2;
-              this.angle += diff * turnSpeed;
-            }
+          if (isAFK) { this.angle += 0.04; } else {
+            let targetAngle = this.angle;
+            if (activeControl === 'mouse') targetAngle = Math.atan2(mouse.y - height/2, mouse.x - width/2);
+            else if (activeControl === 'touch') targetAngle = Math.atan2(touchData.y - height/2, touchData.x - width/2);
+            else if (activeControl === 'joystick' && joystickActive) targetAngle = joystickAngle;
+            else if (activeControl === 'custom') { let fastTurn = hasCurveBuff ? 0.60 : 0.20; if (keys[keyBinds.left]) this.angle -= fastTurn; if (keys[keyBinds.right]) this.angle += fastTurn; }
+            if (activeControl === 'mouse' || activeControl === 'touch' || (activeControl === 'joystick' && joystickActive)) this.angle = targetAngle;
           }
         }
 
@@ -837,93 +1163,283 @@
         this.body.unshift({x: this.x, y: this.y});
         if(this.body.length > Math.min(this.mass * 2, 800)) this.body.pop();
       }
-      draw() {
+      
+      draw(renderCtx = ctx) {
         if (this.dead || this.body.length === 0) return;
         const radius = 16;
-        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalAlpha = this.skin === 'ghost' ? 0.4 : 1.0;
+        renderCtx.lineCap = 'round'; renderCtx.lineJoin = 'round'; 
 
-        // Estilo Xbox 2026: Sombra Cyber Vector
-        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
-        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
-        ctx.strokeStyle = 'rgba(0,0,0,0.7)'; ctx.lineWidth = radius * 2.8; ctx.stroke();
-
-        // Borda neon futurista de alta definição
-        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
-        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
-        ctx.strokeStyle = (this.team === 'red') ? 'rgba(255, 23, 68, 0.9)' : 'rgba(0, 229, 255, 0.9)'; ctx.lineWidth = radius * 3.1; ctx.stroke();
-
-        // Corpo principal com gradiente high-tech
-        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
-        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
-        if (this.skin === 'gradient' && this.body.length > 5) {
-          let lastIdx = this.body.length - 1; let grad = ctx.createLinearGradient(this.body[0].x, this.body[0].y, this.body[lastIdx].x, this.body[lastIdx].y);
-          grad.addColorStop(0, this.baseColor); grad.addColorStop(1, this.color2); ctx.strokeStyle = grad;
-        } else { ctx.strokeStyle = this.baseColor; }
-        ctx.lineWidth = radius * 2.2; ctx.stroke();
-
-        // Texturas e padrões cibernéticos modernos
-        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
-        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x, this.body[i].y);
-        if (this.skin === 'solid') { ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([6, 14]); ctx.stroke(); ctx.setLineDash([]); } 
-        else if (this.skin === 'zebra') { ctx.strokeStyle = 'rgba(0,0,0,0.7)'; ctx.lineWidth = radius * 2.2; ctx.setLineDash([10, 15]); ctx.stroke(); ctx.setLineDash([]); } 
-        else if (this.skin === 'dots') { ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = radius * 1.5; ctx.setLineDash([0, 20]); ctx.stroke(); ctx.setLineDash([]); }
-        else if (this.skin === 'checkered') { ctx.strokeStyle = this.color2; ctx.lineWidth = radius * 2.2; ctx.setLineDash([15, 15]); ctx.stroke(); ctx.setLineDash([]); }
-        else if (this.skin === 'neon') { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = radius * 0.9; ctx.stroke(); }
-
-        // Núcleo de luz central (Filtro 2026 Xbox Glass)
-        ctx.beginPath(); ctx.moveTo(this.body[0].x, this.body[0].y);
-        for(let i=1; i<this.body.length; i+=4) ctx.lineTo(this.body[i].x - radius*0.3, this.body[i].y - radius*0.3);
-        ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = radius * 0.7; ctx.stroke();
-
-        // --- CABEÇA E EXPRESSÕES ---
-        ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
-        let face = this.cosmetics ? this.cosmetics.face : 'normal';
-        let emojiMap = { 'cat': '🐱', 'dog': '🐶', 'pig': '🐷', 'rabbit': '🐰', 'alien': '👽', 'robot': '🤖', 'demon': '👹', 'skull': '💀', 'cool': '😎', 'nerd': '🤓' };
-        if (emojiMap[face]) { ctx.save(); ctx.rotate(Math.PI / 2); ctx.font = "32px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(emojiMap[face], 0, -5); ctx.restore(); } 
-        else {
-          ctx.beginPath(); ctx.arc(0, 0, radius + 3, 0, Math.PI * 2); ctx.fillStyle = this.baseColor; ctx.fill();
-          if (face === 'normal') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(6, -8, 5, 0, Math.PI*2); ctx.arc(6, 8, 5, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(8, -8, 2.5, 0, Math.PI*2); ctx.arc(8, 8, 2.5, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(9, -9, 1, 0, Math.PI*2); ctx.arc(9, 7, 1, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); if (this.boosting) ctx.arc(14, 0, 5, 0, Math.PI*2); else ctx.ellipse(12, 0, 3, 6, 0, 0, Math.PI*2); ctx.fill(); if (Math.random() < 0.05) { ctx.strokeStyle = '#ff1744'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(20, 0); ctx.stroke(); } } 
-          else if (face === 'angry') { ctx.fillStyle = '#000'; ctx.beginPath(); ctx.ellipse(2, -10, 8, 4, Math.PI/6, 0, Math.PI*2); ctx.ellipse(2, 10, 8, 4, -Math.PI/6, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(4, -10, 2, 0, Math.PI*2); ctx.arc(4, 10, 2, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(4, -16); ctx.lineTo(10, -6); ctx.moveTo(4, 16); ctx.lineTo(10, 6); ctx.stroke(); ctx.fillStyle = '#000'; ctx.beginPath(); if(this.boosting) ctx.arc(14, 0, 5, 0, Math.PI*2); else ctx.ellipse(12, 0, 4, 2, 0, 0, Math.PI*2); ctx.fill(); }
-          else if (face === 'cute') { ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(4, -8, 6, 0, Math.PI*2); ctx.arc(4, 8, 6, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(6, -9, 2.5, 0, Math.PI*2); ctx.arc(6, 7, 2.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(8, -6, 1, 0, Math.PI*2); ctx.arc(8, 10, 1, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(12, -2); ctx.quadraticCurveTo(15, 0, 12, 2); ctx.stroke(); }
-          else if (face === 'large') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(4, -9, 8, 0, Math.PI*2); ctx.arc(4, 9, 8, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(7, -9, 4, 0, Math.PI*2); ctx.arc(7, 9, 4, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(8, -10, 1.5, 0, Math.PI*2); ctx.arc(8, 8, 1.5, 0, Math.PI*2); ctx.fill(); }
-          else if (face === 'small') { ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(8, -8, 2, 0, Math.PI*2); ctx.arc(8, 8, 2, 0, Math.PI*2); ctx.fill(); }
-          else if (face === 'closed') { ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(6, -14); ctx.quadraticCurveTo(10, -10, 6, -6); ctx.moveTo(6, 6); ctx.quadraticCurveTo(10, 10, 6, 14); ctx.stroke(); }
-          else if (face === 'crying') { ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(8, -14); ctx.quadraticCurveTo(4, -10, 8, -6); ctx.moveTo(8, 6); ctx.quadraticCurveTo(4, 10, 8, 14); ctx.stroke(); ctx.fillStyle = '#2196f3'; ctx.beginPath(); ctx.ellipse(2, -10, 5, 2.5, Math.PI/4, 0, Math.PI*2); ctx.ellipse(2, 10, 5, 2.5, -Math.PI/4, 0, Math.PI*2); ctx.fill(); }
-        }
-        let acc = this.cosmetics ? this.cosmetics.acc : 'none';
-        if (acc === 'glasses') { ctx.fillStyle = '#111'; ctx.fillRect(0, -14, 10, 28); ctx.fillStyle = '#333'; ctx.fillRect(2, -12, 6, 10); ctx.fillRect(2, 2, 6, 10); }
-        else if (acc === 'fangs') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(12, -6); ctx.lineTo(18, -4); ctx.lineTo(12, -2); ctx.moveTo(12, 2); ctx.lineTo(18, 4); ctx.lineTo(12, 6); ctx.fill(); }
-        else if (acc === 'crown') { ctx.font = '22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👑', -6, 0); }
-        else if (acc === 'mustache') { ctx.fillStyle = '#111'; ctx.beginPath(); ctx.ellipse(10, -6, 6, 2, -Math.PI/6, 0, Math.PI*2); ctx.ellipse(10, 6, 6, 2, Math.PI/6, 0, Math.PI*2); ctx.fill(); }
-        else if (acc === 'halo') { ctx.strokeStyle = 'rgba(255, 215, 0, 0.9)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(-10, 0, 4, 14, 0, 0, Math.PI*2); ctx.stroke(); }
-        else if (acc === 'ears_rabbit') { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#ff8a80'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(-8, -12, 4, 16, -Math.PI/4, 0, Math.PI*2); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.ellipse(-8, 12, 4, 16, Math.PI/4, 0, Math.PI*2); ctx.fill(); ctx.stroke(); }
-        ctx.restore(); ctx.globalAlpha = 1.0;
+        let pointsToDraw = [];
+        let lastDrawn = null;
         
-        let buffY = this.y - radius - 25;
-        if (Date.now() < this.speedBuffTime) { ctx.fillStyle = '#00e5ff'; ctx.fillText('⚡', this.x - 15, buffY); }
-        if (Date.now() < this.curveBuffTime) { ctx.fillStyle = '#d500f9'; ctx.fillText('♾️', this.x, buffY); }
-        if (Date.now() < this.magnetBuffTime) { ctx.fillStyle = '#ff1744'; ctx.fillText('🧲', this.x + 15, buffY); }
+        let spacingSq = 49; 
+        if (this.customs.body === 'liso') spacingSq = 9; 
+        else if (this.customs.body === 'quadrado') spacingSq = 64;
+        else if (this.customs.body === 'triangulos') spacingSq = 100;
+
+        for (let i = this.body.length - 1; i >= 0; i--) {
+            let pt = this.body[i];
+            if (lastDrawn) {
+                let dx = pt.x - lastDrawn.x; let dy = pt.y - lastDrawn.y;
+                if (dx*dx + dy*dy < spacingSq && i !== 0) continue; 
+            }
+            lastDrawn = pt;
+            pointsToDraw.push({ pt: pt, index: i });
+        }
+
+        let getColors = (isStripe, idx) => {
+            let c1='#fff', c2=this.baseColor, c3='#111';
+            let thm = this.customs.theme;
+            let sk = this.customs.skin;
+            
+            if(thm !== 'nenhum') {
+                if (thm === 'fogo') { c1 = isStripe?'#ff8a80':'#ffd180'; c2 = isStripe?'#d50000':'#ff9100'; c3 = '#b71c1c'; }
+                else if (thm === 'agua') { c1 = isStripe?'#b3e5fc':'#81d4fa'; c2 = isStripe?'#039be5':'#0288d1'; c3 = '#01579b'; }
+                else if (thm === 'terra') { c1 = isStripe?'#c8e6c9':'#aed581'; c2 = isStripe?'#43a047':'#689f38'; c3 = '#1b5e20'; }
+                else if (thm === 'ar') { c1 = isStripe?'#ffffff':'#e0f7fa'; c2 = isStripe?'#e0e0e0':'#b2ebf2'; c3 = '#9e9e9e'; }
+                else if (thm === 'raio') { c1 = isStripe?'#fff59d':'#ffffff'; c2 = isStripe?'#fbc02d':'#4fc3f7'; c3 = '#f57f17'; }
+                else if (thm === 'gelo') { c1 = '#ffffff'; c2 = isStripe?'#84ffff':'#18ffff'; c3 = '#00e5ff'; }
+                else if (thm === 'dragonball') { c1 = isStripe?'#ffe082':'#ffb74d'; c2 = isStripe?'#ffb300':'#f57c00'; c3 = '#e65100'; }
+                else if (thm === 'naruto') { c1 = isStripe?'#ffcc80':'#424242'; c2 = isStripe?'#ff9800':'#212121'; c3 = '#000000'; }
+                else if (thm === 'pikachu') { c1 = isStripe?'#fff59d':'#424242'; c2 = isStripe?'#ffeb3b':'#212121'; c3 = isStripe?'#fbc02d':'#000'; }
+                else if (thm === 'homemaranha') { c1 = isStripe?'#ff8a80':'#8c9eff'; c2 = isStripe?'#d50000':'#2962ff'; c3 = isStripe?'#8e0000':'#00008b'; }
+                else if (thm === 'superman') { c1 = isStripe?'#8c9eff':'#ff8a80'; c2 = isStripe?'#2962ff':'#d50000'; c3 = isStripe?'#00008b':'#8e0000'; }
+                else if (thm === 'ironman') { c1 = isStripe?'#ff8a80':'#ffe57f'; c2 = isStripe?'#d50000':'#ffc107'; c3 = isStripe?'#8e0000':'#ff8f00'; }
+                else if (thm === 'frozen') { c1 = isStripe?'#ffffff':'#b2ebf2'; c2 = isStripe?'#84ffff':'#00bcd4'; c3 = '#00838f'; }
+                else if (thm === 'reileao') { c1 = isStripe?'#ffecb3':'#ffcc80'; c2 = isStripe?'#ffb300':'#ef6c00'; c3 = '#e65100'; }
+                else if (thm === 'baralho') { c1 = '#ffffff'; c2 = isStripe?'#e0e0e0':'#ff5252'; c3 = isStripe?'#212121':'#b71c1c'; }
+                else if (thm === 'zumbi') { c1 = isStripe?'#c5e1a5':'#a5d6a7'; c2 = isStripe?'#558b2f':'#2e7d32'; c3 = '#1b5e20'; }
+                else if (thm === 'peixinho') { c1 = isStripe?'#e0f7fa':'#00b0ff'; c2 = isStripe?'#00b0ff':'#00838f'; c3 = '#004d40'; }
+                else if (thm === 'doces') { const doces = ['#f8bbd0','#e1bee7','#d1c4e9','#c5cae9','#b2ebf2']; c1='#fff'; c2=doces[idx%5]; c3='#888'; }
+                else if (thm === 'espacial') { c1 = isStripe?'#ea80fc':'#b388ff'; c2 = isStripe?'#aa00ff':'#6200ea'; c3 = '#000000'; }
+                else if (thm === 'dinheiro') { c1 = isStripe?'#c8e6c9':'#a5d6a7'; c2 = isStripe?'#4caf50':'#388e3c'; c3 = '#1b5e20'; }
+            } else {
+                if (sk === 'ouro') { c1='#fbf5b7'; c2='#bf953f'; c3='#aa771c'; }
+                else if (sk === 'prata') { c1='#ffffff'; c2='#9e9e9e'; c3='#424242'; }
+                else if (sk === 'neon') { c1='#e0f2f1'; c2='#00e5ff'; c3='#006064'; }
+                else if (sk === 'escura') { c1='#424242'; c2='#212121'; c3='#000000'; }
+                else if (sk === 'arcoiris') { const arc = ['#f44336','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0']; c1='#fff'; c2=arc[idx%6]; c3='#333'; }
+                else if (sk === 'fantasma') { c1='#e0f7fa'; c2='#b2ebf2'; c3='#80deea'; }
+            }
+            return {c1, c2, c3};
+        }
+
+        // CAMADA 1: AURA DO TIME
+        renderCtx.globalAlpha = 0.35;
+        for (let j = 0; j < pointsToDraw.length; j++) {
+            let p = pointsToDraw[j];
+            renderCtx.beginPath(); renderCtx.arc(p.pt.x, p.pt.y, radius + 6, 0, Math.PI * 2);
+            renderCtx.fillStyle = this.baseColor; renderCtx.fill();
+        }
+        renderCtx.globalAlpha = this.customs.skin === 'fantasma' ? 0.6 : 1.0;
+
+        // CAMADA 2: O CORPO DA COBRA (LISO / QUADRADO / TRIÂNGULO / BOLINHAS)
+        let isLiso = (this.customs.body === 'liso');
+
+        for (let j = 0; j < pointsToDraw.length; j++) {
+            let p = pointsToDraw[j];
+            renderCtx.beginPath();
+            let {c1, c2, c3} = getColors((j%2===0), j);
+            let gradient = renderCtx.createRadialGradient(p.pt.x, p.pt.y, radius * 0.1, p.pt.x, p.pt.y, radius);
+            gradient.addColorStop(0, c1); gradient.addColorStop(0.3, c2); gradient.addColorStop(1, c3);
+            renderCtx.fillStyle = gradient;
+
+            if (this.customs.body === 'quadrado') {
+                renderCtx.rect(p.pt.x - radius, p.pt.y - radius, radius*2, radius*2);
+            } else if (this.customs.body === 'triangulos') {
+                renderCtx.moveTo(p.pt.x, p.pt.y - radius); renderCtx.lineTo(p.pt.x + radius, p.pt.y + radius); renderCtx.lineTo(p.pt.x - radius, p.pt.y + radius); renderCtx.closePath();
+            } else {
+                renderCtx.arc(p.pt.x, p.pt.y, radius, 0, Math.PI * 2);
+            }
+            renderCtx.fill(); 
+            if (!isLiso) { renderCtx.lineWidth = 1.5; renderCtx.strokeStyle = 'rgba(0,0,0,0.5)'; renderCtx.stroke(); }
+        }
+
+        // CAMADA 3: EMOJIS
+        let themeEmoji = ''; let thm = this.customs.theme;
+        if(thm === 'fogo') themeEmoji = '🔥'; else if(thm === 'agua') themeEmoji = '💧'; else if(thm === 'terra') themeEmoji = '🌱';
+        else if(thm === 'ar') themeEmoji = '🌪️'; else if(thm === 'raio') themeEmoji = '⚡'; else if(thm === 'gelo') themeEmoji = '❄️';
+        else if(thm === 'dragonball') themeEmoji = '🟠'; else if(thm === 'naruto') themeEmoji = '🌀'; else if(thm === 'pikachu') themeEmoji = '⚡';
+        else if(thm === 'homemaranha') themeEmoji = '🕷️'; else if(thm === 'superman') themeEmoji = '⭐'; else if(thm === 'ironman') themeEmoji = '🤖';
+        else if(thm === 'frozen') themeEmoji = '❄️'; else if(thm === 'reileao') themeEmoji = '🐾'; else if(thm === 'zumbi') themeEmoji = '🧟';
+        else if(thm === 'peixinho') themeEmoji = '🐟'; else if(thm === 'doces') themeEmoji = '🍬'; else if(thm === 'espacial') themeEmoji = '🌌';
+        else if(thm === 'dinheiro') themeEmoji = '💸';
+
+        for (let j = 0; j < pointsToDraw.length; j++) {
+            let p = pointsToDraw[j];
+            if (thm === 'baralho' && j%3===0 && p.index!==0) {
+                let suits = ['♠️','♥️','♣️','♦️']; let s = suits[(j/3)%4];
+                renderCtx.fillStyle='white'; renderCtx.font='18px Arial'; renderCtx.textAlign='center'; renderCtx.textBaseline='middle'; renderCtx.fillText(s, p.pt.x, p.pt.y);
+            } else if (themeEmoji && j%5===0 && p.index!==0) {
+                renderCtx.fillStyle='white'; renderCtx.font='18px Arial'; renderCtx.textAlign='center'; renderCtx.textBaseline='middle'; renderCtx.fillText(themeEmoji, p.pt.x, p.pt.y);
+            }
+        }
+
+        // CAMADA 4: DESENHAR A CABEÇA CUSTOMIZADA
+        let head = this.body[0];
+        
+        renderCtx.beginPath(); renderCtx.arc(head.x, head.y, radius * 1.1 + 6, 0, Math.PI * 2);
+        renderCtx.fillStyle = this.baseColor; renderCtx.globalAlpha = 0.35; renderCtx.fill();
+        renderCtx.globalAlpha = this.customs.skin === 'fantasma' ? 0.6 : 1.0;
+
+        renderCtx.save();
+        renderCtx.translate(head.x, head.y);
+        renderCtx.rotate(this.angle);
+
+        // ORELHAS VETORIAIS REAIS (SOMENTE AS ORELHAS, SEM ROSTO DE ANIMAL)
+        if(this.customs.ear !== 'nenhuma') {
+            let earType = this.customs.ear;
+            let {c2: earColor} = getColors(false, 0);
+            renderCtx.fillStyle = earColor; renderCtx.strokeStyle = '#000'; renderCtx.lineWidth = 1.5;
+
+            let drawEarShape = (isLeft) => {
+                let side = isLeft ? -1 : 1;
+                renderCtx.beginPath();
+                if(earType === 'gato') {
+                    renderCtx.moveTo(-4, side * 12); renderCtx.lineTo(6, side * 22); renderCtx.lineTo(8, side * 10);
+                } else if(earType === 'coelho') {
+                    renderCtx.ellipse(-8, side * 16, 5, 18, side * Math.PI/6, 0, Math.PI*2);
+                } else if(earType === 'cachorro') {
+                    renderCtx.ellipse(-2, side * 18, 7, 12, side * Math.PI/4, 0, Math.PI*2);
+                } else if(earType === 'elfo') {
+                    renderCtx.moveTo(-6, side * 12); renderCtx.lineTo(-2, side * 24); renderCtx.lineTo(6, side * 12);
+                } else if(earType === 'urso') {
+                    renderCtx.arc(-4, side * 16, 7, 0, Math.PI*2);
+                }
+                renderCtx.fill(); renderCtx.stroke();
+            };
+
+            drawEarShape(true);  
+            drawEarShape(false); 
+        }
+
+        // FORMATO DO ROSTO
+        if (this.customs.face === 'oval') renderCtx.scale(0.8, 1.3);
+        else if (this.customs.face === 'largo') renderCtx.scale(1.3, 0.8);
+
+        renderCtx.beginPath();
+        if (this.customs.face === 'quadrado') renderCtx.rect(-radius*1.1, -radius*1.1, radius*2.2, radius*2.2);
+        else renderCtx.arc(0, 0, radius * 1.1, 0, Math.PI * 2);
+        
+        let {c1: hc1, c2: hc2, c3: hc3} = getColors(false, 0);
+        let headGradient = renderCtx.createRadialGradient(0, 0, radius * 0.1, 0, 0, radius * 1.1);
+        headGradient.addColorStop(0, hc1); headGradient.addColorStop(0.3, hc2); headGradient.addColorStop(1, hc3);
+        renderCtx.fillStyle = headGradient; renderCtx.fill(); 
+        
+        if(!isLiso) { renderCtx.lineWidth = 1.5; renderCtx.strokeStyle = 'rgba(0,0,0,0.5)'; renderCtx.stroke(); }
+
+        // OLHOS
+        renderCtx.fillStyle = 'black'; renderCtx.strokeStyle = 'black'; renderCtx.lineWidth = 2;
+        let eyeStyle = this.customs.eyes;
+        if(eyeStyle === 'normal') {
+            renderCtx.beginPath(); renderCtx.arc(2, -7, 3, 0, Math.PI*2); renderCtx.fill(); 
+            renderCtx.beginPath(); renderCtx.arc(2, 7, 3, 0, Math.PI*2); renderCtx.fill();
+        } else if (eyeStyle === 'irritado') {
+            renderCtx.beginPath(); renderCtx.arc(2, -7, 3, 0, Math.PI*2); renderCtx.fill(); 
+            renderCtx.beginPath(); renderCtx.moveTo(-2,-12); renderCtx.lineTo(6,-4); renderCtx.stroke();
+            renderCtx.beginPath(); renderCtx.arc(2, 7, 3, 0, Math.PI*2); renderCtx.fill();
+            renderCtx.beginPath(); renderCtx.moveTo(-2,12); renderCtx.lineTo(6,4); renderCtx.stroke();
+        } else if (eyeStyle === 'fofo') {
+            renderCtx.fillStyle = 'white'; renderCtx.beginPath(); renderCtx.arc(2, -7, 5, 0, Math.PI*2); renderCtx.fill(); renderCtx.stroke();
+            renderCtx.beginPath(); renderCtx.arc(2, 7, 5, 0, Math.PI*2); renderCtx.fill(); renderCtx.stroke();
+            renderCtx.fillStyle = 'black'; renderCtx.beginPath(); renderCtx.arc(3, -7, 2, 0, Math.PI*2); renderCtx.fill(); 
+            renderCtx.beginPath(); renderCtx.arc(3, 7, 2, 0, Math.PI*2); renderCtx.fill();
+        } else if (eyeStyle === 'oculos') {
+            renderCtx.fillStyle = '#111'; renderCtx.fillRect(0, -10, 8, 8); renderCtx.fillRect(0, 2, 8, 8);
+            renderCtx.beginPath(); renderCtx.moveTo(4, -2); renderCtx.lineTo(4, 2); renderCtx.stroke();
+        } else if (eyeStyle === 'ciclope') {
+            renderCtx.fillStyle = 'white'; renderCtx.beginPath(); renderCtx.arc(4, 0, 6, 0, Math.PI*2); renderCtx.fill(); renderCtx.stroke();
+            renderCtx.fillStyle = 'red'; renderCtx.beginPath(); renderCtx.arc(5, 0, 2, 0, Math.PI*2); renderCtx.fill();
+        } else if (eyeStyle === 'estrelas') {
+            renderCtx.font = "12px Arial"; renderCtx.textAlign = "center"; renderCtx.textBaseline = "middle";
+            renderCtx.fillText("⭐", 2, -7); renderCtx.fillText("⭐", 2, 7);
+        } else if (eyeStyle === 'chorando') {
+            renderCtx.beginPath(); renderCtx.arc(2, -7, 3, 0, Math.PI*2); renderCtx.fill(); 
+            renderCtx.beginPath(); renderCtx.arc(2, 7, 3, 0, Math.PI*2); renderCtx.fill();
+            renderCtx.fillStyle = '#4fc3f7'; renderCtx.beginPath(); renderCtx.arc(0, -4, 2, 0, Math.PI*2); renderCtx.fill();
+            renderCtx.beginPath(); renderCtx.arc(0, 10, 2, 0, Math.PI*2); renderCtx.fill();
+        } else if (eyeStyle === 'zumbi') {
+            renderCtx.fillStyle = '#fff'; renderCtx.beginPath(); renderCtx.arc(2, -7, 4, 0, Math.PI*2); renderCtx.fill(); renderCtx.stroke();
+            renderCtx.beginPath(); renderCtx.arc(2, 7, 4, 0, Math.PI*2); renderCtx.fill(); renderCtx.stroke();
+            renderCtx.beginPath(); renderCtx.moveTo(-2,-10); renderCtx.lineTo(6,-4); renderCtx.stroke();
+        }
+
+        // BOCA
+        let mouthStyle = this.customs.mouth;
+        renderCtx.strokeStyle = 'black'; renderCtx.lineWidth = 2; renderCtx.fillStyle = '#ff5252';
+        if(mouthStyle === 'sorriso') {
+            renderCtx.beginPath(); renderCtx.arc(12, 0, 5, -Math.PI/2.5, Math.PI/2.5); renderCtx.stroke();
+        } else if (mouthStyle === 'aberta') {
+            renderCtx.beginPath(); renderCtx.arc(14, 0, 5, -Math.PI/1.8, Math.PI/1.8); renderCtx.fill(); renderCtx.stroke();
+        } else if (mouthStyle === 'fofa') {
+            renderCtx.beginPath(); renderCtx.arc(12, -3, 3, 0, Math.PI); renderCtx.stroke();
+            renderCtx.beginPath(); renderCtx.arc(12, 3, 3, 0, Math.PI); renderCtx.stroke();
+        } else if (mouthStyle === 'vampiro') {
+            renderCtx.beginPath(); renderCtx.moveTo(12, -4); renderCtx.lineTo(12, 4); renderCtx.stroke();
+            renderCtx.fillStyle = 'white'; renderCtx.beginPath(); renderCtx.moveTo(12,-3); renderCtx.lineTo(16,-2); renderCtx.lineTo(12,-1); renderCtx.fill();
+            renderCtx.beginPath(); renderCtx.moveTo(12,1); renderCtx.lineTo(16,2); renderCtx.lineTo(12,3); renderCtx.fill();
+        } else if (mouthStyle === 'banguela') {
+            renderCtx.beginPath(); renderCtx.arc(14, 0, 6, -Math.PI/2, Math.PI/2); renderCtx.fill(); renderCtx.stroke();
+            renderCtx.fillStyle = 'black'; renderCtx.fillRect(15, -2, 3, 4);
+        } else if (mouthStyle === 'triste') {
+            renderCtx.beginPath(); renderCtx.arc(16, 0, 5, Math.PI-Math.PI/2.5, Math.PI+Math.PI/2.5); renderCtx.stroke();
+        } else if (mouthStyle === 'lingua') {
+            renderCtx.beginPath(); renderCtx.arc(12, 0, 5, -Math.PI/2.5, Math.PI/2.5); renderCtx.stroke();
+            renderCtx.fillStyle = '#ff5252'; renderCtx.beginPath(); renderCtx.arc(15, 2, 4, 0, Math.PI*2); renderCtx.fill(); renderCtx.stroke();
+        }
+
+        renderCtx.restore();
+        renderCtx.globalAlpha = 1.0;
+        
+        let buffY = this.y - radius - 20; 
+        if (Date.now() < this.speedBuffTime) { renderCtx.fillStyle = '#00e5ff'; renderCtx.fillText('⚡', this.x - 15, buffY); }
+        if (Date.now() < this.curveBuffTime) { renderCtx.fillStyle = '#d500f9'; renderCtx.fillText('♾️', this.x, buffY); }
+        if (Date.now() < this.magnetBuffTime) { renderCtx.fillStyle = '#ff1744'; renderCtx.fillText('🧲', this.x + 15, buffY); }
         
         let displayName = this.name;
         if (!this.isBot && isVIP) { displayName += (isADM ? " 👑" : " 〽️"); }
 
-        ctx.font = "bold 15px 'Segoe UI'"; ctx.textAlign = "center";
-        ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillText(displayName, this.x + 2, this.y - radius - 14);
-
-        if (!this.isBot && isVIP) { ctx.fillStyle = "#ffeb3b"; } else { ctx.fillStyle = "white"; }
-        ctx.fillText(displayName, this.x, this.y - radius - 15);
+        renderCtx.font = `bold 15px ${currentGlobalFont}`; renderCtx.textAlign = "center";
+        renderCtx.fillStyle = "rgba(0,0,0,0.8)"; renderCtx.fillText(displayName, this.x + 2, this.y - radius - 24);
+        if (!this.isBot && isVIP) { renderCtx.fillStyle = "#ffeb3b"; } else { renderCtx.fillStyle = "white"; }
+        renderCtx.fillText(displayName, this.x, this.y - radius - 25);
       }
-      die(cause) { this.dead = true; if (cause !== 'redline' && cause !== 'quit') { let dropCount = Math.min(this.body.length, 50); for (let k = 0; k < dropCount; k += 2) { let f = new Food(this.body[k].x + (Math.random()-0.5)*25, this.body[k].y + (Math.random()-0.5)*25, true, '#ffeb3b'); f.size = 22; foods.push(f); } } if (!this.isBot && cause !== 'quit') { document.getElementById('hud').style.display = 'none'; document.getElementById('death-screen').style.display = 'flex'; document.getElementById('death-reason').innerText = cause === 'redline' ? "BATEU NA REDLINE!" : "VOCÊ FOI ELIMINADO!"; let vipModal = document.getElementById('vip-spawn-modal'); if (vipModal) vipModal.style.display = isVIP ? 'block' : 'none'; } }
+      
+      die(cause) { 
+          this.dead = true; 
+          if (cause !== 'redline' && cause !== 'quit') { 
+            let lastDrawn = null; const spacingSq = 49; 
+            for (let i = 0; i < this.body.length; i++) { 
+              let pt = this.body[i]; 
+              if (lastDrawn) { let dx = pt.x - lastDrawn.x; let dy = pt.y - lastDrawn.y; if (dx*dx + dy*dy < spacingSq) continue; }
+              lastDrawn = pt; let f = new Food(pt.x, pt.y, true, this.baseColor); f.size = 20; foods.push(f); 
+            } 
+          } 
+          
+          if (!this.isBot) {
+              globalTotalHS += this.hs; globalTotalKills += this.kills;
+              localStorage.setItem('globalTotalHS', globalTotalHS); localStorage.setItem('globalTotalKills', globalTotalKills);
+              updateStatsPanel();
+
+              if (cause !== 'quit') {
+                  document.getElementById('hud').style.display = 'none'; document.getElementById('death-screen').style.display = 'flex'; 
+                  document.getElementById('death-reason').innerText = cause === 'redline' ? "BATEU NA REDLINE!" : "VOCÊ FOI ELIMINADO!"; 
+                  let vipModal = document.getElementById('vip-spawn-modal'); if (vipModal) vipModal.style.display = isVIP ? 'block' : 'none'; 
+              }
+          } 
+      }
     }
 
     let player, snakes = [], foods = [], multipliers = [], powerups = [], texts = [];
     let lastSpeedSpawn = Date.now(); let lastCurveSpawn = Date.now(); let lastMagnetSpawn = Date.now();
 
     function drawGridAndRedline(camX, camY) { 
-      ctx.fillStyle = '#16191f'; ctx.fillRect(camX - (width/2)/globalZoom, camY - (height/2)/globalZoom, width/globalZoom, height/globalZoom); 
+      ctx.fillStyle = '#0a0d14'; ctx.fillRect(camX - (width/2)/globalZoom, camY - (height/2)/globalZoom, width/globalZoom, height/globalZoom); 
+      
       const hexSize = 100; const hexHeight = hexSize * Math.sqrt(3); 
       const startX = Math.floor((camX - (width/2)/globalZoom) / (hexSize * 1.5)) - 1; const startY = Math.floor((camY - (height/2)/globalZoom) / hexHeight) - 1; 
       const endX = startX + (width/globalZoom) / hexSize + 2; const endY = startY + (height/globalZoom) / hexHeight + 2; 
+      
       ctx.beginPath(); 
       for (let i = startX; i < endX; i++) { 
         for (let j = startY; j < endY; j++) { 
@@ -931,66 +1447,53 @@
           ctx.moveTo(x + hexSize, y); for (let k = 1; k <= 6; k++) ctx.lineTo(x + hexSize * Math.cos(k * Math.PI / 3), y + hexSize * Math.sin(k * Math.PI / 3)); 
         } 
       } 
-      ctx.strokeStyle = "rgba(0, 229, 255, 0.03)"; ctx.lineWidth = 4; ctx.stroke();
-      ctx.strokeStyle = "rgba(0, 229, 255, 0.08)"; ctx.lineWidth = 1; ctx.stroke(); 
-      ctx.strokeStyle = "rgba(255, 23, 68, 0.8)"; ctx.lineWidth = 20; ctx.strokeRect(0, 0, WORLD_SIZE, WORLD_SIZE); 
-      ctx.strokeStyle = "rgba(255, 23, 68, 0.1)"; ctx.lineWidth = 80; ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80); 
+      ctx.strokeStyle = "rgba(0, 229, 255, 0.04)"; ctx.lineWidth = 4; ctx.stroke();
+      ctx.strokeStyle = "rgba(0, 229, 255, 0.15)"; ctx.lineWidth = 1; ctx.stroke(); 
+      
+      ctx.strokeStyle = "rgba(255, 23, 68, 0.9)"; ctx.lineWidth = 20; ctx.strokeRect(0, 0, WORLD_SIZE, WORLD_SIZE); 
+      ctx.strokeStyle = "rgba(255, 23, 68, 0.15)"; ctx.lineWidth = 80; ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80); 
     }
     
     function initGame() { 
       snakes = []; foods = []; multipliers = []; powerups = []; texts = []; 
-      player = new Snake(playerName, playerTeam, false, playerSkin, customCosmetics); 
-      snakes.push(player); 
-      const skinOpts = ['solid', 'neon', 'zebra', 'dots', 'ghost']; 
-      for(let i=0; i<BOT_COUNT; i++) snakes.push(new Snake(`BOT ${i+1}`, i % 2 === 0 ? 'red' : 'blue', true, skinOpts[Math.floor(Math.random()*skinOpts.length)])); 
-      
-      // ALTA QUANTIDADE DE COMIDAS E INSETOS ESPALHADOS NO MAPA
+      player = new Snake(playerName, playerTeam, false); snakes.push(player); 
+      let teams = ['red', 'blue', 'yellow', 'green'];
+      for(let i=0; i<BOT_COUNT; i++) { let randomTeam = teams[Math.floor(Math.random() * teams.length)]; snakes.push(new Snake(`BOT ${i+1}`, randomTeam, true)); }
       for(let i=0; i<2500; i++) foods.push(new Food()); 
-      
-      if(gameReqId) cancelAnimationFrame(gameReqId); 
-      gameLoop(); 
+      if(gameReqId) cancelAnimationFrame(gameReqId); gameLoop(); 
     }
 
     function isVisible(x, y, padding, camX, camY) { return x > camX - (width/2)/globalZoom - padding && x < camX + (width/2)/globalZoom + padding && y > camY - (height/2)/globalZoom - padding && y < camY + (height/2)/globalZoom + padding; }
     
     function registerKill(killer, victimX, victimY, isHeadshotCandidate) { 
-      let cx = WORLD_SIZE / 2; 
-      let cy = WORLD_SIZE / 2; 
-      let angleToCenter = Math.atan2(cy - killer.y, cx - killer.x); 
-      let diff = Math.abs(killer.angle - angleToCenter); 
-      while (diff > Math.PI) diff -= Math.PI * 2; 
-      diff = Math.abs(diff); 
-
-      const borderBuffer = 250; 
-      let nearRedline = (victimX < borderBuffer || victimX > WORLD_SIZE - borderBuffer || victimY < borderBuffer || victimY > WORLD_SIZE - borderBuffer);
-
+      let cx = WORLD_SIZE / 2; let cy = WORLD_SIZE / 2; let angleToCenter = Math.atan2(cy - killer.y, cx - killer.x); let diff = Math.abs(killer.angle - angleToCenter); 
+      while (diff > Math.PI) diff -= Math.PI * 2; diff = Math.abs(diff); 
+      const borderBuffer = 250; let nearRedline = (victimX < borderBuffer || victimX > WORLD_SIZE - borderBuffer || victimY < borderBuffer || victimY > WORLD_SIZE - borderBuffer);
       let pointingToCenter = (diff <= Math.PI / 4);
 
       if (isHeadshotCandidate && pointingToCenter && !nearRedline) { 
-        killer.hs++; killer.kills++; 
-        texts.push(new FloatingText(victimX, victimY, `${killer.name} - HEADSHOT!`, "#ffeb3b")); 
+        killer.hs++; killer.kills++; texts.push(new FloatingText(victimX, victimY, `${killer.name} - HEADSHOT!`, "#ffeb3b")); 
         if (killer === player) playSound('hs'); 
         if (isVIP || !killer.isBot) { 
-          let banner = document.getElementById('vip-broadcast-banner'); 
-          if (banner) { 
-            banner.innerHTML = `🌟 <b>${killer.name}</b> ELIMINOU O ALVO COM UM HEADSHOT! 🌟`; 
-            setTimeout(() => { if(banner) banner.innerHTML = ""; }, 4000); 
+          let feed = document.getElementById('kill-feed'); 
+          if (feed) { 
+            let msg = document.createElement('div'); msg.className = "kill-feed-item"; msg.style.color = killer.baseColor; msg.innerHTML = `🌟 ${killer.name} HEADSHOT!`;
+            feed.appendChild(msg); if (feed.childElementCount > 5) feed.removeChild(feed.firstChild); setTimeout(() => { if(msg.parentNode) msg.parentNode.removeChild(msg); }, 4000); 
           } 
         } 
         let rec = hsRecords.find(r => r.id === killer.id); 
-        if (rec) rec.hs = killer.hs; 
-        else hsRecords.push({ id: killer.id, name: killer.name, team: killer.team, hs: killer.hs }); 
-        hsRecords.sort((a,b) => b.hs - a.hs); 
-        hsRecords = hsRecords.slice(0, 5); 
+        if (rec) rec.hs = killer.hs; else hsRecords.push({ id: killer.id, name: killer.name, team: killer.team, hs: killer.hs, color: killer.baseColor }); 
+        hsRecords.sort((a,b) => b.hs - a.hs); hsRecords = hsRecords.slice(0, 5); 
       } else { 
-        killer.kills++; 
-        if (!killer.isBot) texts.push(new FloatingText(victimX, victimY, "KILL!", "#ffffff")); 
+        killer.kills++; if (!killer.isBot) texts.push(new FloatingText(victimX, victimY, "KILL!", "#ffffff")); 
       } 
     }
 
     function gameLoop() {
       frameCount++; 
       let camX = player.dead ? WORLD_SIZE/2 : player.x; let camY = player.dead ? WORLD_SIZE/2 : player.y;
+
+      if (!player.dead && player.mass > globalBestRecord) { globalBestRecord = player.mass; localStorage.setItem('globalBestRecord', globalBestRecord); }
       
       ctx.save(); ctx.scale(dpr, dpr); ctx.translate(width/2, height/2); ctx.scale(globalZoom, globalZoom); ctx.translate(-camX, -camY);
       
@@ -1005,37 +1508,47 @@
       for (let i = multipliers.length - 1; i >= 0; i--) { if (Date.now() > multipliers[i].createdAt + multipliers[i].duration) { multipliers.splice(i, 1); continue; } if (isVisible(multipliers[i].x, multipliers[i].y, 30, camX, camY)) multipliers[i].draw(); }
       for (let i = powerups.length - 1; i >= 0; i--) { if (Date.now() > powerups[i].createdAt + powerups[i].duration) { powerups.splice(i, 1); continue; } if (isVisible(powerups[i].x, powerups[i].y, 30, camX, camY)) powerups[i].draw(); }
       
-      let totalBots = snakes.filter(s => s.isBot).length; if (totalBots < BOT_COUNT) { let skinOpts = ['solid', 'neon', 'zebra', 'dots', 'ghost']; snakes.push(new Snake(`Bot_${Math.floor(Math.random()*900)+100}`, Math.random() > 0.5 ? 'red' : 'blue', true, skinOpts[Math.floor(Math.random()*skinOpts.length)])); }
+      let totalBots = snakes.filter(s => s.isBot).length; 
+      if (totalBots < BOT_COUNT) { let teams = ['red', 'blue', 'yellow', 'green']; snakes.push(new Snake(`Bot_${Math.floor(Math.random()*900)+100}`, teams[Math.floor(Math.random() * teams.length)], true)); }
       
+      let boundary = new Rectangle(WORLD_SIZE/2, WORLD_SIZE/2, WORLD_SIZE/2, WORLD_SIZE/2);
+      let qtree = new QuadTree(boundary, 4);
+
+      for (let f of foods) { qtree.insert(new Point(f.x, f.y, { type: 'food', ref: f })); }
+
+      for (let s of snakes) {
+        if (s.dead) continue;
+        let step = Math.max(3, Math.floor(s.body.length / 40)); 
+        for (let k = 0; k < s.body.length; k += step) { qtree.insert(new Point(s.body[k].x, s.body[k].y, { type: 'snake', ref: s, index: k })); }
+      }
+
       for(let i = snakes.length - 1; i >= 0; i--) {
-        let s = snakes[i]; if (s.dead) { if(s.isBot) { snakes.splice(i, 1); snakes.push(new Snake(`Bot Reborn`, Math.random()>0.5?'red':'blue', true)); } continue; }
-        s.update(); if (s.x < 0 || s.x > WORLD_SIZE || s.y < 0 || s.y > WORLD_SIZE) { s.die('redline'); continue; }
+        let s = snakes[i]; 
+        if (s.dead) { if(s.isBot) { snakes.splice(i, 1); let tms = ['red','blue','yellow','green']; snakes.push(new Snake(`Bot Reborn`, tms[Math.floor(Math.random()*tms.length)], true)); } continue; }
         
-        for (let j = foods.length - 1; j >= 0; j--) { let dx = foods[j].x - s.x; let dy = foods[j].y - s.y; if (dx*dx + dy*dy < 784) { s.mass += 1.5; foods.splice(j, 1); foods.push(new Food()); } }
+        s.update(); 
+        if (s.x < 0 || s.x > WORLD_SIZE || s.y < 0 || s.y > WORLD_SIZE) { s.die('redline'); continue; }
+        
+        let viewRange = new Circle(s.x, s.y, 35); let nearbyObjects = qtree.query(viewRange);
+
+        for (let obj of nearbyObjects) {
+          if (s.dead) break; 
+          let dx = obj.x - s.x; let dy = obj.y - s.y; let distSq = dx*dx + dy*dy;
+          if (obj.userData.type === 'food' && distSq < 784) {
+             s.mass += 1.5; let foodIndex = foods.indexOf(obj.userData.ref);
+             if (foodIndex > -1) { foods.splice(foodIndex, 1); foods.push(new Food()); }
+          }
+          if (obj.userData.type === 'snake' && distSq < 750) {
+             let enemy = obj.userData.ref; let k = obj.userData.index;
+             if (s !== enemy && !enemy.dead && s.team !== enemy.team) {
+                if (k === 0) { if (s.mass < enemy.mass) { s.die('player'); registerKill(enemy, s.x, s.y, true); break; } else { enemy.die('player'); registerKill(s, enemy.x, enemy.y, true); }
+                } else { s.die('player'); registerKill(enemy, s.x, s.y, (k <= 20)); break; }
+             }
+          }
+        }
+
         for (let j = multipliers.length - 1; j >= 0; j--) { let m = multipliers[j]; let dx = m.x - s.x; let dy = m.y - s.y; if (dx*dx + dy*dy < 1225) { s.mass *= m.mult; s.multBuffTime = Date.now() + m.duration; s.activeMult = m.mult; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `${m.mult}X (${m.duration/1000}s)!`, m.color)); multipliers.splice(j, 1); } }
         for (let j = powerups.length - 1; j >= 0; j--) { let p = powerups[j]; let dx = p.x - s.x; let dy = p.y - s.y; if (dx*dx + dy*dy < 1225) { if(p.type === 'speed') { s.speedBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `SPEED (${p.duration/1000}s)!`, "#00e5ff")); } else if(p.type === 'curve') { s.curveBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `8 INFINITO (${p.duration/1000}s)!`, "#d500f9")); } else if(p.type === 'magnet') { s.magnetBuffTime = Date.now() + p.duration; if(!s.isBot) texts.push(new FloatingText(s.x, s.y, `ÍMÃ (${p.duration/1000}s)!`, "#ff1744")); } powerups.splice(j, 1); } }
-        
-        snakes.forEach(enemy => { 
-            if (s === enemy || enemy.dead || s.dead || s.team === enemy.team) return; 
-            let step = Math.max(4, Math.floor(enemy.body.length / 50)); 
-            for (let k = 0; k < enemy.body.length; k += step) { 
-                let dx = s.x - enemy.body[k].x; let dy = s.y - enemy.body[k].y; 
-                if (dx*dx + dy*dy < 484) { 
-                    if (k === 0) { 
-                        if (s.mass < enemy.mass) { 
-                            s.die('player'); registerKill(enemy, s.x, s.y, true); 
-                        } else { 
-                            enemy.die('player'); registerKill(s, enemy.x, enemy.y, true); 
-                        } 
-                    } else { 
-                        s.die('player'); 
-                        let isHsCandidate = (k <= 20); 
-                        registerKill(enemy, s.x, s.y, isHsCandidate); 
-                    } 
-                    break; 
-                } 
-            } 
-        });
         
         if (isVisible(s.x, s.y, 1000, camX, camY)) s.draw();
       }
@@ -1044,18 +1557,17 @@
       
       if (frameCount % 5 === 0) {
           if (!player.dead) {
+            document.getElementById('hud-record').innerText = Math.floor(globalBestRecord);
             document.getElementById('hud-kills').innerText = player.kills; document.getElementById('hud-hs').innerText = player.hs;
             let buffBanner = document.getElementById('player-buff-timer-banner');
             if (buffBanner) { let now = Date.now(); let buffText = ""; if (player.speedBuffTime > now) buffText += `⚡ ${Math.ceil((player.speedBuffTime - now) / 1000)}s `; if (player.curveBuffTime > now) buffText += `♾️ ${Math.ceil((player.curveBuffTime - now) / 1000)}s `; if (player.magnetBuffTime > now) buffText += `🧲 ${Math.ceil((player.magnetBuffTime - now) / 1000)}s `; if (player.multBuffTime > now) buffText += `⭐ ${player.activeMult}X ${Math.ceil((player.multBuffTime - now) / 1000)}s `; buffBanner.innerText = buffText; }
-            
             let radarHTML = ''; snakes.forEach(s => { if(!s.dead && s !== player) { let rx = ((s.x / WORLD_SIZE) * 120); let ry = ((s.y / WORLD_SIZE) * 120); let dSize = Math.max(5, Math.min(20, s.mass / 10)); radarHTML += `<div style="position:absolute; top:${ry}px; left:${rx}px; width:${dSize}px; height:${dSize}px; background:rgba(255, 0, 0, 0.5); border-radius:50%; transform:translate(-50%,-50%);"></div>`; } }); let px = ((player.x / WORLD_SIZE) * 120); let py = ((player.y / WORLD_SIZE) * 120); radarHTML += `<div style="position:absolute; top:${py}px; left:${px}px; width:8px; height:8px; background:#00ff00; border-radius:50%; box-shadow:0 0 8px #00ff00; transform:translate(-50%,-50%); z-index:10;"></div>`; document.getElementById('radar-entities').innerHTML = radarHTML;
-            document.getElementById('my-hs-display').innerHTML = `<span style="color:${player.team==='red'?'#ff5252':'#448aff'}">${player.name}</span>: ${player.hs} HS`;
+            document.getElementById('my-hs-display').innerHTML = `<span style="color:${player.baseColor}">${player.name}</span>: ${player.hs} HS`;
           } else { document.getElementById('my-hs-display').innerHTML = ""; let buffBanner = document.getElementById('player-buff-timer-banner'); if (buffBanner) buffBanner.innerText = ""; }
           
-          if (hsRecords.length > 0) document.getElementById('hs-record-list').innerHTML = hsRecords.map((r, idx) => `<div style="display:flex; justify-content:space-between; width: 170px; margin-bottom: 2px;"><span>${idx+1}. <span style="color:${r.team==='red'?'#ff5252':'#448aff'}">${r.name}</span></span><span style="color:#ffeb3b; font-weight:bold;">${r.hs}</span></div>`).join('');
-          let topPlayers = [...snakes].filter(s => !s.dead).sort((a,b) => b.mass - a.mass).slice(0, 10); document.getElementById('global-leaderboard').innerHTML = topPlayers.map((s, idx) => `<div class="lb-row"><span>${idx+1}. <span style="color: ${s.cosmetics?s.cosmetics.color:(s.team==='red'?'#ff5252':'#448aff')}">${s.name}</span></span><span>${Math.floor(s.mass)}</span></div>`).join('');
+          if (hsRecords.length > 0) document.getElementById('hs-record-list').innerHTML = hsRecords.map((r, idx) => `<div style="display:flex; justify-content:space-between; width: 170px; margin-bottom: 2px;"><span>${idx+1}. <span style="color:${r.color}">${r.name}</span></span><span style="color:#ffeb3b; font-weight:bold;">${r.hs}</span></div>`).join('');
+          let topPlayers = [...snakes].filter(s => !s.dead).sort((a,b) => b.mass - a.mass).slice(0, 10); document.getElementById('global-leaderboard').innerHTML = topPlayers.map((s, idx) => `<div class="lb-row"><span>${idx+1}. <span style="color: ${s.baseColor}">${s.name}</span></span><span>${Math.floor(s.mass)}</span></div>`).join('');
       }
-      
       if(canvas.style.display === 'block') gameReqId = requestAnimationFrame(gameLoop);
     }
   </script>
